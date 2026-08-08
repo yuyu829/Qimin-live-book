@@ -25,6 +25,7 @@ import {
 
 import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, type Speaker, type Term } from "@/data/qimin";
 import { deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
+import { highlightTerms } from "@/lib/highlight-terms";
 
 type Screen = "cover" | "interest" | "recommend" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
@@ -191,6 +192,8 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
     }
   }
 
+  const originalParts = highlightTerms(message.original, message.terms.map((term) => term.word));
+
   return (
     <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
@@ -199,7 +202,7 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
         <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`}>
           <p className="translation">{message.translation}</p>
           <div className="original-block">
-            <p>{message.original}</p>
+            <p>{originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}</p>
             <div className="term-row">
               <button disabled={science.loading} className="why-button" onClick={explainScience}>
                 {science.loading ? <LoaderCircle className="spin" size={14} /> : <Sparkles size={14} />} 这是为什么

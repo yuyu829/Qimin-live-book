@@ -27,3 +27,7 @@ test("deck card height follows its content", () => {
 test("rear cards have visible room above the lowered front card", () => {
   assert.match(css, /\.deck-stage\{[^}]*padding-top:174px/);
 });
+
+test("annotated original terms have a highlighted text style", () => {
+  assert.match(css, /\.original-term\{[^}]*font-weight:800/);
+});
