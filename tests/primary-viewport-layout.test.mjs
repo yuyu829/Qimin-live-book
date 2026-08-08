@@ -67,7 +67,9 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(page, /className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"/);
   assert.match(page, /src="\/art\/map-cat-avatar\.webp" alt="小禾喵头像" className="map-profile-image"/);
   assert.match(css, /\.map-profile\{position:absolute;top:88px;left:16px/);
+  assert.match(css, /\.map-profile\{[^}]*width:210px/);
+  assert.match(page, /className="map-level-track" role="progressbar"/);
   assert.match(page, /className="map-level-track" role="progressbar"[^>]*aria-valuenow=\{46\}/);
-  assert.match(css, /\.map-level-track\{[^}]*width:92px;height:7px/);
+  assert.match(css, /\.map-level-track\{[^}]*width:124px;height:7px/);
   assert.match(css, /\.map-level-track i\{[^}]*width:46%/);
 });
