@@ -64,4 +64,6 @@ test("full text shortcut opens the original vertical chat reader", () => {
   assert.match(page, /chapter\.messages\.map\(\(message\) =>/);
   assert.match(page, /readerMode === "full" \? \(\) => setReaderMode\("deck"\) : onBack/);
   assert.match(css, /\.reader-page\.is-full-reader\{height:auto;min-height:100svh;overflow:visible\}/);
+  assert.match(css, /\.is-full-reader \.chat-stream\{padding-top:26px;padding-bottom:18px\}/);
+  assert.match(css, /\.is-full-reader \.question-bar\{display:none\}/);
 });
