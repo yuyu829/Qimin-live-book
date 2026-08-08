@@ -36,3 +36,10 @@ test("map hotspots open volume chapter pickers", () => {
   assert.match(css, /\.map-volume-backdrop\{position:absolute;inset:0/);
   assert.match(css, /\.map-volume-list\{display:flex;flex-wrap:wrap/);
 });
+
+test("map navigation is transparent and simplified", () => {
+  assert.match(page, /screen === "map" \? "map-screen"/);
+  assert.match(css, /\.map-screen \.topbar\{background:transparent;border-bottom-color:transparent/);
+  assert.match(css, /\.map-screen \.topbar \.cat-mark-small,\.map-screen \.topbar \.progress-pill\{display:none\}/);
+  assert.match(css, /\.map-screen \.topbar \.brand b\{font-size:21px\}/);
+});

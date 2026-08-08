@@ -472,7 +472,7 @@ export default function HomePage() {
 
   const showTopBar = !["cover", "reader"].includes(screen);
   return (
-    <div className={`app-shell ${showTopBar ? "has-topbar" : ""}`}>
+    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""}`}>
       {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
       {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
