@@ -18,6 +18,13 @@ test("reading recommendations stay inside one app viewport", () => {
 test("map artwork fills the viewport without legacy place overlays", () => {
   assert.match(css, /\.map-page\{[^}]*height:calc\(100svh - 68px\)[^}]*overflow:hidden/);
   assert.match(css, /\.map-page \.world-map\{position:absolute;inset:0;width:100%;height:100%/);
-  assert.match(page, /data-map-coordinate-space="percentage"/);
+  assert.match(page, /data-map-coordinate-space="853x1844"/);
   assert.doesNotMatch(page, /place-farm|place-brew|place-school|locked-place|map-river/);
+});
+
+test("map hotspots use the original artwork coordinate system", () => {
+  assert.match(page, /viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice"/);
+  assert.match(page, /x="558" y="448" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("soybean"\)\}/);
+  assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("sauce"\)\}/);
+  assert.match(css, /\.map-hotspots\{position:absolute;inset:0;z-index:3;width:100%;height:100%\}/);
 });
