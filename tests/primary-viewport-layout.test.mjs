@@ -7,7 +7,9 @@ const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8
 
 test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.recommend-page\{height:calc\(100svh - 68px\);min-height:0;overflow:hidden/);
-  assert.match(css, /\.recommend-page \.chapter-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.recommend-page \.chapter-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:10px\}/);
+  assert.match(css, /\.recommend-page \.tile-art\{height:160px\}/);
+  assert.match(css, /\.recommend-page \.tile-body\{padding:16px\}/);
 });
 
 test("map artwork fills the viewport without legacy place overlays", () => {
