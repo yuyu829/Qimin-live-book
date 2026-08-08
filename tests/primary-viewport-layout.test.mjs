@@ -12,7 +12,7 @@ test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.recommend-page \.tile-body\{padding:16px\}/);
   assert.match(page, /className="reading-art-placeholder" aria-label="读书页插画占位"/);
   assert.match(css, /\.recommend-heading\{margin-bottom:20px\}/);
-  assert.match(css, /\.reading-art-placeholder\{height:92px;margin-top:16px/);
+  assert.match(css, /\.reading-art-placeholder\{height:256px\}/);
 });
 
 test("map artwork fills the viewport without legacy place overlays", () => {
