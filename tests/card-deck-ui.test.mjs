@@ -23,3 +23,7 @@ test("deck card height follows its content", () => {
   assert.doesNotMatch(css, /\.deck-card\{[^}]*min-height:430px/);
   assert.doesNotMatch(css, /\.deck-stage\{[^}]*min-height:590px/);
 });
+
+test("rear cards have visible room above the lowered front card", () => {
+  assert.match(css, /\.deck-stage\{[^}]*padding-top:174px/);
+});
