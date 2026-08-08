@@ -366,6 +366,10 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
                   onPointerMove={isTop ? handlePointerMove : undefined}
                   onPointerUp={isTop ? handlePointerUp : undefined}
                   onPointerCancel={isTop ? handlePointerUp : undefined}
+                  onClick={isTop ? (event) => {
+                    if ((event.target as HTMLElement).closest(".speaker-avatar,.speaker-name,.context-rail")) return;
+                    if (dragX < 8 && !dismissing) openDetail(message);
+                  } : undefined}
                 >
                   <MessageBubble chapter={chapter} message={message} active={isTop} onSpeaker={setSpeaker} onDetail={isTop ? () => { if (dragX < 8 && !dismissing) openDetail(message); } : undefined} />
                 </div>
