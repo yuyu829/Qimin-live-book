@@ -12,7 +12,6 @@ import {
   Home,
   Leaf,
   LoaderCircle,
-  LockKeyhole,
   Map as MapIcon,
   MessageCircleMore,
   Send,
@@ -412,21 +411,12 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   );
 }
 
-function WorldMap({ readIds, onOpen, onSchool }: { readIds: string[]; onOpen: (id: Chapter["id"]) => void; onSchool: () => void }) {
-  const locked = ["果园", "水利", "花圃", "家园"];
+function WorldMap() {
   return (
     <main className="map-page">
-      <div className="map-heading"><p className="overline">齐民村 · 晴</p><h2>今天去哪里转转？</h2><p>读过的地方会在地图上留下印记。</p></div>
-      <div className="world-map">
+      <div className="world-map" data-map-coordinate-space="percentage">
         <ArtImage src="/art/world-map.webp" alt="齐民村田园绘本地图" className="custom-art world-map-art" />
-        <div className="map-river" />
-        <button className="place place-farm" onClick={() => onOpen("soybean")}><span className="place-art"><Sprout /></span><b>种植</b><small>{readIds.includes("soybean") ? "已读完 ✓" : "去听一章"}</small></button>
-        <button className="place place-brew" onClick={() => onOpen("sauce")}><span className="place-art"><FlaskConical /></span><b>酿造</b><small>{readIds.includes("sauce") ? "已读完 ✓" : "去听一章"}</small></button>
-        <button className="place place-school" onClick={onSchool}><span className="place-art"><GraduationCap /></span><b>学堂</b><small>经验留言墙</small></button>
-        {locked.map((name, i) => <div key={name} className={`place locked-place locked-${i}`}><span className="place-art"><LockKeyhole /></span><b>{name}</b><small>敬请期待</small></div>)}
-        <div className="map-cloud c1" /><div className="map-cloud c2" />
       </div>
-      {readIds.length > 0 && <div className="level-banner"><span><Sparkles /></span><p><b>{readIds.length === 2 ? "齐民行家" : "识农新手"}</b><br />{readIds.length === 2 ? "两章都已收入你的农学手账" : "读完第一章，新的身份已经记下"}</p><strong>{readIds.length}/2</strong></div>}
     </main>
   );
 }
@@ -476,7 +466,7 @@ export default function HomePage() {
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
       {screen === "recommend" && <Recommendations onOpen={openChapter} />}
       {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} />}
-      {screen === "map" && <WorldMap readIds={readIds} onOpen={openChapter} onSchool={() => setScreen("school")} />}
+      {screen === "map" && <WorldMap />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
       {showTopBar && <nav className="bottom-nav">
         <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
