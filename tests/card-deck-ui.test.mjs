@@ -25,12 +25,12 @@ test("deck card height follows its content", () => {
 });
 
 test("rear cards have visible room above the lowered front card", () => {
-  assert.match(css, /\.deck-stage\{[^}]*padding-top:174px/);
+  assert.match(css, /\.deck-stage\{[^}]*padding-top:220px/);
 });
 
 test("scene marker is attached to the top of the deck", () => {
   assert.match(page, /className="date-divider deck-date"/);
-  assert.match(css, /\.deck-date\{position:absolute;top:-12px/);
+  assert.match(css, /\.deck-date\{position:absolute;top:-24px/);
   assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);
 });
 

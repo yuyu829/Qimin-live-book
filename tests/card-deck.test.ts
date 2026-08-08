@@ -13,4 +13,5 @@ test("cards recede along the visual z axis", () => {
   assert.equal(deckCardTransform(0), "translate3d(0, 0px, 0px) scale(1) rotate(0deg)");
   assert.match(deckCardTransform(1), /translate3d\(0, -58px, -30px\) scale\(0\.94\) rotate\(-1\.2deg\)/);
   assert.match(deckCardTransform(2), /translate3d\(0, -116px, -60px\) scale\(0\.88\) rotate\(1\.2deg\)/);
+  assert.match(deckCardTransform(4), /translate3d\(0, -232px, -120px\) scale\(0\.76\) rotate\(1\.2deg\)/);
 });

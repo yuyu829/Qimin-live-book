@@ -5,7 +5,7 @@ export function shouldDismissCard(deltaX: number) {
 }
 
 export function deckCardTransform(position: number) {
-  const depth = Math.min(position, 3);
+  const depth = Math.min(position, 4);
   const translateY = depth * -58;
   const scale = 1 - depth * 0.06;
   const rotate = depth === 0 ? 0 : depth % 2 === 0 ? 1.2 : -1.2;
