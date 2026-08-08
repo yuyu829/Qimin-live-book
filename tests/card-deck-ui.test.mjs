@@ -25,7 +25,7 @@ test("deck card height follows its content", () => {
 });
 
 test("rear cards have visible room above the lowered front card", () => {
-  assert.match(css, /\.deck-stage\{[^}]*padding-top:220px/);
+  assert.match(css, /\.deck-stage\{[^}]*padding-top:300px/);
 });
 
 test("scene marker is attached to the top of the deck", () => {
