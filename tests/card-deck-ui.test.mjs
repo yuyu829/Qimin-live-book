@@ -37,6 +37,7 @@ test("swipe hint has its own space below cards and stays within a fixed reader v
   assert.match(css, /\.reader-page\{[^}]*height:100svh[^}]*overflow:hidden/);
   assert.match(css, /\.chat-stream\{overflow:visible;height:auto\}/);
   assert.match(css, /\.deck-stage\{[^}]*padding-bottom:46px/);
+  assert.match(css, /\.deck-stage\{[^}]*transform:translateY\(-16px\)/);
   assert.match(css, /\.swipe-hint\{[^}]*bottom:10px[^}]*white-space:nowrap/);
   assert.doesNotMatch(css, /\.swipe-hint\{[^}]*border-radius/);
 });
