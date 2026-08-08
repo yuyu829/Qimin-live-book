@@ -305,10 +305,10 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       <section className="chat-stream">
-        <div className="date-divider"><span>约公元 540 年 · 书中现场</span></div>
         {currentIndex < chapter.messages.length && (
           <div className="deck-stage" aria-label="章节发言卡片堆">
-            {chapter.messages.slice(currentIndex, currentIndex + 4).map((message, position) => {
+            <div className="date-divider deck-date"><span>约公元 540 年 · 书中现场</span></div>
+            {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
               const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
               return (

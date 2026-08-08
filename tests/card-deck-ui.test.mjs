@@ -28,6 +28,12 @@ test("rear cards have visible room above the lowered front card", () => {
   assert.match(css, /\.deck-stage\{[^}]*padding-top:174px/);
 });
 
+test("scene marker is attached to the top of the deck", () => {
+  assert.match(page, /className="date-divider deck-date"/);
+  assert.match(css, /\.deck-date\{position:absolute;top:-12px/);
+  assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);
+});
+
 test("annotated original terms have a highlighted text style", () => {
   assert.match(css, /\.original-term\{[^}]*font-weight:800/);
 });
