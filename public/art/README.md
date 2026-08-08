@@ -8,6 +8,7 @@
 | `world-map.webp` | 1200 x 1600 | 齐民村俯视地图背景，图内不要写场景名 |
 | `chapter-soybean.webp` | 600 x 600 | 种植章节小插画 |
 | `chapter-sauce.webp` | 600 x 600 | 酿造章节小插画 |
+| `reading-world.webp` | 804 x 512 | 读书推荐页底部田园插画 |
 | `avatar-fanshengzhi.webp` | 400 x 400 | 《氾胜之书》拟人头像 |
 | `avatar-jia.webp` | 400 x 400 | 贾思勰拟人头像 |
 | `avatar-proverb.webp` | 400 x 400 | 乡野谚语拟人头像 |

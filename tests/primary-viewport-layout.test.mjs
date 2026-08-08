@@ -11,6 +11,7 @@ test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.recommend-page \.tile-art\{height:160px\}/);
   assert.match(css, /\.recommend-page \.tile-body\{padding:16px\}/);
   assert.match(page, /className="reading-art-placeholder" aria-label="读书页插画占位"/);
+  assert.match(page, /src="\/art\/reading-world\.webp" alt="读书页田园插画" className="reading-art-image"/);
   assert.match(css, /\.recommend-heading\{margin-bottom:20px\}/);
   assert.match(css, /\.reading-art-placeholder\{height:256px\}/);
 });
