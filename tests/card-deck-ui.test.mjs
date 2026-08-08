@@ -16,3 +16,10 @@ test("deck includes depth transitions and swipe exit animation", () => {
   assert.match(css, /\.deck-card\.is-dismissing/);
   assert.match(css, /perspective:1000px/);
 });
+
+test("deck card height follows its content", () => {
+  assert.match(css, /\.deck-stage\{[^}]*display:grid/);
+  assert.match(css, /\.deck-card\{[^}]*grid-area:1\/1[^}]*min-height:0[^}]*max-height:none/);
+  assert.doesNotMatch(css, /\.deck-card\{[^}]*min-height:430px/);
+  assert.doesNotMatch(css, /\.deck-stage\{[^}]*min-height:590px/);
+});
