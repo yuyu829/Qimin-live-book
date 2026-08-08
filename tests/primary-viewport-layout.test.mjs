@@ -17,8 +17,8 @@ test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.reading-art-placeholder\{[^}]*border:0/);
 });
 
-test("chapter title bar keeps its topic icon without a header illustration asset", () => {
-  assert.match(page, /className="chapter-symbol">\{chapter\.id === "soybean" \? <Sprout \/> : <FlaskConical \/>\}/);
+test("chapter title bar removes its illustration placeholder", () => {
+  assert.doesNotMatch(page, /className="chapter-symbol"/);
 });
 
 test("recommendation cards load their chapter artwork assets", () => {
