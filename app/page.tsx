@@ -237,6 +237,7 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
 }
 
 function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () => void; onComplete: () => void }) {
+  const [readerMode, setReaderMode] = useState<"deck" | "full">("deck");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [speaker, setSpeaker] = useState<Speaker>();
   const [question, setQuestion] = useState("");
@@ -247,7 +248,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   const pointerStart = useRef({ x: 0, active: false });
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
+  useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
 
@@ -294,23 +295,32 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   }
 
   return (
-    <main className="reader-page">
+    <main className={`reader-page ${readerMode === "full" ? "is-full-reader" : ""}`}>
       <header className="reader-header">
-        <button className="icon-button" onClick={onBack} aria-label="返回推荐"><ArrowLeft /></button>
+        <button className="icon-button" onClick={readerMode === "full" ? () => setReaderMode("deck") : onBack} aria-label={readerMode === "full" ? "返回卡片阅读" : "返回推荐"}><ArrowLeft /></button>
         <div><span>{chapter.category}篇 · {chapter.volume}</span><h1>{chapter.title}</h1></div>
-        <div className="reader-count">{Math.min(currentIndex + 1, chapter.messages.length)}/{chapter.messages.length}</div>
+        <div className="reader-count">{readerMode === "full" ? "全文" : `${Math.min(currentIndex + 1, chapter.messages.length)}/${chapter.messages.length}`}</div>
       </header>
       <section className="chapter-intro">
         <div className="chapter-symbol"><ArtImage src={`/art/chapter-${chapter.id}.webp`} alt="" className="chapter-art" />{chapter.id === "soybean" ? <Sprout /> : <FlaskConical />}</div>
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       <section className="chat-stream">
-        <div className="reader-shortcuts" aria-label="章节快捷操作">
-          <button type="button">阅读全文</button>
+        {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
+          <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
           <button type="button">{chapter.id === "soybean" ? "去种豆" : "去晒酱"}</button>
           <span className="shortcut-cat-placeholder" aria-label="动画小猫占位"><CatMark small /></span>
-        </div>
-        {currentIndex < chapter.messages.length && (
+        </div>}
+        {readerMode === "full" && (
+          <div className="full-chat-stream" aria-label="章节全文聊天室">
+            {chapter.messages.map((message) => (
+              <div className="animate-message" key={message.id}>
+                <MessageBubble chapter={chapter} message={message} active onSpeaker={setSpeaker} />
+              </div>
+            ))}
+          </div>
+        )}
+        {readerMode === "deck" && currentIndex < chapter.messages.length && (
           <div className="deck-stage" aria-label="章节发言卡片堆">
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
@@ -345,7 +355,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
             <div className="guide-answer"><CatMark small /><div><b>书页向导</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
           </div>
         ))}
-        {currentIndex === chapter.messages.length && (
+        {readerMode === "deck" && currentIndex === chapter.messages.length && (
           <div className="chapter-finish">
             <Wheat /><p><b>这一页读到这里</b><br />你已经听完 {chapter.messages.length} 条书中发言</p>
             <button onClick={onComplete}>收起书页，去地图 <MapIcon size={17} /></button>

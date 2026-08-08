@@ -56,3 +56,12 @@ test("chapter shortcuts appear above the deck with a themed action and cat place
   assert.match(css, /\.shortcut-cat-placeholder\{[^}]*width:46px;height:42px/);
   assert.match(css, /@keyframes shortcutCatBob/);
 });
+
+test("full text shortcut opens the original vertical chat reader", () => {
+  assert.match(page, /useState<"deck" \| "full">\("deck"\)/);
+  assert.match(page, /onClick=\{\(\) => setReaderMode\("full"\)\}>阅读全文/);
+  assert.match(page, /className="full-chat-stream" aria-label="章节全文聊天室"/);
+  assert.match(page, /chapter\.messages\.map\(\(message\) =>/);
+  assert.match(page, /readerMode === "full" \? \(\) => setReaderMode\("deck"\) : onBack/);
+  assert.match(css, /\.reader-page\.is-full-reader\{height:auto;min-height:100svh;overflow:visible\}/);
+});
