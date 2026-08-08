@@ -9,5 +9,5 @@ test("chapter header is fixed to the phone viewport", () => {
 });
 
 test("reader content reserves space for the fixed header", () => {
-  assert.match(css, /\.reader-page\{padding-top:72px\}/);
+  assert.match(css, /\.reader-page\{[^}]*padding-top:72px/);
 });

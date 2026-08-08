@@ -87,7 +87,7 @@ body{background:#d9cdbd}
 @keyframes railFocusIn{from{opacity:.25;transform:translateX(13px) scale(.58)}to{opacity:1;transform:translateX(0) scale(1)}}
 
 /* Chapter title bar stays visible while the reading document scrolls. */
-.reader-page{padding-top:72px}
+.reader-page{padding-top:72px;height:100svh;overflow:hidden}
 .reader-header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:72px;z-index:40}
 
 /* Primary screens share a fixed app-level navigation bar. */
@@ -95,12 +95,12 @@ body{background:#d9cdbd}
 .app-shell.has-topbar .topbar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:68px;z-index:40}
 
 /* Stacked message deck: the front card is draggable and rear cards advance in depth. */
-.chat-stream{overflow:visible}
-.deck-stage{position:relative;display:grid;margin:4px 0 54px;padding-top:220px;perspective:1000px;transform-style:preserve-3d}
+.chat-stream{overflow:hidden;height:calc(100svh - 72px - 150px - 78px)}
+.deck-stage{position:relative;display:grid;margin:4px 0 54px;padding-top:220px;padding-bottom:46px;perspective:1000px;transform-style:preserve-3d}
 .deck-card{position:relative;grid-area:1/1;align-self:start;min-height:0;max-height:none;overflow:visible;padding:12px 5px 14px;border:1px solid #e4cfb3;border-radius:24px;background:#fff9ec;box-shadow:0 16px 36px rgba(91,66,43,.16);transform-origin:center bottom;transition:transform .38s cubic-bezier(.2,.86,.25,1),opacity .32s ease,filter .38s ease,box-shadow .38s ease;will-change:transform,opacity}
 .deck-card::-webkit-scrollbar{display:none}.deck-card.is-top{cursor:grab;touch-action:pan-y;box-shadow:0 18px 42px rgba(91,66,43,.2)}.deck-card.is-top:active{cursor:grabbing}.deck-card.is-dismissing{pointer-events:none}
 .deck-card .message-row{margin:0;padding-right:52px}.deck-card .paper-bubble{border:0;background:transparent;box-shadow:none;padding-top:8px}.deck-card .paper-bubble:before{display:none}.deck-card:not(.is-top) .context-rail{opacity:0!important;pointer-events:none}.deck-card:not(.is-top) .message-column{pointer-events:none}
 .original-term{font-weight:800;color:#b85d4e;text-decoration:underline;text-decoration-color:rgba(235,129,121,.58);text-decoration-thickness:2px;text-underline-offset:3px;background:rgba(235,129,121,.12);border-radius:3px;padding:0 2px}
 .deck-position-1{background:#f5e7ca}.deck-position-2{background:#dfe7cb}.deck-position-3{background:#eadbd0}
-.swipe-hint{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;padding:7px 12px;border-radius:16px;background:rgba(255,250,240,.88);color:#9a745e;font-size:10px;box-shadow:0 4px 14px rgba(90,64,43,.08)}
+.swipe-hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
 @media(max-width:380px){.deck-card .message-row{padding-right:46px}}
