@@ -52,5 +52,7 @@ test("chapter shortcuts appear above the deck with a themed action and cat place
   assert.match(page, /chapter\.id === "soybean" \? "去种豆" : "去晒酱"/);
   assert.match(page, /className="shortcut-cat-placeholder"/);
   assert.match(css, /\.reader-shortcuts\{position:absolute;top:3px;right:14px/);
+  assert.match(css, /\.reader-shortcuts>button\{[^}]*padding:7px 10px[^}]*border-radius:7px[^}]*font-size:12px/);
+  assert.match(css, /\.shortcut-cat-placeholder\{[^}]*width:46px;height:42px/);
   assert.match(css, /@keyframes shortcutCatBob/);
 });
