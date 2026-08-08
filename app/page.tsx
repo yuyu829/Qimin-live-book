@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 
 import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, type Speaker, type Term } from "@/data/qimin";
-import { pickFocusedMessage } from "@/lib/reading-focus";
+import { deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 
 type Screen = "cover" | "interest" | "recommend" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
@@ -165,7 +165,7 @@ function SpeakerAvatar({ speaker, onClick }: { speaker: Speaker; onClick: () => 
   return <button onClick={onClick} className={`speaker-avatar avatar-${speaker.color}`} aria-label={`查看${speaker.name}资料`}><ArtImage src={`/art/avatar-${speaker.id}.webp`} alt="" className="avatar-art" /><span>{speaker.shortName}</span></button>;
 }
 
-function MessageBubble({ chapter, message, onSpeaker, active, messageRef }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; active: boolean; messageRef?: (node: HTMLDivElement | null) => void }) {
+function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; active: boolean }) {
   const speaker = speakers[message.speakerId];
   const [science, setScience] = useState<AiState>({});
   const [termStates, setTermStates] = useState<Record<string, AiState>>({});
@@ -192,7 +192,7 @@ function MessageBubble({ chapter, message, onSpeaker, active, messageRef }: { ch
   }
 
   return (
-    <div ref={messageRef} data-message-id={message.id} className={`message-row animate-message ${active ? "active-message" : ""}`}>
+    <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
       <div className="message-column">
         <button className="speaker-name" onClick={() => onSpeaker(speaker)}>{speaker.name}<small>{speaker.nature}</small></button>
@@ -235,42 +235,49 @@ function MessageBubble({ chapter, message, onSpeaker, active, messageRef }: { ch
 }
 
 function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () => void; onComplete: () => void }) {
-  const [visible, setVisible] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [speaker, setSpeaker] = useState<Speaker>();
   const [question, setQuestion] = useState("");
   const [conversation, setConversation] = useState<{ question: string; answer?: string; error?: string }[]>([]);
-  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [dismissing, setDismissing] = useState(false);
+  const pointerStart = useRef({ x: 0, active: false });
   const bottomRef = useRef<HTMLDivElement>(null);
-  const messageNodes = useRef<Record<string, HTMLDivElement | null>>({});
 
-  useEffect(() => { setVisible(1); setFocusedIndex(0); setConversation([]); setQuestion(""); }, [chapter.id]);
-  useEffect(() => { setFocusedIndex(visible - 1); }, [visible]);
-  useEffect(() => {
-    let frame = 0;
-    const updateFocus = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        const rects = chapter.messages.slice(0, visible).flatMap((message, index) => {
-          const node = messageNodes.current[message.id];
-          if (!node) return [];
-          const rect = node.getBoundingClientRect();
-          return [{ index, top: rect.top, bottom: rect.bottom }];
-        });
-        const next = pickFocusedMessage(rects, window.innerHeight);
-        if (next >= 0) setFocusedIndex(next);
-      });
-    };
-    updateFocus();
-    window.addEventListener("scroll", updateFocus, { passive: true });
-    window.addEventListener("resize", updateFocus);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", updateFocus);
-      window.removeEventListener("resize", updateFocus);
-    };
-  }, [chapter.id, visible]);
+  useEffect(() => { setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [visible, conversation]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if ((event.target as HTMLElement).closest("button, input, a")) return;
+    pointerStart.current = { x: event.clientX, active: true };
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!pointerStart.current.active || dismissing) return;
+    setDragX(Math.max(0, event.clientX - pointerStart.current.x));
+  }
+
+  function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!pointerStart.current.active || dismissing) return;
+    pointerStart.current.active = false;
+    setDragging(false);
+    if (!shouldDismissCard(dragX)) {
+      setDragX(0);
+      return;
+    }
+    setDismissing(true);
+    setDragX(Math.max(window.innerWidth, 520));
+    window.setTimeout(() => {
+      setCurrentIndex((index) => Math.min(index + 1, chapter.messages.length));
+      setDragX(0);
+      setDismissing(false);
+    }, 360);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
 
   async function submitQuestion(event: FormEvent) {
     event.preventDefault();
@@ -289,7 +296,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       <header className="reader-header">
         <button className="icon-button" onClick={onBack} aria-label="返回推荐"><ArrowLeft /></button>
         <div><span>{chapter.category}篇 · {chapter.volume}</span><h1>{chapter.title}</h1></div>
-        <div className="reader-count">{visible}/{chapter.messages.length}</div>
+        <div className="reader-count">{Math.min(currentIndex + 1, chapter.messages.length)}/{chapter.messages.length}</div>
       </header>
       <section className="chapter-intro">
         <div className="chapter-symbol"><ArtImage src={`/art/chapter-${chapter.id}.webp`} alt="" className="chapter-art" />{chapter.id === "soybean" ? <Sprout /> : <FlaskConical />}</div>
@@ -297,13 +304,33 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       </section>
       <section className="chat-stream">
         <div className="date-divider"><span>约公元 540 年 · 书中现场</span></div>
-        {chapter.messages.slice(0, visible).map((message, index) => <MessageBubble key={message.id} chapter={chapter} message={message} active={index === focusedIndex} messageRef={(node) => { messageNodes.current[message.id] = node; }} onSpeaker={setSpeaker} />)}
-        {visible < chapter.messages.length && (
-          <div className="next-message-wrap">
-            <button className="next-message-button" onClick={() => setVisible((count) => Math.min(count + 1, chapter.messages.length))}>
-              <span className="next-dots"><i /><i /><i /></span> 听下一段发言 <ChevronRight size={16} />
-            </button>
-            <small>每次点击，翻开一条新的书中记载</small>
+        {currentIndex < chapter.messages.length && (
+          <div className="deck-stage" aria-label="章节发言卡片堆">
+            {chapter.messages.slice(currentIndex, currentIndex + 4).map((message, position) => {
+              const isTop = position === 0;
+              const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
+              return (
+                <div
+                  key={message.id}
+                  className={`deck-card deck-position-${position} ${isTop ? "is-top" : ""} ${isTop && dismissing ? "is-dismissing" : ""}`}
+                  data-deck-position={position}
+                  style={{
+                    zIndex: 20 - position,
+                    opacity: isTop && dismissing ? 0 : 1 - position * 0.12,
+                    filter: position === 0 ? "none" : `saturate(${1 - position * 0.16}) blur(${position * 0.15}px)`,
+                    transform: isTop ? topTransform : deckCardTransform(position),
+                    transition: isTop && dragging ? "none" : undefined
+                  }}
+                  onPointerDown={isTop ? handlePointerDown : undefined}
+                  onPointerMove={isTop ? handlePointerMove : undefined}
+                  onPointerUp={isTop ? handlePointerUp : undefined}
+                  onPointerCancel={isTop ? handlePointerUp : undefined}
+                >
+                  <MessageBubble chapter={chapter} message={message} active={isTop} onSpeaker={setSpeaker} />
+                </div>
+              );
+            })}
+            <div className="swipe-hint"><ArrowRight size={15} /> 按住卡片向右滑，听下一位发言</div>
           </div>
         )}
         {conversation.map((item, index) => (
@@ -312,7 +339,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
             <div className="guide-answer"><CatMark small /><div><b>书页向导</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
           </div>
         ))}
-        {visible === chapter.messages.length && (
+        {currentIndex === chapter.messages.length && (
           <div className="chapter-finish">
             <Wheat /><p><b>这一页读到这里</b><br />你已经听完 {chapter.messages.length} 条书中发言</p>
             <button onClick={onComplete}>收起书页，去地图 <MapIcon size={17} /></button>
