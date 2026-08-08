@@ -24,7 +24,15 @@ test("map artwork fills the viewport without legacy place overlays", () => {
 
 test("map hotspots use the original artwork coordinate system", () => {
   assert.match(page, /viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice"/);
-  assert.match(page, /x="306" y="304" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("soybean"\)\}/);
-  assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("sauce"\)\}/);
+  assert.match(page, /x="306" y="304" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("soybean"\)\}/);
+  assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("sauce"\)\}/);
   assert.match(css, /\.map-hotspots\{position:absolute;inset:0;z-index:3;width:100%;height:100%\}/);
+});
+
+test("map hotspots open volume chapter pickers", () => {
+  assert.match(page, /const mapVolumes = \{/);
+  assert.match(page, /className="map-volume-popover"/);
+  assert.match(page, /mapVolumes\[volume\]\.items\.map/);
+  assert.match(css, /\.map-volume-backdrop\{position:absolute;inset:0/);
+  assert.match(css, /\.map-volume-list\{display:flex;flex-wrap:wrap/);
 });

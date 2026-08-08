@@ -412,16 +412,23 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   );
 }
 
+const mapVolumes = {
+  soybean: { title: "卷二", items: ["黍穀第四", "粱秫第五", "大豆第六", "小豆第七", "种麻第八", "种麻子第九", "大小麦第十 翟麦附", "水稻第十一", "旱稻第十二", "胡麻第十三", "种瓜第十四 茄子附", "种瓠第十五", "种芋第十六"] },
+  sauce: { title: "卷八", items: ["黄衣、黄蒸及蘖第六十八 黄衣一名麦奴", "常满盐、花盐第六十九", "作酱等法第七十", "作酢法第七十一", "作豉法第七十二", "八和齑 初稽反 第七十三", "作鱼鲊第七十四", "脯腊第七十五", "羹臛法第七十六", "蒸缹 方九切 法第七十七", "[月正]、腊、煎、消法第七十八", "菹绿第七十九"] }
+} as const;
+
 function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
+  const [volume, setVolume] = useState<"soybean" | "sauce">();
   return (
     <main className="map-page">
       <div className="world-map" data-map-coordinate-space="853x1844">
         <ArtImage src="/art/world-map.webp" alt="齐民村田园绘本地图" className="custom-art world-map-art" />
         <svg className="map-hotspots" viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice" aria-label="齐民村地点">
-          <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="进入种植篇" onClick={() => onOpen("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onOpen("soybean"); }} />
-          <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="进入酿造篇" onClick={() => onOpen("sauce")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onOpen("sauce"); }} />
+          <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="打开种植卷目录" onClick={() => setVolume("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("soybean"); }} />
+          <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="打开酿造卷目录" onClick={() => setVolume("sauce")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("sauce"); }} />
         </svg>
       </div>
+      {volume && <div className="map-volume-backdrop" onClick={() => setVolume(undefined)}><section className="map-volume-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setVolume(undefined)} aria-label="关闭卷目录"><X /></button><p className="overline">齐民要术 · 章节目录</p><h2>{mapVolumes[volume].title}</h2><div className="map-volume-list">{mapVolumes[volume].items.map((item, index) => <button key={item} disabled={index !== (volume === "soybean" ? 2 : 2)} onClick={() => onOpen(volume)}>{item}{index === 2 && <ChevronRight size={15} />}</button>)}</div></section></div>}
     </main>
   );
 }
