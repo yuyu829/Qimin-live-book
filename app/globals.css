@@ -85,3 +85,7 @@ body{background:#d9cdbd}
 .term-popover{background:rgba(63,58,49,.84)!important;box-shadow:0 10px 28px rgba(35,29,23,.24)!important}
 .term-popover:after{background:rgba(63,58,49,.84)!important}
 @keyframes railFocusIn{from{opacity:.25;transform:translateX(13px) scale(.58)}to{opacity:1;transform:translateX(0) scale(1)}}
+
+/* Chapter title bar stays visible while the reading document scrolls. */
+.reader-page{padding-top:72px}
+.reader-header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:72px;z-index:40}
