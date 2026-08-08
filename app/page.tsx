@@ -305,6 +305,11 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       <section className="chat-stream">
+        <div className="reader-shortcuts" aria-label="章节快捷操作">
+          <button type="button">阅读全文</button>
+          <button type="button">{chapter.id === "soybean" ? "去种豆" : "去晒酱"}</button>
+          <span className="shortcut-cat-placeholder" aria-label="动画小猫占位"><CatMark small /></span>
+        </div>
         {currentIndex < chapter.messages.length && (
           <div className="deck-stage" aria-label="章节发言卡片堆">
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {

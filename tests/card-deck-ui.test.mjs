@@ -35,7 +35,7 @@ test("deck still keeps five message slots after removing the scene marker", () =
 
 test("swipe hint has its own space below cards and stays within a fixed reader viewport", () => {
   assert.match(css, /\.reader-page\{[^}]*height:100svh[^}]*overflow:hidden/);
-  assert.match(css, /\.chat-stream\{overflow:visible;height:auto\}/);
+  assert.match(css, /\.chat-stream\{position:relative;overflow:visible;height:auto\}/);
   assert.match(css, /\.deck-stage\{[^}]*padding-bottom:46px/);
   assert.match(css, /\.deck-stage\{[^}]*transform:translateY\(-16px\)/);
   assert.match(css, /\.swipe-hint\{[^}]*bottom:10px[^}]*white-space:nowrap/);
@@ -44,4 +44,13 @@ test("swipe hint has its own space below cards and stays within a fixed reader v
 
 test("annotated original terms have a highlighted text style", () => {
   assert.match(css, /\.original-term\{[^}]*font-weight:800/);
+});
+
+test("chapter shortcuts appear above the deck with a themed action and cat placeholder", () => {
+  assert.match(page, /className="reader-shortcuts"/);
+  assert.match(page, />阅读全文</);
+  assert.match(page, /chapter\.id === "soybean" \? "去种豆" : "去晒酱"/);
+  assert.match(page, /className="shortcut-cat-placeholder"/);
+  assert.match(css, /\.reader-shortcuts\{position:absolute;top:3px;right:14px/);
+  assert.match(css, /@keyframes shortcutCatBob/);
 });
