@@ -72,14 +72,15 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(page, /className="map-level-track" role="progressbar"[^>]*aria-valuenow=\{46\}/);
   assert.match(css, /\.map-level-track\{[^}]*width:124px;height:7px/);
   assert.match(css, /\.map-level-track i\{[^}]*width:46%/);
-  assert.match(page, /className="map-pouch-button" type="button" aria-label="打开锦囊"/);
-  assert.match(page, /src="\/art\/map-pouch\.webp" alt="锦囊" className="map-pouch-image"/);
+  assert.match(page, /className="map-pouch-button" type="button" aria-label="打开图鉴"/);
+  assert.match(page, /src="\/art\/map-pouch\.webp" alt="图鉴" className="map-pouch-image"/);
   assert.match(css, /\.map-pouch-button\{[^}]*top:88px[^}]*width:64px;height:64px/);
   assert.match(css, /\.map-pouch-button\{[^}]*flex-direction:column/);
   assert.match(css, /\.map-pouch-image\{[^}]*width:38px;height:38px/);
   assert.match(css, /\.map-pouch-button\{position:absolute;top:88px;right:16px;[^}]*width:64px;height:64px/);
   assert.match(page, /onClick=\{\(\) => setPouchOpen\(true\)\}/);
   assert.match(page, /className="pouch-grid"/);
+  assert.match(page, /<h2>我的图鉴<\/h2>/);
   assert.equal((page.match(/map-cat-(?:taro|sauce|chili|chicken|tree|cake|jujube|persimmon|fish)\.webp/g) ?? []).length, 9);
   assert.match(css, /\.pouch-grid\{display:grid;grid-template-columns:repeat\(3/);
 });
