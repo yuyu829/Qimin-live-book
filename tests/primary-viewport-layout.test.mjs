@@ -26,6 +26,10 @@ test("recommendation cards load their chapter artwork assets", () => {
   assert.match(css, /\.tile-art-image\{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4\}/);
 });
 
+test("chapter number stays above artwork while legacy vector decorations stay below", () => {
+  assert.match(css, /\.tile-art-image\{[^}]*z-index:4\}\.chapter-number\{z-index:5\}/);
+});
+
 test("map artwork fills the viewport without legacy place overlays", () => {
   assert.match(css, /\.map-page\{[^}]*height:calc\(100svh - 68px\)[^}]*overflow:hidden/);
   assert.match(css, /\.map-page \.world-map\{position:absolute;inset:0;width:100%;height:100%/);
