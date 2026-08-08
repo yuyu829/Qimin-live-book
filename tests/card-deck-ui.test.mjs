@@ -35,7 +35,7 @@ test("deck still keeps five message slots after removing the scene marker", () =
 
 test("swipe hint has its own space below cards and stays within a fixed reader viewport", () => {
   assert.match(css, /\.reader-page\{[^}]*height:100svh[^}]*overflow:hidden/);
-  assert.match(css, /\.chat-stream\{overflow:hidden;height:calc\(100svh/);
+  assert.match(css, /\.chat-stream\{overflow:visible;height:auto\}/);
   assert.match(css, /\.deck-stage\{[^}]*padding-bottom:46px/);
   assert.match(css, /\.swipe-hint\{[^}]*bottom:10px[^}]*white-space:nowrap/);
   assert.doesNotMatch(css, /\.swipe-hint\{[^}]*border-radius/);
