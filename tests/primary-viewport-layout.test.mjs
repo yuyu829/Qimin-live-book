@@ -23,7 +23,7 @@ test("map artwork fills the viewport without legacy place overlays", () => {
 });
 
 test("map hotspots use the original artwork coordinate system", () => {
-  assert.match(page, /viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice"/);
+  assert.match(page, /viewBox="0 0 853 1844" preserveAspectRatio="xMidYMin slice"/);
   assert.match(page, /x="306" y="304" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("soybean"\)\}/);
   assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("sauce"\)\}/);
   assert.match(css, /\.map-hotspots\{position:absolute;inset:0;z-index:3;width:100%;height:100%\}/);
@@ -39,7 +39,9 @@ test("map hotspots open volume chapter pickers", () => {
 
 test("map navigation is transparent and simplified", () => {
   assert.match(page, /screen === "map" \? "map-screen"/);
-  assert.match(css, /\.map-screen \.topbar\{background:transparent;border-bottom-color:transparent/);
-  assert.match(css, /\.map-screen \.topbar \.cat-mark-small,\.map-screen \.topbar \.progress-pill\{display:none\}/);
-  assert.match(css, /\.map-screen \.topbar \.brand b\{font-size:21px\}/);
+  assert.match(page, /screen === "recommend" \? "reading-screen"/);
+  assert.match(css, /\.map-screen \.topbar,.reading-screen \.topbar\{background:transparent;border-bottom-color:transparent/);
+  assert.match(css, /\.map-screen \.topbar \.brand b,.reading-screen \.topbar \.brand b\{font-size:21px\}/);
+  assert.match(css, /\.map-screen \.topbar \.brand small,.reading-screen \.topbar \.brand small\{font-size:11px;margin-top:7px/);
+  assert.match(css, /\.map-page \.world-map-art\{object-fit:cover;object-position:top/);
 });

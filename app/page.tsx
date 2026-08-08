@@ -423,7 +423,7 @@ function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
     <main className="map-page">
       <div className="world-map" data-map-coordinate-space="853x1844">
         <ArtImage src="/art/world-map.webp" alt="齐民村田园绘本地图" className="custom-art world-map-art" />
-        <svg className="map-hotspots" viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice" aria-label="齐民村地点">
+        <svg className="map-hotspots" viewBox="0 0 853 1844" preserveAspectRatio="xMidYMin slice" aria-label="齐民村地点">
           <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="打开种植卷目录" onClick={() => setVolume("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("soybean"); }} />
           <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="打开酿造卷目录" onClick={() => setVolume("sauce")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("sauce"); }} />
         </svg>
@@ -472,7 +472,7 @@ export default function HomePage() {
 
   const showTopBar = !["cover", "reader"].includes(screen);
   return (
-    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""}`}>
+    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""}`}>
       {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
       {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
