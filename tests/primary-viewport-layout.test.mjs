@@ -78,4 +78,8 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(css, /\.map-pouch-button\{[^}]*flex-direction:column/);
   assert.match(css, /\.map-pouch-image\{[^}]*width:38px;height:38px/);
   assert.match(css, /\.map-pouch-button\{position:absolute;top:88px;right:16px;[^}]*width:64px;height:64px/);
+  assert.match(page, /onClick=\{\(\) => setPouchOpen\(true\)\}/);
+  assert.match(page, /className="pouch-grid"/);
+  assert.equal((page.match(/map-cat-(?:taro|sauce|chili|chicken|tree|cake|jujube|persimmon|fish)\.webp/g) ?? []).length, 9);
+  assert.match(css, /\.pouch-grid\{display:grid;grid-template-columns:repeat\(3/);
 });

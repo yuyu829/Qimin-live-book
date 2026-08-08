@@ -11,6 +11,15 @@
 | `reading-world.webp` | 804 x 512 | 读书推荐页底部田园插画 |
 | `map-cat-avatar.webp` | 200 x 200 | 地图界面小禾喵头像 |
 | `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的锦囊按钮插画，建议透明背景 |
+| `map-cat-taro.webp` | 256 x 256 | 锦囊九宫格：芋头喵插画 |
+| `map-cat-sauce.webp` | 256 x 256 | 锦囊九宫格：做酱喵插画 |
+| `map-cat-chili.webp` | 256 x 256 | 锦囊九宫格：辣椒喵插画 |
+| `map-cat-chicken.webp` | 256 x 256 | 锦囊九宫格：养鸡喵插画 |
+| `map-cat-tree.webp` | 256 x 256 | 锦囊九宫格：种树喵插画 |
+| `map-cat-cake.webp` | 256 x 256 | 锦囊九宫格：种饼喵插画 |
+| `map-cat-jujube.webp` | 256 x 256 | 锦囊九宫格：种枣喵插画 |
+| `map-cat-persimmon.webp` | 256 x 256 | 锦囊九宫格：种柿喵插画 |
+| `map-cat-fish.webp` | 256 x 256 | 锦囊九宫格：养鱼喵插画 |
 | `avatar-fanshengzhi.webp` | 400 x 400 | 《氾胜之书》拟人头像 |
 | `avatar-jia.webp` | 400 x 400 | 贾思勰拟人头像 |
 | `avatar-proverb.webp` | 400 x 400 | 乡野谚语拟人头像 |

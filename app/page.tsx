@@ -417,8 +417,15 @@ const mapVolumes = {
   sauce: { title: "卷八", items: ["黄衣、黄蒸及蘖第六十八 黄衣一名麦奴", "常满盐、花盐第六十九", "作酱等法第七十", "作酢法第七十一", "作豉法第七十二", "八和齑 初稽反 第七十三", "作鱼鲊第七十四", "脯腊第七十五", "羹臛法第七十六", "蒸缹 方九切 法第七十七", "[月正]、腊、煎、消法第七十八", "菹绿第七十九"] }
 } as const;
 
+const pouchCats = [
+  ["芋头喵", "map-cat-taro.webp"], ["做酱喵", "map-cat-sauce.webp"], ["辣椒喵", "map-cat-chili.webp"],
+  ["养鸡喵", "map-cat-chicken.webp"], ["种树喵", "map-cat-tree.webp"], ["种饼喵", "map-cat-cake.webp"],
+  ["种枣喵", "map-cat-jujube.webp"], ["种柿喵", "map-cat-persimmon.webp"], ["养鱼喵", "map-cat-fish.webp"]
+] as const;
+
 function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
   const [volume, setVolume] = useState<"soybean" | "sauce">();
+  const [pouchOpen, setPouchOpen] = useState(false);
   return (
     <main className="map-page">
       <div className="world-map" data-map-coordinate-space="853x1844">
@@ -429,7 +436,8 @@ function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
         </svg>
       </div>
       <div className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"><div className="map-profile-avatar"><ArtImage src="/art/map-cat-avatar.webp" alt="小禾喵头像" className="map-profile-image" /></div><div className="map-profile-info"><b>小禾喵</b><span>Lv2&nbsp; 小学徒</span><div className="map-level-track" role="progressbar" aria-label="升级进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={46}><i /></div></div></div>
-      <button className="map-pouch-button" type="button" aria-label="打开锦囊"><ArtImage src="/art/map-pouch.webp" alt="锦囊" className="map-pouch-image" /><span aria-hidden="true">锦囊</span></button>
+      <button className="map-pouch-button" type="button" aria-label="打开锦囊" onClick={() => setPouchOpen(true)}><ArtImage src="/art/map-pouch.webp" alt="锦囊" className="map-pouch-image" /><span aria-hidden="true">锦囊</span></button>
+      {pouchOpen && <div className="pouch-backdrop" onClick={() => setPouchOpen(false)}><section className="pouch-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setPouchOpen(false)} aria-label="关闭锦囊"><X /></button><p className="overline">齐民村 · 农活喵图鉴</p><h2>我的锦囊</h2><div className="pouch-grid">{pouchCats.map(([name, image]) => <article className="pouch-cat" key={name}><div className="pouch-cat-art"><ArtImage src={`/art/${image}`} alt={`${name}插画占位`} className="pouch-cat-image" /></div><b>{name}</b></article>)}</div></section></div>}
       {volume && <div className="map-volume-backdrop" onClick={() => setVolume(undefined)}><section className="map-volume-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setVolume(undefined)} aria-label="关闭卷目录"><X /></button><p className="overline">齐民要术 · 章节目录</p><h2>{mapVolumes[volume].title}</h2><div className="map-volume-list">{mapVolumes[volume].items.map((item, index) => <button key={item} disabled={index !== (volume === "soybean" ? 2 : 2)} onClick={() => onOpen(volume)}>{item}{index === 2 && <ChevronRight size={15} />}</button>)}</div></section></div>}
     </main>
   );
