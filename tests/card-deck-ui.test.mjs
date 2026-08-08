@@ -74,6 +74,13 @@ test("full text shortcut opens the original vertical chat reader", () => {
   assert.match(css, /\.full-chat-stream \.animate-message:last-child \.message-row\{margin-bottom:0\}/);
 });
 
+test("deck previews long originals while detail keeps the full source", () => {
+  assert.match(page, /compact = false/);
+  assert.match(page, /message\.original\.length > 120/);
+  assert.match(page, /compact onSpeaker=\{setSpeaker\}/);
+  assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);
+});
+
 test("card and why action open a structured AI detail page", () => {
   assert.match(page, /function MessageDetail\(/);
   assert.match(page, /onClick=\{onDetail\}/);

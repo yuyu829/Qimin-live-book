@@ -167,7 +167,7 @@ function SpeakerAvatar({ speaker, onClick }: { speaker: Speaker; onClick: () => 
   return <button onClick={onClick} className={`speaker-avatar avatar-${speaker.color}`} aria-label={`查看${speaker.name}资料`}><ArtImage src={`/art/avatar-${speaker.id}.webp`} alt="" className="avatar-art" /><span>{speaker.shortName}</span></button>;
 }
 
-function MessageBubble({ chapter, message, onSpeaker, onDetail, active }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; onDetail?: () => void; active: boolean }) {
+function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact = false }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; onDetail?: () => void; active: boolean; compact?: boolean }) {
   const speaker = speakers[message.speakerId];
   const [termStates, setTermStates] = useState<Record<string, AiState>>({});
   const [openTerm, setOpenTerm] = useState<string>();
@@ -184,7 +184,8 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active }: { chap
     }
   }
 
-  const originalParts = highlightTerms(message.original, message.terms.map((term) => term.word));
+  const displayOriginal = compact && message.original.length > 120 ? `${message.original.slice(0, 120)}…` : message.original;
+  const originalParts = highlightTerms(displayOriginal, message.terms.map((term) => term.word));
 
   return (
     <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
@@ -371,7 +372,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
                     if (dragX < 8 && !dismissing) openDetail(message);
                   } : undefined}
                 >
-                  <MessageBubble chapter={chapter} message={message} active={isTop} onSpeaker={setSpeaker} onDetail={isTop ? () => { if (dragX < 8 && !dismissing) openDetail(message); } : undefined} />
+                  <MessageBubble chapter={chapter} message={message} active={isTop} compact onSpeaker={setSpeaker} onDetail={isTop ? () => { if (dragX < 8 && !dismissing) openDetail(message); } : undefined} />
                 </div>
               );
             })}
