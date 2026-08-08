@@ -418,7 +418,7 @@ function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
       <div className="world-map" data-map-coordinate-space="853x1844">
         <ArtImage src="/art/world-map.webp" alt="齐民村田园绘本地图" className="custom-art world-map-art" />
         <svg className="map-hotspots" viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice" aria-label="齐民村地点">
-          <rect className="map-hotspot" x="558" y="448" width="242" height="242" role="button" tabIndex={0} aria-label="进入种植篇" onClick={() => onOpen("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onOpen("soybean"); }} />
+          <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="进入种植篇" onClick={() => onOpen("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onOpen("soybean"); }} />
           <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="进入酿造篇" onClick={() => onOpen("sauce")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onOpen("sauce"); }} />
         </svg>
       </div>

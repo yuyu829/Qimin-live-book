@@ -24,7 +24,7 @@ test("map artwork fills the viewport without legacy place overlays", () => {
 
 test("map hotspots use the original artwork coordinate system", () => {
   assert.match(page, /viewBox="0 0 853 1844" preserveAspectRatio="xMidYMid slice"/);
-  assert.match(page, /x="558" y="448" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("soybean"\)\}/);
+  assert.match(page, /x="306" y="304" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("soybean"\)\}/);
   assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => onOpen\("sauce"\)\}/);
   assert.match(css, /\.map-hotspots\{position:absolute;inset:0;z-index:3;width:100%;height:100%\}/);
 });
