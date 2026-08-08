@@ -215,7 +215,6 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
       </div>
       {message.terms.length > 0 && (
         <aside className="context-rail" aria-label="这段原文的上下文工具">
-          <div className="rail-dots"><i /><i /><i /></div>
           {message.terms.slice(0, 3).map((term, index) => (
             <div className={`rail-term rail-term-${index}`} key={term.word}>
               <button onClick={() => explainTerm(term)}><span>{term.word}</span><b>?</b></button>
