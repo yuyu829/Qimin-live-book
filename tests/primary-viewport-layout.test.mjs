@@ -18,8 +18,12 @@ test("reading recommendations stay inside one app viewport", () => {
 });
 
 test("chapter title bar keeps its topic icon without a header illustration asset", () => {
-  assert.doesNotMatch(page, /src=\{`\/art\/chapter-\$\{chapter\.id\}\.webp`\}/);
   assert.match(page, /className="chapter-symbol">\{chapter\.id === "soybean" \? <Sprout \/> : <FlaskConical \/>\}/);
+});
+
+test("recommendation cards load their chapter artwork assets", () => {
+  assert.match(page, /src=\{`\/art\/chapter-\$\{chapter\.id\}\.webp`\} alt=\{`\$\{chapter\.title\}章节插画`\} className="tile-art-image"/);
+  assert.match(css, /\.tile-art-image\{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4\}/);
 });
 
 test("map artwork fills the viewport without legacy place overlays", () => {

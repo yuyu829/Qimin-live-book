@@ -144,6 +144,7 @@ function Recommendations({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
         {chapters.map((chapter, index) => (
           <article key={chapter.id} className={`chapter-tile tile-${chapter.id}`}>
             <div className="tile-art">
+              <ArtImage src={`/art/chapter-${chapter.id}.webp`} alt={`${chapter.title}章节插画`} className="tile-art-image" />
               {chapter.id === "soybean" ? <><Sun /><Sprout /><span className="soil-dots">•••</span></> : <><span className="jar">酱</span><Sun /><span className="wood-spoon" /></>}
               <span className="chapter-number">0{index + 1}</span>
             </div>
