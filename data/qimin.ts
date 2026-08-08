@@ -68,45 +68,66 @@ export const chapters: Chapter[] = [
     id: "soybean",
     category: "种植",
     volume: "卷二",
-    title: "《氾胜之区种大豆法》",
-    shortTitle: "大豆点播法",
-    question: "种豆子为什么要挖坑，而不是随手撒下去？",
-    intro: "一套两千年前的精准播种方案，从坑距、施肥一直算到收成。",
+    title: "《種芋第十六》",
+    shortTitle: "种芋法",
+    question: "芋头为什么要深埋、勤浇，还要靠豆萁保湿？",
+    intro: "从字源、品种到种法和救荒，古人把芋头的一整套门道都写进了这一卷。",
     messages: [
       {
         id: "soy-1",
-        speakerId: "fanshengzhi",
-        translation: "种大豆，先别急着撒种。挖出方方正正的小坑，宽、深各六寸；坑与坑留出二尺，一亩地正好能排下一千二百八十个。",
-        original: "氾胜之區種大豆法：「坎方深各六寸，相去二尺，一畝得千二百八十坎。」",
-        terms: [{ word: "坎", category: "农作方法" }, { word: "寸", category: "古代长度" }, { word: "畝", category: "古代面积" }]
+        speakerId: "jia",
+        translation: "《说文》说，芋头叶子大、根实也大，长得叫人一惊，所以叫“芋”；齐地的人则称它为“莒”。",
+        original: "《说文》曰：“芋，大叶实根骇人者，故谓之‘芋’。”“齐人呼芋为‘莒’。”",
+        terms: [{ word: "芋", category: "古代作物" }, { word: "莒", category: "地方称谓" }]
       },
       {
         id: "soy-2",
-        speakerId: "fanshengzhi",
-        translation: "坑挖好了，舀一升上好的肥，跟坑里的土细细拌匀，再填回去。临下种前先把土润透，每个坑浇三升水。",
-        original: "「其坎成，取美糞一升，合坎中土攪和，以內坎中。臨種沃之，坎三升水。」",
-        terms: [{ word: "升", category: "古代容量" }, { word: "沃", category: "古代农事用语" }]
+        speakerId: "jia",
+        translation: "《广雅》又补充：芋还有“渠”“藉姑”等叫法，水里长的芋也叫乌芋。",
+        original: "《广雅》曰：“渠，芋；其茎谓之。”“藉姑，水芋也，亦曰乌芋。”",
+        terms: [{ word: "渠", category: "芋的别称" }, { word: "藉姑", category: "水芋别称" }, { word: "乌芋", category: "水芋别称" }]
       },
       {
         id: "soy-3",
-        speakerId: "fanshengzhi",
-        translation: "每坑放三粒豆种，薄薄盖一层土就够了。再用手掌轻轻按住，让种子和泥土贴紧，别让中间留空。",
-        original: "「坎內豆三粒；覆上土，勿厚，以掌抑之，令種與土相親。」",
-        terms: [{ word: "抑", category: "古代动作词" }]
+        speakerId: "jia",
+        translation: "《广志》记了芋头的百般品种：有的芋魁大如斗、像杵；有的子多，有的少子却味道最好。",
+        original: "《广志》曰：“蜀汉既繁芋，民以为资。凡十四等：有君子芋，大如斗，魁如杵，有车毂芋，有锯子芋，有旁巨芋，有青边芋：此四芋多子。有谈善芋，魁大如瓶，少子；叶如散盖，绀色；紫茎，长丈馀；易熟，味长，芋之最善者也；茎可作羹臛，肥涩，得饮乃下。有蔓芋，缘枝生，大者次二三升。有鸡子芋，色黄。有百果芋，魁大，子繁多，亩收百斛；种以百亩，以养彘。有早芋，七月熟。有九面芋，大而不美。有象空芋，大而弱，使人易饥。有青芋，有素芋，子皆不可食，茎可为菹。凡此诸芋，皆可干腊。又可藏至夏食之。又百子芋，出叶俞县。有魁芋，无旁子，生永昌县。有大芋，二升，出范阳、新郑。”",
+        terms: [{ word: "芋魁", category: "芋头主块茎" }, { word: "斛", category: "古代容量" }, { word: "羹臛", category: "古代菜肴" }]
       },
       {
         id: "soy-4",
-        speakerId: "fanshengzhi",
-        translation: "这么种，一个壮劳力能照看五亩。等到秋收，据说一亩能收到十六石，账算得清清楚楚。",
-        original: "「丁夫一人，可治五畝。至秋收，一畝中十六石。」",
-        terms: [{ word: "丁夫", category: "古代称谓" }, { word: "石", category: "古代容量" }]
+        speakerId: "jia",
+        translation: "《风土记》说，博士芋顺着藤蔓生长，根块像鹅蛋、鸭蛋那么大。",
+        original: "《风土记》曰：“博士芋，蔓生，根如鹅、鸭卵。”",
+        terms: [{ word: "博士芋", category: "芋头品种" }, { word: "蔓生", category: "生长方式" }]
       },
       {
         id: "soy-5",
+        speakerId: "fanshengzhi",
+        translation: "《氾胜之书》的种法很讲究：方坑深宽各三尺，先铺豆萁踩实，再把湿土和粪拌匀铺上，浇水保湿；五颗芋子放在四角和中央，再踩一遍。",
+        original: "《汜胜之书》曰：“种芋，区方深皆三尺。取豆萁内区中，足践之，厚尺五寸。取区上湿土与粪和之，内区中萁上，令厚尺二寸，以水浇之，足践令保泽。取五芋子置四角及中央，足践之。旱，数浇之。萁烂。芋生子，皆长三尺。一区收三石。”",
+        terms: [{ word: "区", category: "种植方坑" }, { word: "豆萁", category: "豆类秸秆" }, { word: "三石", category: "古代容量" }]
+      },
+      {
+        id: "soy-6",
+        speakerId: "fanshengzhi",
+        translation: "另一种办法是选肥松又近水的地，和土施肥，二月雨水足时下种，每两尺一株。芋头根要深，旁边的土要松；天旱就浇，长草就锄，勤快些收成常能翻倍。",
+        original: "“又种芋法：宜择肥缓土近水处，和柔，粪之。二月注雨，可种芋。率二尺下一本。芋生根欲深，其旁以缓其土。旱则浇之。有草锄之，不厌数多。治芋如此，其收常倍。”",
+        terms: [{ word: "肥缓土", category: "土壤条件" }, { word: "注雨", category: "雨水充足" }, { word: "一本", category: "一株" }]
+      },
+      {
+        id: "soy-7",
         speakerId: "jia",
-        translation: "我把这套旧法完整抄下来，是因为好方法不该随旧书一起失传。尺寸、用量、收成，农人真能照着做，才算有用。",
-        original: "今並載之，以備遺法。",
-        terms: [{ word: "遺法", category: "文献用语" }]
+        translation: "《列仙传》讲过一个救荒故事：酒客预言三年后大饥，便让梁国百姓多种芋，后来果然靠芋头活了下来。贾思勰感叹，明知芋头能度过凶年，怎么能不督促种植？",
+        original: "《列仙传》曰：“酒客为梁，使丞烝民益种芋：‘三年当大饥。’卒如其言，梁民不死。”〔按芋可以救饥馑，度凶年。今中国多不以此为意，后至有耳目所不闻见者。及水、旱、风、虫、霜、雹之灾，便能饿死满道，白骨交横。知而不种，坐致泯灭，悲夫！人君者，安可不督课之哉？〕",
+        terms: [{ word: "饥馑", category: "灾荒" }, { word: "度凶年", category: "渡过荒年" }, { word: "督课", category: "督促农事" }]
+      },
+      {
+        id: "soy-8",
+        speakerId: "jia",
+        translation: "崔寔说，正月就可以把芋头腌成菹；《家政法》则说，二月可以种芋。一个说吃法，一个说农时，都是芋头的生活门道。",
+        original: "崔寔曰：“正月，可菹芋。”《家政法》曰：“二月可种芋也。”",
+        terms: [{ word: "菹", category: "腌渍做法" }, { word: "家政法", category: "古代生活书" }]
       }
     ]
   },
@@ -152,4 +173,3 @@ export const chapters: Chapter[] = [
 ];
 
 export const chapterById = (id: string) => chapters.find((chapter) => chapter.id === id);
-

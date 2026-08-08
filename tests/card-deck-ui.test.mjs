@@ -53,7 +53,7 @@ test("annotated original terms have a highlighted text style", () => {
 test("chapter shortcuts appear above the deck with a themed action and cat placeholder", () => {
   assert.match(page, /className="reader-shortcuts"/);
   assert.match(page, />阅读全文</);
-  assert.match(page, /chapter\.id === "soybean" \? "去种豆" : "去晒酱"/);
+  assert.match(page, /chapter\.id === "soybean" \? "去种芋" : "去晒酱"/);
   assert.match(page, /className="shortcut-cat-placeholder"/);
   assert.match(css, /\.reader-shortcuts\{position:absolute;top:3px;right:14px/);
   assert.match(css, /\.reader-shortcuts>button\{[^}]*padding:7px 10px[^}]*border-radius:7px[^}]*font-size:12px/);

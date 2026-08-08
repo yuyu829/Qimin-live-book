@@ -4,6 +4,17 @@ import { test } from "node:test";
 
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+const qiminData = await readFile(new URL("../data/qimin.ts", import.meta.url), "utf8");
+
+test("soybean slot contains the complete taro chapter source", () => {
+  assert.match(qiminData, /title: "《種芋第十六》"/);
+  assert.match(qiminData, /《说文》曰：“芋，大叶实根骇人者/);
+  assert.match(qiminData, /《广志》曰：“蜀汉既繁芋/);
+  assert.match(qiminData, /《汜胜之书》曰：“种芋，区方深皆三尺/);
+  assert.match(qiminData, /《列仙传》曰：“酒客为梁/);
+  assert.match(qiminData, /《家政法》曰：“二月可种芋也。”/);
+  assert.equal((qiminData.match(/id: "soy-\d+"/g) ?? []).length, 8);
+});
 
 test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.recommend-page\{height:calc\(100svh - 68px\);min-height:0;overflow:hidden/);
@@ -83,4 +94,12 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(page, /<h2>我的图鉴<\/h2>/);
   assert.equal((page.match(/map-cat-(?:taro|sauce|chili|chicken|tree|cake|jujube|persimmon|fish)\.webp/g) ?? []).length, 9);
   assert.match(css, /\.pouch-grid\{display:grid;grid-template-columns:repeat\(3/);
+});
+
+test("soybean chapter slot contains the selected taro source content", () => {
+  assert.match(qiminData, /title: "《種芋第十六》"/);
+  assert.match(qiminData, /《汜胜之书》曰：“种芋，区方深皆三尺/);
+  assert.match(qiminData, /《列仙传》曰：“酒客为梁/);
+  assert.match(qiminData, /崔寔曰：“正月，可菹芋。”/);
+  assert.doesNotMatch(qiminData, /《氾胜之区种大豆法》/);
 });
