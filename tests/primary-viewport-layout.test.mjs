@@ -77,5 +77,5 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(css, /\.map-pouch-button\{[^}]*top:88px[^}]*width:64px;height:64px/);
   assert.match(css, /\.map-pouch-button\{[^}]*flex-direction:column/);
   assert.match(css, /\.map-pouch-image\{[^}]*width:38px;height:38px/);
-  assert.match(css, /\.map-pouch-button\{position:absolute;top:88px;left:236px;[^}]*width:64px;height:64px/);
+  assert.match(css, /\.map-pouch-button\{position:absolute;top:88px;right:16px;[^}]*width:64px;height:64px/);
 });

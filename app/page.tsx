@@ -429,6 +429,7 @@ function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
         </svg>
       </div>
       <div className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"><div className="map-profile-avatar"><ArtImage src="/art/map-cat-avatar.webp" alt="小禾喵头像" className="map-profile-image" /></div><div className="map-profile-info"><b>小禾喵</b><span>Lv2&nbsp; 小学徒</span><div className="map-level-track" role="progressbar" aria-label="升级进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={46}><i /></div></div></div>
+      <button className="map-pouch-button" type="button" aria-label="打开锦囊"><ArtImage src="/art/map-pouch.webp" alt="锦囊" className="map-pouch-image" /><span aria-hidden="true">锦囊</span></button>
       {volume && <div className="map-volume-backdrop" onClick={() => setVolume(undefined)}><section className="map-volume-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setVolume(undefined)} aria-label="关闭卷目录"><X /></button><p className="overline">齐民要术 · 章节目录</p><h2>{mapVolumes[volume].title}</h2><div className="map-volume-list">{mapVolumes[volume].items.map((item, index) => <button key={item} disabled={index !== (volume === "soybean" ? 2 : 2)} onClick={() => onOpen(volume)}>{item}{index === 2 && <ChevronRight size={15} />}</button>)}</div></section></div>}
     </main>
   );

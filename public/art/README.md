@@ -10,6 +10,7 @@
 | `chapter-sauce.webp` | 600 x 600 | 读书界面酿造章节卡片插图 |
 | `reading-world.webp` | 804 x 512 | 读书推荐页底部田园插画 |
 | `map-cat-avatar.webp` | 200 x 200 | 地图界面小禾喵头像 |
+| `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的锦囊按钮插画，建议透明背景 |
 | `avatar-fanshengzhi.webp` | 400 x 400 | 《氾胜之书》拟人头像 |
 | `avatar-jia.webp` | 400 x 400 | 贾思勰拟人头像 |
 | `avatar-proverb.webp` | 400 x 400 | 乡野谚语拟人头像 |
