@@ -89,3 +89,7 @@ body{background:#d9cdbd}
 /* Chapter title bar stays visible while the reading document scrolls. */
 .reader-page{padding-top:72px}
 .reader-header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:72px;z-index:40}
+
+/* Primary screens share a fixed app-level navigation bar. */
+.app-shell.has-topbar{padding-top:68px}
+.app-shell.has-topbar .topbar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:68px;z-index:40}
