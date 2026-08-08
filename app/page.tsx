@@ -156,6 +156,7 @@ function Recommendations({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
           </article>
         ))}
       </div>
+      <div className="reading-art-placeholder" aria-label="读书页插画占位" />
       <div className="source-note"><BookOpen size={18} /><p><b>书中有据</b><br />所有文言原文均来自《齐民要术》，AI 只负责解释，不改写原文。</p></div>
     </main>
   );
