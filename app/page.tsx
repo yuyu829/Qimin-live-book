@@ -307,7 +307,6 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       <section className="chat-stream">
         {currentIndex < chapter.messages.length && (
           <div className="deck-stage" aria-label="章节发言卡片堆">
-            <div className="date-divider deck-date"><span>约公元 540 年 · 书中现场</span></div>
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
               const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
