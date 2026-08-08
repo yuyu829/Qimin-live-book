@@ -75,3 +75,13 @@ body{background:#d9cdbd}
 .bottom-nav{width:calc(100% - 32px);max-width:398px}
 .map-page,.school-page,.step-screen,.recommend-page{width:100%;padding-left:16px;padding-right:16px}
 .world-map{height:620px;margin-left:-4px;margin-right:-4px}
+
+/* Reading-focus behavior for contextual term tools. */
+.message-row{padding-right:56px}
+.context-rail{animation:none;opacity:1;transform:translateX(0) scale(1);transform-origin:center right;transition:transform .34s cubic-bezier(.2,.8,.2,1),opacity .34s ease,filter .34s ease}
+.message-row:not(.active-message) .context-rail{opacity:.34;transform:translateX(15px) scale(.54);filter:saturate(.5);pointer-events:none}
+.active-message .context-rail{opacity:1;transform:translateX(0) scale(1);filter:none;animation:railFocusIn .38s cubic-bezier(.2,.9,.25,1) both}
+.active-message .rail-term{pointer-events:auto}
+.term-popover{background:rgba(63,58,49,.84)!important;box-shadow:0 10px 28px rgba(35,29,23,.24)!important}
+.term-popover:after{background:rgba(63,58,49,.84)!important}
+@keyframes railFocusIn{from{opacity:.25;transform:translateX(13px) scale(.58)}to{opacity:1;transform:translateX(0) scale(1)}}

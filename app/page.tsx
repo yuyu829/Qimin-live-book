@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, type Speaker, type Term } from "@/data/qimin";
+import { pickFocusedMessage } from "@/lib/reading-focus";
 
 type Screen = "cover" | "interest" | "recommend" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
@@ -245,16 +246,28 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   useEffect(() => { setVisible(1); setFocusedIndex(0); setConversation([]); setQuestion(""); }, [chapter.id]);
   useEffect(() => { setFocusedIndex(visible - 1); }, [visible]);
   useEffect(() => {
-    const nodes = Object.values(messageNodes.current).filter(Boolean) as HTMLDivElement[];
-    if (!nodes.length) return;
-    const observer = new IntersectionObserver((entries) => {
-      const best = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!best) return;
-      const index = chapter.messages.findIndex((item) => item.id === (best.target as HTMLElement).dataset.messageId);
-      if (index >= 0) setFocusedIndex(index);
-    }, { threshold: [0.35, 0.6, 0.85], rootMargin: "-18% 0px -34% 0px" });
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    let frame = 0;
+    const updateFocus = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const rects = chapter.messages.slice(0, visible).flatMap((message, index) => {
+          const node = messageNodes.current[message.id];
+          if (!node) return [];
+          const rect = node.getBoundingClientRect();
+          return [{ index, top: rect.top, bottom: rect.bottom }];
+        });
+        const next = pickFocusedMessage(rects, window.innerHeight);
+        if (next >= 0) setFocusedIndex(next);
+      });
+    };
+    updateFocus();
+    window.addEventListener("scroll", updateFocus, { passive: true });
+    window.addEventListener("resize", updateFocus);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateFocus);
+      window.removeEventListener("resize", updateFocus);
+    };
   }, [chapter.id, visible]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [visible, conversation]);
