@@ -62,3 +62,9 @@ test("map navigation is transparent and simplified", () => {
   assert.match(css, /\.app-shell\.map-screen\{padding-top:0\}/);
   assert.match(css, /\.map-screen \.map-page\{height:100svh\}/);
 });
+
+test("map shows the Xia He Miao profile placeholder below navigation", () => {
+  assert.match(page, /className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"/);
+  assert.match(page, /src="\/art\/map-cat-avatar\.webp" alt="小禾喵头像" className="map-profile-image"/);
+  assert.match(css, /\.map-profile\{position:absolute;top:88px;left:16px/);
+});
