@@ -17,6 +17,11 @@ test("reading recommendations stay inside one app viewport", () => {
   assert.match(css, /\.reading-art-placeholder\{[^}]*border:0/);
 });
 
+test("chapter title bar keeps its topic icon without a header illustration asset", () => {
+  assert.doesNotMatch(page, /src=\{`\/art\/chapter-\$\{chapter\.id\}\.webp`\}/);
+  assert.match(page, /className="chapter-symbol">\{chapter\.id === "soybean" \? <Sprout \/> : <FlaskConical \/>\}/);
+});
+
 test("map artwork fills the viewport without legacy place overlays", () => {
   assert.match(css, /\.map-page\{[^}]*height:calc\(100svh - 68px\)[^}]*overflow:hidden/);
   assert.match(css, /\.map-page \.world-map\{position:absolute;inset:0;width:100%;height:100%/);

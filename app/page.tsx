@@ -327,7 +327,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       </header>
       {readerMode === "detail" && detailMessage ? <MessageDetail chapter={chapter} message={detailMessage} onBack={() => setReaderMode(detailReturnMode)} /> : <>
       <section className="chapter-intro">
-        <div className="chapter-symbol"><ArtImage src={`/art/chapter-${chapter.id}.webp`} alt="" className="chapter-art" />{chapter.id === "soybean" ? <Sprout /> : <FlaskConical />}</div>
+        <div className="chapter-symbol">{chapter.id === "soybean" ? <Sprout /> : <FlaskConical />}</div>
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       <section className="chat-stream">
