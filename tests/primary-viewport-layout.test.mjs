@@ -27,7 +27,7 @@ test("recommendation cards load their chapter artwork assets", () => {
 });
 
 test("chapter number stays above artwork while legacy vector decorations stay below", () => {
-  assert.match(css, /\.tile-art-image\{[^}]*z-index:4\}\.chapter-number\{z-index:5\}/);
+  assert.match(css, /\.tile-art-image\{[^}]*z-index:4\}\.tile-art \.chapter-number\{z-index:6\}/);
 });
 
 test("map artwork fills the viewport without legacy place overlays", () => {
