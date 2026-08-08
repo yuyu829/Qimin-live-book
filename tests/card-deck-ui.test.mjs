@@ -73,3 +73,16 @@ test("full text shortcut opens the original vertical chat reader", () => {
   assert.doesNotMatch(css, /\.is-full-reader \.question-bar\{display:none\}/);
   assert.match(css, /\.full-chat-stream \.animate-message:last-child \.message-row\{margin-bottom:0\}/);
 });
+
+test("card and why action open a structured AI detail page", () => {
+  assert.match(page, /function MessageDetail\(/);
+  assert.match(page, /onClick=\{onDetail\}/);
+  assert.match(page, /event\.stopPropagation\(\); onDetail\?\.\(\)/);
+  assert.match(page, /action: "science", chapterId: chapter\.id, messageId: message\.id/);
+  assert.match(page, /action: "term", chapterId: chapter\.id, term: term\.word/);
+  assert.match(page, /译文与原文/);
+  assert.match(page, /现代科学怎么解释/);
+  assert.match(page, /词语小辞典/);
+  assert.doesNotMatch(page, /science\.answer \|\| science\.error/);
+  assert.match(css, /\.message-detail\{padding:22px 16px 40px\}/);
+});

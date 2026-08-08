@@ -166,19 +166,10 @@ function SpeakerAvatar({ speaker, onClick }: { speaker: Speaker; onClick: () => 
   return <button onClick={onClick} className={`speaker-avatar avatar-${speaker.color}`} aria-label={`查看${speaker.name}资料`}><ArtImage src={`/art/avatar-${speaker.id}.webp`} alt="" className="avatar-art" /><span>{speaker.shortName}</span></button>;
 }
 
-function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; active: boolean }) {
+function MessageBubble({ chapter, message, onSpeaker, onDetail, active }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; onDetail?: () => void; active: boolean }) {
   const speaker = speakers[message.speakerId];
-  const [science, setScience] = useState<AiState>({});
   const [termStates, setTermStates] = useState<Record<string, AiState>>({});
   const [openTerm, setOpenTerm] = useState<string>();
-
-  async function explainScience() {
-    setScience({ loading: true });
-    try {
-      const answer = await askAi({ action: "science", chapterId: chapter.id, messageId: message.id });
-      setScience({ answer });
-    } catch (error) { setScience({ error: (error as Error).message }); }
-  }
 
   async function explainTerm(term: Term) {
     setOpenTerm(term.word);
@@ -199,21 +190,16 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
       <div className="message-column">
         <button className="speaker-name" onClick={() => onSpeaker(speaker)}>{speaker.name}<small>{speaker.nature}</small></button>
-        <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`}>
+        <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`} onClick={onDetail} role={onDetail ? "button" : undefined} tabIndex={onDetail ? 0 : undefined} onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}>
           <p className="translation">{message.translation}</p>
           <div className="original-block">
             <p>{originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}</p>
             <div className="term-row">
-              <button disabled={science.loading} className="why-button" onClick={explainScience}>
-                {science.loading ? <LoaderCircle className="spin" size={14} /> : <Sparkles size={14} />} 这是为什么
+              <button className="why-button" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>
+                <Sparkles size={14} /> 这是为什么
               </button>
             </div>
           </div>
-          {(science.answer || science.error) && (
-            <div className={`science-answer ${science.error ? "error-answer" : ""}`}>
-              <span><Sparkles size={16} /></span><div><b>{science.error ? "还没连上先生" : "现代人接话"}</b><p>{science.answer ?? science.error}</p></div>
-            </div>
-          )}
         </article>
       </div>
       {message.terms.length > 0 && (
@@ -236,8 +222,39 @@ function MessageBubble({ chapter, message, onSpeaker, active }: { chapter: Chapt
   );
 }
 
+function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message: ChapterMessage; onBack: () => void }) {
+  const [science, setScience] = useState<AiState>({ loading: true });
+  const [terms, setTerms] = useState<Record<string, AiState>>({});
+
+  useEffect(() => {
+    let active = true;
+    setScience({ loading: true });
+    setTerms(Object.fromEntries(message.terms.map((term) => [term.word, { loading: true }])));
+    askAi({ action: "science", chapterId: chapter.id, messageId: message.id })
+      .then((answer) => active && setScience({ answer }))
+      .catch((error) => active && setScience({ error: (error as Error).message }));
+    message.terms.forEach((term) => {
+      askAi({ action: "term", chapterId: chapter.id, term: term.word, category: term.category })
+        .then((answer) => active && setTerms((state) => ({ ...state, [term.word]: { answer } })))
+        .catch((error) => active && setTerms((state) => ({ ...state, [term.word]: { error: (error as Error).message } })));
+    });
+    return () => { active = false; };
+  }, [chapter.id, message]);
+
+  return (
+    <section className="message-detail" aria-label="单条发言详情">
+      <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
+      <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
+      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}</p></div></div>
+      <div className="detail-terms"><p className="overline">词语小辞典</p>{message.terms.length ? message.terms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
+    </section>
+  );
+}
+
 function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () => void; onComplete: () => void }) {
-  const [readerMode, setReaderMode] = useState<"deck" | "full">("deck");
+  const [readerMode, setReaderMode] = useState<"deck" | "full" | "detail">("deck");
+  const [detailReturnMode, setDetailReturnMode] = useState<"deck" | "full">("deck");
+  const [detailMessage, setDetailMessage] = useState<ChapterMessage>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [speaker, setSpeaker] = useState<Speaker>();
   const [question, setQuestion] = useState("");
@@ -251,6 +268,13 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
+
+  function openDetail(message: ChapterMessage) {
+    setDetailReturnMode(readerMode === "full" ? "full" : "deck");
+    setDetailMessage(message);
+    setReaderMode("detail");
+    window.scrollTo(0, 0);
+  }
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if ((event.target as HTMLElement).closest("button, input, a")) return;
@@ -295,12 +319,13 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   }
 
   return (
-    <main className={`reader-page ${readerMode === "full" ? "is-full-reader" : ""}`}>
+    <main className={`reader-page ${readerMode === "full" ? "is-full-reader" : ""} ${readerMode === "detail" ? "is-detail-reader" : ""}`}>
       <header className="reader-header">
-        <button className="icon-button" onClick={readerMode === "full" ? () => setReaderMode("deck") : onBack} aria-label={readerMode === "full" ? "返回卡片阅读" : "返回推荐"}><ArrowLeft /></button>
+        <button className="icon-button" onClick={readerMode === "detail" ? () => setReaderMode(detailReturnMode) : readerMode === "full" ? () => setReaderMode("deck") : onBack} aria-label={readerMode === "detail" ? "返回阅读" : readerMode === "full" ? "返回卡片阅读" : "返回推荐"}><ArrowLeft /></button>
         <div><span>{chapter.category}篇 · {chapter.volume}</span><h1>{chapter.title}</h1></div>
-        <div className="reader-count">{readerMode === "full" ? "全文" : `${Math.min(currentIndex + 1, chapter.messages.length)}/${chapter.messages.length}`}</div>
+        <div className="reader-count">{readerMode === "detail" ? "详解" : readerMode === "full" ? "全文" : `${Math.min(currentIndex + 1, chapter.messages.length)}/${chapter.messages.length}`}</div>
       </header>
+      {readerMode === "detail" && detailMessage ? <MessageDetail chapter={chapter} message={detailMessage} onBack={() => setReaderMode(detailReturnMode)} /> : <>
       <section className="chapter-intro">
         <div className="chapter-symbol"><ArtImage src={`/art/chapter-${chapter.id}.webp`} alt="" className="chapter-art" />{chapter.id === "soybean" ? <Sprout /> : <FlaskConical />}</div>
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
@@ -315,7 +340,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
           <div className="full-chat-stream" aria-label="章节全文聊天室">
             {chapter.messages.map((message) => (
               <div className="animate-message" key={message.id}>
-                <MessageBubble chapter={chapter} message={message} active onSpeaker={setSpeaker} />
+                <MessageBubble chapter={chapter} message={message} active onSpeaker={setSpeaker} onDetail={() => openDetail(message)} />
               </div>
             ))}
           </div>
@@ -342,7 +367,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
                   onPointerUp={isTop ? handlePointerUp : undefined}
                   onPointerCancel={isTop ? handlePointerUp : undefined}
                 >
-                  <MessageBubble chapter={chapter} message={message} active={isTop} onSpeaker={setSpeaker} />
+                  <MessageBubble chapter={chapter} message={message} active={isTop} onSpeaker={setSpeaker} onDetail={isTop ? () => { if (dragX < 8 && !dismissing) openDetail(message); } : undefined} />
                 </div>
               );
             })}
@@ -363,6 +388,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
         )}
         <div ref={bottomRef} />
       </section>
+      </>}
       <form className="question-bar" onSubmit={submitQuestion}>
         <div className="question-inner"><MessageCircleMore /><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="问问这章里的事…" aria-label="向书页提问" /><button disabled={!question.trim()} aria-label="发送"><Send /></button></div>
         <small>向导只根据当前章节原文回答</small>
