@@ -30,7 +30,7 @@ test("correct bean feedback quotes the recorded sauce source", () => {
 });
 
 test("correct beans continue to a right-drag steaming step", () => {
-  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
+  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel" \| "recipe" \| "stir">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
   assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
   assert.match(page, /const max = track \? track\.clientWidth - event\.currentTarget\.offsetWidth - 8 : 0/);
@@ -47,7 +47,7 @@ test("steaming switches between two square art placeholders and reveals the sour
 });
 
 test("steamed beans continue to a three-swipe peeling step", () => {
-  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "stir">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("peel"\)\}>下一步：去皮<\/button>/);
   assert.match(page, /function startPeel\(event: ReactPointerEvent<HTMLDivElement>\)/);
   assert.match(page, /function finishPeel[\s\S]*if \(swipeDistance >= 70\) setPeelCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
@@ -67,7 +67,7 @@ test("peeling detects downward swipes without dragging the artwork", () => {
 });
 
 test("peeled beans continue to the four-ingredient recipe step", () => {
-  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "stir">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("recipe"\)\}>下一步：配方<\/button>/);
   assert.match(page, /src="\/art\/sauce-game-recipe\.webp"/);
   assert.match(artReadme, /`sauce-game-recipe\.webp` \| 1200 x 1200/);
@@ -85,4 +85,19 @@ test("each recipe click shows a local enlarging plus-one feedback", () => {
   assert.match(page, /recipeFeedback\?\.index === index && <i key=\{recipeFeedback\.key\} className="recipe-add-feedback">\+1\{ingredient\.unit\}<\/i>/);
   assert.match(css, /\.recipe-add-feedback\{[\s\S]*animation:recipeAddFeedback \.65s ease-out both/);
   assert.match(css, /@keyframes recipeAddFeedback\{[\s\S]*scale\(1\.3\)[\s\S]*opacity:0/);
+});
+
+test("matched recipe continues to a looping stirring video", () => {
+  assert.match(page, /onClick=\{\(\) => setStep\("stir"\)\}>下一步：搅拌<\/button>/);
+  assert.match(page, /<video className="sauce-stir-video" src="\/art\/sauce-game-stir\.mp4" autoPlay loop muted playsInline/);
+  assert.match(artReadme, /`sauce-game-stir\.mp4` \| 1200 x 1200/);
+});
+
+test("stirring completes after a counterclockwise rotation", () => {
+  assert.match(page, /function startStir\(event: ReactPointerEvent<HTMLDivElement>\)/);
+  assert.match(page, /if \(delta >= 0\) return/);
+  assert.match(page, /stirMotion\.current\.total = Math\.min\(Math\.PI \* 2, stirMotion\.current\.total - delta\)/);
+  assert.match(page, /if \(progress >= 0\.9\)[\s\S]*setStirProgress\(1\)[\s\S]*setStirred\(true\)/);
+  assert.match(page, /onPointerDown=\{startStir\}[\s\S]*onPointerMove=\{moveStir\}[\s\S]*逆时针旋转一圈/);
+  assert.match(page, /三種量訖，於盆中面向「太歲」和之。攪令均調。/);
 });

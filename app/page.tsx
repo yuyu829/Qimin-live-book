@@ -317,7 +317,7 @@ const sauceRecipeIngredients = [
 ] as const;
 
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe">("beans");
+  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "stir">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
@@ -326,8 +326,11 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [peelY, setPeelY] = useState(0);
   const [recipeAmounts, setRecipeAmounts] = useState([0, 0, 0, 0]);
   const [recipeFeedback, setRecipeFeedback] = useState<{ index: number; key: number } | null>(null);
+  const [stirProgress, setStirProgress] = useState(0);
+  const [stirred, setStirred] = useState(false);
   const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
+  const stirMotion = useRef({ lastAngle: 0, total: 0, active: false });
 
   function chooseBean(index: number) {
     if (index === 2) {
@@ -386,14 +389,45 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     setRecipeFeedback((feedback) => ({ index, key: (feedback?.key ?? 0) + 1 }));
   }
 
+  function startStir(event: ReactPointerEvent<HTMLDivElement>) {
+    if (stirred) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    stirMotion.current.lastAngle = Math.atan2(event.clientY - (bounds.top + bounds.height / 2), event.clientX - (bounds.left + bounds.width / 2));
+    stirMotion.current.active = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveStir(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!stirMotion.current.active || stirred) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const angle = Math.atan2(event.clientY - (bounds.top + bounds.height / 2), event.clientX - (bounds.left + bounds.width / 2));
+    let delta = angle - stirMotion.current.lastAngle;
+    if (delta > Math.PI) delta -= Math.PI * 2;
+    if (delta < -Math.PI) delta += Math.PI * 2;
+    stirMotion.current.lastAngle = angle;
+    if (delta >= 0) return;
+    stirMotion.current.total = Math.min(Math.PI * 2, stirMotion.current.total - delta);
+    const progress = stirMotion.current.total / (Math.PI * 2);
+    setStirProgress(progress);
+    if (progress >= 0.9) {
+      stirMotion.current.active = false;
+      setStirProgress(1);
+      setStirred(true);
+    }
+  }
+
+  function finishStir() {
+    stirMotion.current.active = false;
+  }
+
   const recipeMatched = sauceRecipeIngredients.every((ingredient, index) => recipeAmounts[index] === ingredient.target);
 
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : "四"}步</p>
-        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : "配方"}</h2>
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : step === "recipe" ? "四" : "五"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : step === "recipe" ? "配方" : "搅拌"}</h2>
         {step === "beans" ? <>
           <div className="taro-game-scene">
             <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
@@ -423,16 +457,28 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
           </div>
           <div className="taro-dig-progress sauce-peel-progress" aria-label={`去皮进度 ${peelCount}/3`}>{[0, 1, 2].map((index) => <span key={index} className={index < peelCount ? "done" : ""} />)}</div>
           <p className="taro-dig-hint">{peelCount >= 3 ? "三次去皮已完成" : `在画面上向下滑动去皮 · ${peelCount}/3`}</p>
-        </> : <>
+        </> : step === "recipe" ? <>
           <blockquote className="taro-land-source sauce-recipe-source">大率豆黃三斗，麴末一斗，黃蒸末一斗，白鹽五升。</blockquote>
           <div className="taro-game-scene sauce-recipe-scene">
             <span className="taro-game-placeholder">配方画面占位<br />sauce-game-recipe.webp</span>
             <ArtImage src="/art/sauce-game-recipe.webp" alt="从左到右摆放豆黄、麦麴、黄蒸和白盐四盘材料" className="taro-game-image" />
-            {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span></div>}
+            {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span><button type="button" onClick={() => setStep("stir")}>下一步：搅拌</button></div>}
           </div>
           <div className="sauce-recipe-options" aria-label="点击材料添加配方用量">
             {sauceRecipeIngredients.map((ingredient, index) => <button type="button" key={ingredient.label} disabled={recipeAmounts[index] >= ingredient.target} onClick={() => addRecipeIngredient(index)}>{recipeFeedback?.index === index && <i key={recipeFeedback.key} className="recipe-add-feedback">+1{ingredient.unit}</i>}<b>{ingredient.label}</b><span>{recipeAmounts[index]} / {ingredient.target}{ingredient.unit}</span><small>{recipeAmounts[index] >= ingredient.target ? "已配好" : `+1${ingredient.unit}`}</small></button>)}
           </div>
+        </> : <>
+          <div className="taro-game-scene sauce-stir-scene">
+            <span className="taro-game-placeholder">搅拌视频占位<br />sauce-game-stir.mp4</span>
+            <video className="sauce-stir-video" src="/art/sauce-game-stir.mp4" autoPlay loop muted playsInline aria-label="盆中配料正在搅拌" />
+            <div className="sauce-stir-gesture" role="slider" aria-label="用手指逆时针旋转搅拌" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(stirProgress * 100)} onPointerDown={startStir} onPointerMove={moveStir} onPointerUp={finishStir} onPointerCancel={finishStir}>
+              {!stirred && <span><b>↺</b>逆时针旋转一圈</span>}
+            </div>
+            {stirred && <div className="taro-dig-complete" aria-live="polite"><b>搅拌完成</b><span>豆黄、盐与曲料已经拌匀。</span></div>}
+          </div>
+          <div className="sauce-stir-progress" aria-label={`搅拌进度 ${Math.round(stirProgress * 100)}%`}><span style={{ width: `${stirProgress * 100}%` }} /></div>
+          <p className="taro-dig-hint">{stirred ? "已经均匀调和" : "请在视频画面上用手指或鼠标逆时针旋转"}</p>
+          {stirred && <blockquote className="taro-land-source">三種量訖，於盆中面向「太歲」和之。攪令均調。</blockquote>}
         </>}
       </section>
     </div>
