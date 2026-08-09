@@ -25,6 +25,10 @@
 | `sauce-game-select-beans.webp` | 1200 x 1200 | 作大酱小游戏第一步“选择豆子”；从左到右依次为晚播大白豆、秋收获黄豆、春种乌豆 |
 | `sauce-game-steam-1.webp` | 1200 x 1200 | 作大酱小游戏第二步“蒸豆”的初始画面，豆子尚未充分蒸熟 |
 | `sauce-game-steam-2.webp` | 1200 x 1200 | 蒸汽按钮拖到右端后的完成画面，豆子已经充分蒸熟 |
+| `sauce-game-peel-1.webp` | 1200 x 1200 | 作大酱小游戏第三步“去皮”的初始画面，熟豆尚未去皮 |
+| `sauce-game-peel-2.webp` | 1200 x 1200 | 第一次向下滑动后的去皮画面 |
+| `sauce-game-peel-3.webp` | 1200 x 1200 | 第二次向下滑动后的去皮画面 |
+| `sauce-game-peel-4.webp` | 1200 x 1200 | 第三次向下滑动后的完成画面，熟豆已去皮 |
 | `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的图鉴按钮插画，建议透明背景 |
 | `map-cat-taro.webp` | 256 x 256 | 图鉴九宫格：芋头喵插画 |
 | `map-cat-sauce.webp` | 256 x 256 | 图鉴九宫格：做酱喵插画 |

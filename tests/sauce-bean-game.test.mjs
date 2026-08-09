@@ -29,7 +29,7 @@ test("correct bean feedback quotes the recorded sauce source", () => {
 });
 
 test("correct beans continue to a right-drag steaming step", () => {
-  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam">\("beans"\)/);
+  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
   assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
   assert.match(page, /if \(distance >= 150\)[\s\S]*setSteamDrag\(196\)[\s\S]*setSteamed\(true\)/);
@@ -41,4 +41,20 @@ test("steaming switches between two square art placeholders and reveals the sour
   assert.match(page, /steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。<\/blockquote>/);
   assert.match(artReadme, /`sauce-game-steam-1\.webp` \| 1200 x 1200/);
   assert.match(artReadme, /`sauce-game-steam-2\.webp` \| 1200 x 1200/);
+});
+
+test("steamed beans continue to a three-swipe peeling step", () => {
+  assert.match(page, /useState<"beans" \| "steam" \| "peel">\("beans"\)/);
+  assert.match(page, /onClick=\{\(\) => setStep\("peel"\)\}>下一步：去皮<\/button>/);
+  assert.match(page, /function startPeel\(event: ReactPointerEvent<HTMLDivElement>\)/);
+  assert.match(page, /function finishPeel[\s\S]*if \(swipeDistance >= 70\) setPeelCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
+  assert.match(page, /onPointerDown=\{startPeel\}[\s\S]*onPointerMove=\{movePeel\}[\s\S]*onPointerUp=\{finishPeel\}/);
+});
+
+test("three downward swipes advance through four peeling frames", () => {
+  assert.match(page, /sauce-game-peel-\$\{peelCount \+ 1\}\.webp/);
+  assert.match(page, /peelCount >= 3[\s\S]*<b>去皮完成<\/b>/);
+  for (let frame = 1; frame <= 4; frame += 1) {
+    assert.ok(artReadme.includes(`\`sauce-game-peel-${frame}.webp\` | 1200 x 1200`));
+  }
 });

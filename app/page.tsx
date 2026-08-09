@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   ArrowLeft,
@@ -57,8 +57,8 @@ function CatMark({ small = false }: { small?: boolean }) {
   );
 }
 
-function ArtImage({ src, alt, className }: { src: string; alt: string; className: string }) {
-  return <img src={src} alt={alt} className={className} onError={(event) => { event.currentTarget.style.display = "none"; }} />;
+function ArtImage({ src, alt, className, style }: { src: string; alt: string; className: string; style?: CSSProperties }) {
+  return <img src={src} alt={alt} className={className} style={style} onError={(event) => { event.currentTarget.style.display = "none"; }} />;
 }
 
 function ProgressPill({ readCount }: { readCount: number }) {
@@ -310,12 +310,15 @@ const sauceBeanChoices = [
 ] as const;
 
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"beans" | "steam">("beans");
+  const [step, setStep] = useState<"beans" | "steam" | "peel">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
   const [steamed, setSteamed] = useState(false);
+  const [peelCount, setPeelCount] = useState(0);
+  const [peelY, setPeelY] = useState(0);
   const steamStart = useRef({ x: 0, active: false });
+  const peelStart = useRef({ y: 0, active: false });
 
   function chooseBean(index: number) {
     if (index === 2) {
@@ -348,12 +351,31 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     setSteamDrag(0);
   }
 
+  function startPeel(event: ReactPointerEvent<HTMLDivElement>) {
+    if (peelCount >= 3) return;
+    peelStart.current = { y: event.clientY, active: true };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function movePeel(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!peelStart.current.active || peelCount >= 3) return;
+    setPeelY(Math.max(0, event.clientY - peelStart.current.y));
+  }
+
+  function finishPeel(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!peelStart.current.active) return;
+    const swipeDistance = Math.max(peelY, event.clientY - peelStart.current.y);
+    peelStart.current.active = false;
+    setPeelY(0);
+    if (swipeDistance >= 70) setPeelCount((count) => Math.min(3, count + 1));
+  }
+
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第{step === "beans" ? "一" : "二"}步</p>
-        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : "蒸豆"}</h2>
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : "三"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : "去皮"}</h2>
         {step === "beans" ? <>
           <div className="taro-game-scene">
             <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
@@ -365,16 +387,24 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             {sauceBeanChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseBean(index)}>{choice.label}</button>)}
           </div>
           {wrongAttempts >= 2 && <blockquote className="taro-land-source">用春種烏豆，春豆粒小而均，晚豆粒大而雜。</blockquote>}
-        </> : <>
+        </> : step === "steam" ? <>
           <div className="taro-game-scene sauce-steam-scene">
             <span className="taro-game-placeholder">蒸豆画面占位<br />sauce-game-steam-{steamed ? "2" : "1"}.webp</span>
             <ArtImage src={`/art/sauce-game-steam-${steamed ? "2" : "1"}.webp`} alt={steamed ? "豆子已经充分蒸熟" : "甑中正在蒸制的豆子"} className="taro-game-image" />
-            {steamed && <div className="taro-dig-complete" aria-live="polite"><b>蒸熟了</b><span>豆子已经充分蒸熟。</span></div>}
+            {steamed && <div className="taro-dig-complete" aria-live="polite"><b>蒸熟了</b><span>豆子已经充分蒸熟。</span><button type="button" onClick={() => setStep("peel")}>下一步：去皮</button></div>}
           </div>
           <div className={`sauce-steam-control${steamed ? " done" : ""}`}>
             <div className="sauce-steam-track"><span>向右拖动蒸汽，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动蒸汽按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>蒸汽</button></div>
           </div>
           {steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。</blockquote>}
+        </> : <>
+          <div className="taro-game-scene sauce-peel-scene" onPointerDown={startPeel} onPointerMove={movePeel} onPointerUp={finishPeel} onPointerCancel={finishPeel}>
+            <span className="taro-game-placeholder">去皮画面占位<br />sauce-game-peel-{peelCount + 1}.webp</span>
+            <ArtImage src={`/art/sauce-game-peel-${peelCount + 1}.webp`} alt={peelCount >= 3 ? "已经完全去皮的熟豆" : `熟豆去皮进度 ${peelCount}/3`} className="taro-game-image sauce-peel-image" style={{ transform: `translateY(${Math.min(peelY, 24)}px)` }} />
+            {peelCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>去皮完成</b><span>熟豆已经去净豆皮。</span></div>}
+          </div>
+          <div className="taro-dig-progress sauce-peel-progress" aria-label={`去皮进度 ${peelCount}/3`}>{[0, 1, 2].map((index) => <span key={index} className={index < peelCount ? "done" : ""} />)}</div>
+          <p className="taro-dig-hint">{peelCount >= 3 ? "三次去皮已完成" : `在画面上向下滑动去皮 · ${peelCount}/3`}</p>
         </>}
       </section>
     </div>
