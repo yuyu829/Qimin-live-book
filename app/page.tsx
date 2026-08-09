@@ -526,8 +526,8 @@ function School({ notes, setNotes, onBack }: { notes: Note[]; setNotes: (notes: 
         <span className="school-return-icon"><ArrowLeft size={18} /></span>
         <span>回齐民村</span>
       </button>
-      <div className="school-heading"><span><GraduationCap /></span><p className="overline">村口学堂</p><h2>把你的生活门道<br />留在墙上</h2><p>一句就好。这里不比分数，只把亲手试过的经验传下去。</p></div>
-      <form className="note-form" onSubmit={publish}><textarea maxLength={80} value={text} onChange={(e) => setText(e.target.value)} placeholder="比如：给塑料瓶扎几个小孔，用来慢慢浇花…" /><div><span>{text.length}/80</span><button disabled={!text.trim()}>贴上墙 <Send size={15} /></button></div></form>
+      <div className="school-heading"><span><GraduationCap /></span><p className="overline">村口学堂</p><h2>把你的生活门道<br />分享在这里吧</h2><p>一代人就应该有一代人的《齐民要术》！</p></div>
+      <form className="note-form" onSubmit={publish}><textarea maxLength={80} value={text} onChange={(e) => setText(e.target.value)} placeholder="比如：头疼的时候可以闭上眼睛，把痛的区域幻想成紫色可以缓解疼痛" /><div><span>{text.length}/80</span><button disabled={!text.trim()}>贴上墙 <Send size={15} /></button></div></form>
       <div className="note-wall">{notes.map((note, index) => <article key={note.id} className={`wall-note note-${index % 3}`}><span>经验笺 · {note.time}</span><p>{note.text}</p><small>—— 齐民村路过的人</small></article>)}</div>
     </main>
   );
