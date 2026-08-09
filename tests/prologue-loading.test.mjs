@@ -22,5 +22,5 @@ test("prologue reveals the supplied text in three quiet beats", () => {
   assert.match(css, /\.prologue-loading-copy p:nth-child\(2\)\{margin-top:14px;animation-delay:1\.45s/);
   assert.match(css, /\.prologue-loading-copy p:nth-child\(3\)\{margin-top:28px;animation-delay:3\.05s/);
   assert.match(css, /\.prologue-loading-art\{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;[^}]*animation:prologueArtIn 1\.4s ease 3\.05s forwards/);
-  assert.match(css, /\.prologue-loading-copy\{position:absolute;top:48px;left:50%;z-index:1;width:min\(calc\(100% - 32px\),390px\)/);
+  assert.match(css, /\.prologue-loading-copy\{position:absolute;top:140px;left:50%;z-index:1;width:min\(calc\(100% - 32px\),390px\)/);
 });
