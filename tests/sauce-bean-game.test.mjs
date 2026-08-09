@@ -60,3 +60,7 @@ test("three downward swipes advance through four peeling frames", () => {
     assert.ok(artReadme.includes(`\`sauce-game-peel-${frame}.webp\` | 1200 x 1200`));
   }
 });
+
+test("peeling detects downward swipes without dragging the artwork", () => {
+  assert.doesNotMatch(page, /className="taro-game-image sauce-peel-image" style=/);
+});

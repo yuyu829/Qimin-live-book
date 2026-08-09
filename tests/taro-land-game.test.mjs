@@ -43,6 +43,11 @@ test("each dig swipe plays frame two then frame one before counting progress", (
   assert.match(page, /digAnimating \? "挥锄挖地中…"/);
 });
 
+test("digging detects the swipe without moving the scene image", () => {
+  assert.doesNotMatch(page, /taro-dig-image" style=/);
+  assert.doesNotMatch(css, /taro-dig-scene:active \.taro-dig-image\{transform:/);
+});
+
 test("digging artwork placeholders are documented as square assets", () => {
   assert.match(artReadme, /`taro-game-dig-1\.webp` \| 1200 x 1200/);
   assert.match(artReadme, /`taro-game-dig-2\.webp` \| 1200 x 1200/);

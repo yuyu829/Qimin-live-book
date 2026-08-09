@@ -402,7 +402,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
         </> : <>
           <div className="taro-game-scene sauce-peel-scene" onPointerDown={startPeel} onPointerMove={movePeel} onPointerUp={finishPeel} onPointerCancel={finishPeel}>
             <span className="taro-game-placeholder">去皮画面占位<br />sauce-game-peel-{peelCount + 1}.webp</span>
-            <ArtImage src={`/art/sauce-game-peel-${peelCount + 1}.webp`} alt={peelCount >= 3 ? "已经完全去皮的熟豆" : `熟豆去皮进度 ${peelCount}/3`} className="taro-game-image sauce-peel-image" style={{ transform: `translateY(${Math.min(peelY, 24)}px)` }} />
+            <ArtImage src={`/art/sauce-game-peel-${peelCount + 1}.webp`} alt={peelCount >= 3 ? "已经完全去皮的熟豆" : `熟豆去皮进度 ${peelCount}/3`} className="taro-game-image sauce-peel-image" />
             {peelCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>去皮完成</b><span>熟豆已经去净豆皮。</span></div>}
           </div>
           <div className="taro-dig-progress sauce-peel-progress" aria-label={`去皮进度 ${peelCount}/3`}>{[0, 1, 2].map((index) => <span key={index} className={index < peelCount ? "done" : ""} />)}</div>
