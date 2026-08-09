@@ -289,6 +289,45 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
   );
 }
 
+const landChoices = [
+  { label: "高地", detail: "地势高，较干硬，较远离水源" },
+  { label: "薄地", detail: "土质薄瘠，不够滋润" },
+  { label: "肥地", detail: "肥沃松软，靠近水源" }
+] as const;
+
+function TaroLandGame({ onClose }: { onClose: () => void }) {
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [solved, setSolved] = useState(false);
+
+  function chooseLand(index: number) {
+    if (index === 2) {
+      setSolved(true);
+      return;
+    }
+    setWrongAttempts((attempts) => Math.min(2, attempts + 1));
+  }
+
+  return (
+    <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
+      <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="taro-game-title" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭选地游戏"><X size={18} /></button>
+        <p className="overline">种芋 · 第一步</p>
+        <h2 id="taro-game-title">选地</h2>
+        <div className="taro-game-scene">
+          <span className="taro-game-placeholder">选地画面占位<br />taro-game-select-land.webp</span>
+          <ArtImage src="/art/taro-game-select-land.webp" alt="三块不同条件的土地" className="taro-game-image" />
+          {wrongAttempts >= 1 && <div className="taro-land-details" aria-live="polite">{landChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
+          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>肥沃松软、靠近水源的土地更适合种芋。</span></div>}
+        </div>
+        <div className="taro-land-options" aria-label="选择一块土地">
+          {landChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseLand(index)}>{choice.label}</button>)}
+        </div>
+        {wrongAttempts >= 2 && <blockquote className="taro-land-source">宜擇肥緩土近水處，和柔，糞之</blockquote>}
+      </section>
+    </div>
+  );
+}
+
 function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () => void; onComplete: () => void }) {
   const [readerMode, setReaderMode] = useState<"deck" | "full" | "detail">("deck");
   const [detailReturnMode, setDetailReturnMode] = useState<"deck" | "full">("deck");
@@ -300,13 +339,14 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [dismissing, setDismissing] = useState(false);
+  const [taroGameOpen, setTaroGameOpen] = useState(false);
   const [deckCardHeight, setDeckCardHeight] = useState<number>();
   const pointerStart = useRef({ x: 0, active: false });
   const firstCardRef = useRef<HTMLDivElement>(null);
   const taroReferenceCardRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
+  useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setTaroGameOpen(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
 
@@ -390,11 +430,12 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
-          <button type="button">{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
+          <button type="button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : undefined}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
           <span className="shortcut-cat-animation" aria-label={chapter.id === "soybean" ? "种芋动画猫" : "作酱动画猫"}>
             <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
       </div>}
+      {taroGameOpen && chapter.id === "soybean" && <TaroLandGame onClose={() => setTaroGameOpen(false)} />}
       <section className="chat-stream">
         {readerMode === "full" && (
           <div className="full-chat-stream" aria-label="章节全文聊天室">
@@ -584,7 +625,7 @@ export default function HomePage() {
       {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} />}
       {screen === "map" && <WorldMap onOpen={openChapter} />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
-      {showTopBar && <nav className="bottom-nav">
+      {showTopBar && screen !== "reader" && <nav className="bottom-nav">
         <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
         <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
         <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>

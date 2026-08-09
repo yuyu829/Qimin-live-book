@@ -11,6 +11,7 @@
 | `reading-world.webp` | 804 x 512 | 读书推荐页底部田园插画 |
 | `map-cat-avatar.webp` | 200 x 200 | 地图界面小禾喵头像 |
 | `school-cat-avatar.webp` | 200 x 200 | 村口学堂顶部头像；直接用同名 WebP 文件覆盖即可替换，建议使用正方形构图 |
+| `taro-game-select-land.webp` | 1200 x 1200 | 种芋小游戏第一步“选地”的 1:1 场景图；画面从左到右依次为高地、薄地、肥地 |
 | `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的图鉴按钮插画，建议透明背景 |
 | `map-cat-taro.webp` | 256 x 256 | 图鉴九宫格：芋头喵插画 |
 | `map-cat-sauce.webp` | 256 x 256 | 图鉴九宫格：做酱喵插画 |

@@ -204,3 +204,16 @@ body{background:#d9cdbd}
 .prologue-loading-copy p:nth-child(3){margin-top:28px;animation-delay:3.05s}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
+
+/* Taro field-selection mini game. Replace the square scene asset without changing the interaction layer. */
+.taro-game-backdrop{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:18px;background:rgba(54,43,32,.56);backdrop-filter:blur(4px)}
+.taro-game-modal{position:relative;width:min(100%,400px);max-height:calc(100svh - 36px);padding:20px 16px 18px;overflow:auto;border:1px solid #d7c4aa;border-radius:18px;background:#f8f0df;box-shadow:0 20px 55px rgba(54,38,25,.28);text-align:center}
+.taro-game-modal>.overline{margin:0 0 3px}.taro-game-modal h2{margin:0 0 14px;color:#5d4736;font:800 25px/1.3 "Noto Serif SC","Songti SC",serif}
+.taro-game-close{position:absolute;top:12px;right:12px;z-index:4;width:34px;height:34px;display:grid;place-items:center;padding:0;border:1px solid #dbc9b1;border-radius:50%;background:#fff8eb;color:#805e49;cursor:pointer}
+.taro-game-scene{position:relative;width:100%;aspect-ratio:1;overflow:hidden;border:1px dashed rgba(150,118,82,.45);border-radius:14px;background:#e8dcc4}
+.taro-game-placeholder{position:absolute;inset:0;display:grid;place-items:center;padding:20px;color:#8c765e;font-size:11px;line-height:1.7}
+.taro-game-image{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;object-fit:cover}
+.taro-land-details{position:absolute;inset:auto 8px 8px;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.taro-land-details span{padding:7px 5px;border:1px solid rgba(255,248,235,.72);border-radius:9px;background:rgba(68,52,38,.76);color:#fff8eb;font-size:9px;line-height:1.45}.taro-land-details b{display:block;margin-bottom:2px;font-size:10px}
+.taro-land-success{position:absolute;inset:0;z-index:3;display:grid;place-content:center;gap:6px;padding:30px;background:rgba(82,105,69,.82);color:#fffdf5}.taro-land-success b{font:800 25px serif}.taro-land-success span{font-size:12px;line-height:1.7}
+.taro-land-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.taro-land-options button{min-height:42px;padding:7px 5px;border:1px solid #cdb99d;border-radius:11px;background:#fff9ed;color:#6f5542;font-size:12px;font-weight:800;cursor:pointer}.taro-land-options button:disabled{opacity:.6;cursor:default}
+.taro-land-source{margin:12px 0 0;padding:10px 12px;border:1px solid rgba(186,146,91,.38);border-radius:10px;background:#f1e2bc;color:#765733;font:600 13px/1.7 "Noto Serif SC","Songti SC",serif}
