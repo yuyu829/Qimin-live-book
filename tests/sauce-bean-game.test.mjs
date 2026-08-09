@@ -109,17 +109,25 @@ test("stirring completes after two counterclockwise rotations without revealing 
 
 test("completed stirring continues to a press-and-hold fermentation timeline", () => {
   assert.match(page, /onClick=\{\(\) => setStep\("ferment"\)\}>下一步：等待发酵<\/button>/);
+  assert.match(page, /className="sauce-ferment-progress" role="progressbar"/);
+  assert.match(page, /className="sauce-ferment-track"><i style=\{\{ width: `\$\{fermentDay\}%` \}\}/);
   assert.match(page, /\[1, 10, 30, 100\]\.map\(\(day\) => <span key=\{day\}/);
   assert.match(page, /十日內，每日數度以杷徹底攪之。/);
   assert.match(page, /十日後，每日輒一攪，三十日止。/);
-  assert.match(page, /onPointerDown=\{startFerment\}[\s\S]*onPointerUp=\{stopFerment\}[\s\S]*长按发酵时间快速流逝/);
+  assert.match(page, /onPointerDown=\{startFerment\}[\s\S]*onPointerUp=\{stopFerment\}[\s\S]*按住晒太阳催熟[\s\S]*让日子快快走/);
   assert.match(page, /window\.setInterval\([\s\S]*Math\.min\(100, day \+ 1\)[\s\S]*45\)/);
+  assert.match(css, /\.sauce-ferment-hold\{[\s\S]*border-radius:22px[\s\S]*linear-gradient/);
 });
 
 test("day one hundred reveals mature sauce and unlocks the sauce cat", () => {
   assert.match(page, /fermentDay < 100/);
   assert.match(page, /src="\/art\/sauce-game-ferment-complete\.webp"/);
-  assert.match(page, /src="\/art\/sauce-cat\.gif" alt="已解锁的做酱喵"/);
+  assert.match(page, /window\.setTimeout\(\(\) => setSauceCatRevealed\(true\), 1800\)/);
+  assert.match(page, /!sauceCatRevealed && <div className="sauce-mature-caption"/);
+  assert.match(page, /sauceCatRevealed && <div className="taro-unlock-card sauce-unlock-card"[\s\S]*src="\/art\/sauce-cat\.gif" alt="已解锁的做酱喵"/);
   assert.match(page, /获得一枚「做酱喵」收藏皮肤/);
+  assert.match(css, /@keyframes sauceMatureIn/);
+  assert.match(css, /@keyframes sauceCaptionPause/);
+  assert.match(css, /@keyframes sauceUnlockIn/);
   assert.match(artReadme, /`sauce-game-ferment-complete\.webp` \| 1200 x 1200/);
 });

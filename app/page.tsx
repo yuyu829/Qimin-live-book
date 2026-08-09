@@ -330,12 +330,23 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [stirProgress, setStirProgress] = useState(0);
   const [stirred, setStirred] = useState(false);
   const [fermentDay, setFermentDay] = useState(1);
+  const [sauceCatRevealed, setSauceCatRevealed] = useState(false);
   const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
   const stirMotion = useRef({ lastAngle: 0, total: 0, active: false });
   const fermentTimer = useRef<number | undefined>(undefined);
+  const sauceUnlockTimer = useRef<number | undefined>(undefined);
 
-  useEffect(() => () => window.clearInterval(fermentTimer.current), []);
+  useEffect(() => () => {
+    window.clearInterval(fermentTimer.current);
+    window.clearTimeout(sauceUnlockTimer.current);
+  }, []);
+
+  useEffect(() => {
+    if (fermentDay < 100) return;
+    sauceUnlockTimer.current = window.setTimeout(() => setSauceCatRevealed(true), 1800);
+    return () => window.clearTimeout(sauceUnlockTimer.current);
+  }, [fermentDay]);
 
   function chooseBean(index: number) {
     if (index === 2) {
@@ -511,16 +522,20 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
         </> : fermentDay < 100 ? <>
           <section className="sauce-ferment-panel" aria-live="polite">
             <div className="sauce-ferment-day"><small>发酵时间</small><b>第 {fermentDay} 天</b></div>
-            <div className="sauce-ferment-milestones" aria-label="发酵时间节点">{[1, 10, 30, 100].map((day) => <span key={day} className={fermentDay >= day ? "reached" : ""}>第{day}天</span>)}</div>
+            <div className="sauce-ferment-progress" role="progressbar" aria-label="大酱发酵进度" aria-valuemin={1} aria-valuemax={100} aria-valuenow={fermentDay}>
+              <div className="sauce-ferment-track"><i style={{ width: `${fermentDay}%` }} />{[1, 10, 30, 100].map((day) => <span key={day} className={fermentDay >= day ? "reached" : ""} style={{ left: `${day}%` }} />)}</div>
+              <div className="sauce-ferment-labels">{[1, 10, 30, 100].map((day) => <span key={day}>第{day}天</span>)}</div>
+            </div>
             <blockquote>{fermentDay <= 10 ? "十日內，每日數度以杷徹底攪之。" : "十日後，每日輒一攪，三十日止。"}</blockquote>
             <p>{fermentDay <= 10 ? "前十日需每日多次彻底搅拌。" : fermentDay <= 30 ? "十日后每日搅拌一次，至三十日停止。" : "停止搅拌，让时间慢慢酿成滋味。"}</p>
           </section>
-          <button type="button" className="sauce-ferment-hold" aria-label="长按让发酵时间快速流逝" onPointerDown={startFerment} onPointerUp={stopFerment} onPointerCancel={stopFerment} onLostPointerCapture={stopFerment}>长按发酵时间快速流逝</button>
+          <button type="button" className="sauce-ferment-hold" aria-label="长按让发酵时间快速流逝" onPointerDown={startFerment} onPointerUp={stopFerment} onPointerCancel={stopFerment} onLostPointerCapture={stopFerment}><span>☀</span><b>按住晒太阳催熟</b><small>让日子快快走</small></button>
         </> : <>
           <div className="taro-game-scene sauce-ferment-complete-scene">
             <span className="taro-game-placeholder">成熟大酱画面占位<br />sauce-game-ferment-complete.webp</span>
-            <ArtImage src="/art/sauce-game-ferment-complete.webp" alt="发酵一百天后成熟的一坛大酱" className="taro-game-image" />
-            <div className="taro-unlock-card sauce-unlock-card" aria-live="polite"><img src="/art/sauce-cat.gif" alt="已解锁的做酱喵" /><b>大酱成熟了</b><span>获得一枚「做酱喵」收藏皮肤</span><button type="button" onClick={onClose}>完成游戏</button></div>
+            <ArtImage src="/art/sauce-game-ferment-complete.webp" alt="发酵一百天后成熟的一坛大酱" className="taro-game-image sauce-mature-image" />
+            {!sauceCatRevealed && <div className="sauce-mature-caption" aria-live="polite"><b>一百天过去了</b><span>一坛大酱，终于成熟。</span></div>}
+            {sauceCatRevealed && <div className="taro-unlock-card sauce-unlock-card" aria-live="polite"><img src="/art/sauce-cat.gif" alt="已解锁的做酱喵" /><b>图鉴已解锁</b><span>获得一枚「做酱喵」收藏皮肤</span><button type="button" onClick={onClose}>完成游戏</button></div>}
           </div>
         </>}
       </section>
