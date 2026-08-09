@@ -296,8 +296,12 @@ const landChoices = [
 ] as const;
 
 function TaroLandGame({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState<"land" | "dig">("land");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
+  const [digCount, setDigCount] = useState(0);
+  const [digX, setDigX] = useState(0);
+  const digStart = useRef({ x: 0, active: false });
 
   function chooseLand(index: number) {
     if (index === 2) {
@@ -307,22 +311,53 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
     setWrongAttempts((attempts) => Math.min(2, attempts + 1));
   }
 
+  function startDig(event: ReactPointerEvent<HTMLDivElement>) {
+    if (digCount >= 3) return;
+    digStart.current = { x: event.clientX, active: true };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveDig(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!digStart.current.active || digCount >= 3) return;
+    setDigX(Math.max(0, event.clientX - digStart.current.x));
+  }
+
+  function finishDig(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!digStart.current.active) return;
+    digStart.current.active = false;
+    if (digX >= 55) setDigCount((count) => Math.min(3, count + 1));
+    setDigX(0);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+
+  const digImage = digCount >= 3 ? "/art/taro-game-dig-complete.webp" : digCount % 2 === 0 ? "/art/taro-game-dig-1.webp" : "/art/taro-game-dig-2.webp";
+
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="taro-game-title" onClick={(event) => event.stopPropagation()}>
-        <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭选地游戏"><X size={18} /></button>
-        <p className="overline">种芋 · 第一步</p>
-        <h2 id="taro-game-title">选地</h2>
+        <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭种芋游戏"><X size={18} /></button>
+        <p className="overline">种芋 · {step === "land" ? "第一步" : "第二步"}</p>
+        <h2 id="taro-game-title">{step === "land" ? "选地" : "挖地"}</h2>
+        {step === "land" ? <>
         <div className="taro-game-scene">
           <span className="taro-game-placeholder">选地画面占位<br />taro-game-select-land.webp</span>
           <ArtImage src="/art/taro-game-select-land.webp" alt="三块不同条件的土地" className="taro-game-image" />
           {wrongAttempts >= 1 && <div className="taro-land-details" aria-live="polite">{landChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
-          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>肥沃松软、靠近水源的土地更适合种芋。</span><small>《齐民要术》：“宜擇肥緩土近水處，和柔，糞之。”</small></div>}
+          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>肥沃松软、靠近水源的土地更适合种芋。</span><small>《齐民要术》：“宜擇肥緩土近水處，和柔，糞之。”</small><button type="button" onClick={() => setStep("dig")}>下一步：挖地</button></div>}
         </div>
         <div className="taro-land-options" aria-label="选择一块土地">
           {landChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseLand(index)}>{choice.label}</button>)}
         </div>
         {wrongAttempts >= 2 && <blockquote className="taro-land-source">宜擇肥緩土近水處，和柔，糞之</blockquote>}
+        </> : <>
+          <div className="taro-game-scene taro-dig-scene" onPointerDown={startDig} onPointerMove={moveDig} onPointerUp={finishDig} onPointerCancel={finishDig}>
+            <span className="taro-game-placeholder">挖地画面占位<br />{digImage.split("/").at(-1)}</span>
+            <ArtImage src={digImage} alt={digCount >= 3 ? "已经挖好的土地" : "正在交替挖地"} className="taro-game-image taro-dig-image" />
+            {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span></div>}
+          </div>
+          <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
+          <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>
+        </>}
       </section>
     </div>
   );

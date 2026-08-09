@@ -26,3 +26,19 @@ test("correct field feedback includes the source text", () => {
   assert.match(page, /<b>选对了<\/b><span>肥沃松软、靠近水源的土地更适合种芋。<\/span><small>《齐民要术》：“宜擇肥緩土近水處，和柔，糞之。”<\/small>/);
   assert.match(css, /\.taro-land-success small\{[^}]*border-top:1px solid rgba\(255,253,245,\.35\)[^}]*font:600 11px\/1\.7/);
 });
+
+test("correct land choice continues to the three-swipe digging step", () => {
+  assert.match(page, /<button type="button" onClick=\{\(\) => setStep\("dig"\)\}>下一步：挖地<\/button>/);
+  assert.match(page, /function startDig\(event: ReactPointerEvent<HTMLDivElement>\)/);
+  assert.match(page, /if \(digX >= 55\) setDigCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
+  assert.match(page, /onPointerDown=\{startDig\} onPointerMove=\{moveDig\} onPointerUp=\{finishDig\} onPointerCancel=\{finishDig\}/);
+  assert.match(page, /digCount >= 3 \? "\/art\/taro-game-dig-complete\.webp" : digCount % 2 === 0 \? "\/art\/taro-game-dig-1\.webp" : "\/art\/taro-game-dig-2\.webp"/);
+  assert.match(page, /aria-label=\{`挖地进度 \$\{digCount\}\/3`\}/);
+  assert.match(css, /\.taro-dig-scene\{touch-action:none/);
+});
+
+test("digging artwork placeholders are documented as square assets", () => {
+  assert.match(artReadme, /`taro-game-dig-1\.webp` \| 1200 x 1200/);
+  assert.match(artReadme, /`taro-game-dig-2\.webp` \| 1200 x 1200/);
+  assert.match(artReadme, /`taro-game-dig-complete\.webp` \| 1200 x 1200/);
+});

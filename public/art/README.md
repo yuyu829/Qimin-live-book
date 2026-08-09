@@ -12,6 +12,9 @@
 | `map-cat-avatar.webp` | 200 x 200 | 地图界面小禾喵头像 |
 | `school-cat-avatar.webp` | 200 x 200 | 村口学堂顶部头像；直接用同名 WebP 文件覆盖即可替换，建议使用正方形构图 |
 | `taro-game-select-land.webp` | 1200 x 1200 | 种芋小游戏第一步“选地”的 1:1 场景图；画面从左到右依次为高地、薄地、肥地 |
+| `taro-game-dig-1.webp` | 1200 x 1200 | 种芋小游戏第二步“挖地”的第一张动作图，与第二张交替显示 |
+| `taro-game-dig-2.webp` | 1200 x 1200 | 种芋小游戏第二步“挖地”的第二张动作图，与第一张交替显示 |
+| `taro-game-dig-complete.webp` | 1200 x 1200 | 用户完成三次右滑后显示的挖地完成图 |
 | `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的图鉴按钮插画，建议透明背景 |
 | `map-cat-taro.webp` | 256 x 256 | 图鉴九宫格：芋头喵插画 |
 | `map-cat-sauce.webp` | 256 x 256 | 图鉴九宫格：做酱喵插画 |
