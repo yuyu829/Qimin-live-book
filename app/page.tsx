@@ -146,9 +146,9 @@ function Recommendations({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
   return (
     <main className="step-screen recommend-page">
       <div className="recommend-heading">
-        <p className="overline">书页已经翻到了</p>
-        <h2>两场古人的现场讨论</h2>
-        <p className="subcopy">选一个坐进去。你会听见旧农书、民间谚语和贾思勰轮流发言。</p>
+        <p className="overline">两场正在上演的农人经验谈</p>
+        <h2>今日为你推荐章节</h2>
+        <p className="subcopy">入席旁听:看典籍记录、农谚俚语与贾公智慧的隔空交锋</p>
       </div>
       <div className="chapter-grid">
         {chapters.map((chapter, index) => (
