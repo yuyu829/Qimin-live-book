@@ -106,7 +106,7 @@ function PrologueLoading({ onBack }: { onBack: () => void }) {
       <button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面">
         <ArrowLeft size={18} />
       </button>
-      <ArtImage src="/art/cover-world.webp" alt="" className="prologue-loading-art" />
+      <ArtImage src="/art/prologue-loading.webp" alt="" className="prologue-loading-art" />
       <section className="prologue-loading-copy">
         <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序；</p>
         <p>今天，我们在新的时代里，萃取属于当下的生活真义。</p>

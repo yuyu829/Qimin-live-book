@@ -4,6 +4,7 @@ import { test } from "node:test";
 
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+const artReadme = await readFile(new URL("../public/art/README.md", import.meta.url), "utf8");
 
 test("cover opens a timed prologue before the interest question", () => {
   assert.match(page, /type Screen = [^;]*"prologue-loading"/);
@@ -16,7 +17,9 @@ test("prologue reveals the supplied text in three quiet beats", () => {
   assert.match(page, /1500年前，《齐民要术》记录了古人与天地共生的生活秩序；/);
   assert.match(page, /今天，我们在新的时代里，萃取属于当下的生活真义。/);
   assert.match(page, /一代人有一代人的《齐民要术》。<br \/>欢迎来到这里，感知古今共通的生活哲学。/);
-  assert.match(page, /<ArtImage src="\/art\/cover-world\.webp" alt="" className="prologue-loading-art" \/>/);
+  assert.match(page, /<ArtImage src="\/art\/prologue-loading\.webp" alt="" className="prologue-loading-art" \/>/);
+  assert.doesNotMatch(page, /<ArtImage src="\/art\/cover-world\.webp" alt="" className="prologue-loading-art" \/>/);
+  assert.match(artReadme, /`prologue-loading\.webp` \| 1200 x 1600 \| 点击“翻开这本活书”后、偏好设定前的文字加载页背景插画/);
   assert.match(page, /aria-label="返回封面"/);
   assert.match(css, /\.prologue-loading-copy p\{[^}]*animation:prologueLineIn 1\.4s ease forwards/);
   assert.match(css, /\.prologue-loading-copy p:nth-child\(2\)\{margin-top:14px;animation-delay:1\.45s/);
