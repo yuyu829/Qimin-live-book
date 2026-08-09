@@ -31,7 +31,7 @@ test("compact cards ellipsize both translation and original while full reader st
   assert.match(css, /\.compact-read-more-row\{display:flex;justify-content:flex-end;flex:none;min-height:22px;margin-top:6px/);
   assert.match(css, /\.compact-read-more-row \.compact-read-more\{[^}]*position:static[^}]*color:#c53f32/);
   assert.match(css, /\.message-heading\{display:flex;align-items:flex-start;justify-content:space-between/);
-  assert.match(css, /\.message-heading>\.why-button\{[^}]*background:#e7ebdd[^}]*color:var\(--sage-dark\)/);
+  assert.match(css, /\.message-heading>\.why-button\{[^}]*margin:3px 0 0[^}]*background:#e7ebdd[^}]*color:var\(--sage-dark\)/);
   assert.match(page, /<div className="message-heading">[\s\S]*<button className="speaker-name"[\s\S]*<button className="why-button"[\s\S]*<\/div>[\s\S]*<article className=/);
   assert.match(css, /\.why-button,\.why-button svg\{[^}]*color:var\(--sage-dark\)/);
   assert.match(page, /readerMode === "full"[\s\S]*chapter\.messages\.map/);

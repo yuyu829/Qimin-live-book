@@ -164,7 +164,7 @@ body{background:#d9cdbd}
 .message-column{position:relative}
 .message-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-height:29px}
 .message-heading .speaker-name{min-width:0;margin:0;padding-bottom:7px}
-.message-heading>.why-button{flex:none;width:auto;margin:-2px 0 0;padding:5px 9px;border:1px solid #b9c8ad;border-radius:14px;background:#e7ebdd;color:var(--sage-dark);font-size:10px;line-height:1.2}
+.message-heading>.why-button{flex:none;width:auto;margin:3px 0 0;padding:5px 9px;border:1px solid #b9c8ad;border-radius:14px;background:#e7ebdd;color:var(--sage-dark);font-size:10px;line-height:1.2}
 .message-heading>.why-button svg{color:var(--sage-dark);stroke:currentColor}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{padding-right:0}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{padding-bottom:0}
