@@ -10,12 +10,13 @@ test("compact chapter reading locks the vertical viewport", () => {
   assert.match(css, />\.chat-stream\{position:fixed;top:282px;bottom:78px/);
 });
 
-test("all soybean and sauce deck cards share the same fixed dimensions", () => {
+test("soybean and sauce deck cards use the same viewport-based dimensions", () => {
   assert.match(page, /chapters\.map/);
-  assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
-  assert.match(page, /Math\.max\(120, Math\.min\(345, naturalHeight \+ 68, availableHeight\)\)/);
+  assert.match(page, /Math\.max\(120, Math\.min\(345, availableHeight\)\)/);
+  assert.doesNotMatch(page, /setDeckCardHeight\([^\n]*naturalHeight/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
+  assert.match(page, /readerMode === "deck"[\s\S]*className="deck-stage"[\s\S]*className="swipe-hint"/);
   assert.doesNotMatch(css, /\.deck-card\{height:360px/);
 });
 
