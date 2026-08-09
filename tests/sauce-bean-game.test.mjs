@@ -30,7 +30,7 @@ test("correct bean feedback quotes the recorded sauce source", () => {
 });
 
 test("correct beans continue to a right-drag steaming step", () => {
-  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir">\("beans"\)/);
+  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir" \| "ferment">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
   assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
   assert.match(page, /const max = track \? track\.clientWidth - event\.currentTarget\.offsetWidth - 8 : 0/);
@@ -47,7 +47,7 @@ test("steaming switches between two square art placeholders and reveals the sour
 });
 
 test("steamed beans continue to a three-swipe peeling step", () => {
-  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir">\("beans"\)/);
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir" \| "ferment">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("peel"\)\}>下一步：去皮<\/button>/);
   assert.match(page, /function startPeel\(event: ReactPointerEvent<HTMLDivElement>\)/);
   assert.match(page, /function finishPeel[\s\S]*if \(swipeDistance >= 70\) setPeelCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
@@ -67,7 +67,7 @@ test("peeling detects downward swipes without dragging the artwork", () => {
 });
 
 test("peeled beans continue to the four-ingredient recipe step", () => {
-  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir">\("beans"\)/);
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe" \| "vat" \| "stir" \| "ferment">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("recipe"\)\}>下一步：配方<\/button>/);
   assert.match(page, /src="\/art\/sauce-game-recipe\.webp"/);
   assert.match(artReadme, /`sauce-game-recipe\.webp` \| 1200 x 1200/);
@@ -105,4 +105,21 @@ test("stirring completes after two counterclockwise rotations without revealing 
   assert.match(page, /onPointerDown=\{startStir\}[\s\S]*onPointerMove=\{moveStir\}[\s\S]*逆时针搅拌/);
   assert.doesNotMatch(page, /逆时针旋转一圈/);
   assert.match(page, /攪令均調，以手痛挼，皆令潤徹。/);
+});
+
+test("completed stirring continues to a press-and-hold fermentation timeline", () => {
+  assert.match(page, /onClick=\{\(\) => setStep\("ferment"\)\}>下一步：等待发酵<\/button>/);
+  assert.match(page, /\[1, 10, 30, 100\]\.map\(\(day\) => <span key=\{day\}/);
+  assert.match(page, /十日內，每日數度以杷徹底攪之。/);
+  assert.match(page, /十日後，每日輒一攪，三十日止。/);
+  assert.match(page, /onPointerDown=\{startFerment\}[\s\S]*onPointerUp=\{stopFerment\}[\s\S]*长按发酵时间快速流逝/);
+  assert.match(page, /window\.setInterval\([\s\S]*Math\.min\(100, day \+ 1\)[\s\S]*45\)/);
+});
+
+test("day one hundred reveals mature sauce and unlocks the sauce cat", () => {
+  assert.match(page, /fermentDay < 100/);
+  assert.match(page, /src="\/art\/sauce-game-ferment-complete\.webp"/);
+  assert.match(page, /src="\/art\/sauce-cat\.gif" alt="已解锁的做酱喵"/);
+  assert.match(page, /获得一枚「做酱喵」收藏皮肤/);
+  assert.match(artReadme, /`sauce-game-ferment-complete\.webp` \| 1200 x 1200/);
 });

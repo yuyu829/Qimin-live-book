@@ -317,7 +317,7 @@ const sauceRecipeIngredients = [
 ] as const;
 
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "vat" | "stir">("beans");
+  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "vat" | "stir" | "ferment">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
@@ -329,9 +329,13 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [vatComplete, setVatComplete] = useState(false);
   const [stirProgress, setStirProgress] = useState(0);
   const [stirred, setStirred] = useState(false);
+  const [fermentDay, setFermentDay] = useState(1);
   const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
   const stirMotion = useRef({ lastAngle: 0, total: 0, active: false });
+  const fermentTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearInterval(fermentTimer.current), []);
 
   function chooseBean(index: number) {
     if (index === 2) {
@@ -421,14 +425,31 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     stirMotion.current.active = false;
   }
 
+  function stopFerment() {
+    window.clearInterval(fermentTimer.current);
+    fermentTimer.current = undefined;
+  }
+
+  function startFerment(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (fermentDay >= 100 || fermentTimer.current !== undefined) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    fermentTimer.current = window.setInterval(() => {
+      setFermentDay((day) => {
+        const nextDay = Math.min(100, day + 1);
+        if (nextDay >= 100) stopFerment();
+        return nextDay;
+      });
+    }, 45);
+  }
+
   const recipeMatched = sauceRecipeIngredients.every((ingredient, index) => recipeAmounts[index] === ingredient.target);
 
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : step === "recipe" ? "四" : step === "vat" ? "五" : "六"}步</p>
-        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : step === "recipe" ? "配方" : step === "vat" ? "入缸" : "搅拌"}</h2>
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : step === "recipe" ? "四" : step === "vat" ? "五" : step === "stir" ? "六" : "七"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : step === "recipe" ? "配方" : step === "vat" ? "入缸" : step === "stir" ? "搅拌" : "等待发酵"}</h2>
         {step === "beans" ? <>
           <div className="taro-game-scene">
             <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
@@ -475,18 +496,32 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             {vatComplete && <div className="taro-dig-complete" aria-live="polite"><b>入缸完成</b><span>调好的酱料已经装入缸中。</span><button type="button" onClick={() => setStep("stir")}>下一步：搅拌</button></div>}
           </div>
           <p className="taro-dig-hint">{vatComplete ? "酱料已经入缸" : "正在将调好的酱料装入缸中"}</p>
-        </> : <>
+        </> : step === "stir" ? <>
           <div className="taro-game-scene sauce-stir-scene">
             <span className="taro-game-placeholder">搅拌视频占位<br />sauce-game-stir.mp4</span>
             <video className="sauce-stir-video" src="/art/sauce-game-stir.mp4" autoPlay loop muted playsInline aria-label="盆中配料正在搅拌" />
             <div className="sauce-stir-gesture" role="slider" aria-label="用手指逆时针旋转搅拌" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(stirProgress * 100)} onPointerDown={startStir} onPointerMove={moveStir} onPointerUp={finishStir} onPointerCancel={finishStir}>
               {!stirred && <span><b>↺</b>逆时针搅拌</span>}
             </div>
-            {stirred && <div className="taro-dig-complete" aria-live="polite"><b>搅拌完成</b><span>豆黄、盐与曲料已经拌匀。</span></div>}
+            {stirred && <div className="taro-dig-complete" aria-live="polite"><b>搅拌完成</b><span>豆黄、盐与曲料已经拌匀。</span><button type="button" onClick={() => setStep("ferment")}>下一步：等待发酵</button></div>}
           </div>
           <div className="sauce-stir-progress" aria-label={`搅拌进度 ${Math.round(stirProgress * 100)}%`}><span style={{ width: `${stirProgress * 100}%` }} /></div>
           <p className="taro-dig-hint">{stirred ? "已经均匀调和" : "请在视频画面上用手指或鼠标逆时针旋转"}</p>
           {stirred && <blockquote className="taro-land-source">攪令均調，以手痛挼，皆令潤徹。</blockquote>}
+        </> : fermentDay < 100 ? <>
+          <section className="sauce-ferment-panel" aria-live="polite">
+            <div className="sauce-ferment-day"><small>发酵时间</small><b>第 {fermentDay} 天</b></div>
+            <div className="sauce-ferment-milestones" aria-label="发酵时间节点">{[1, 10, 30, 100].map((day) => <span key={day} className={fermentDay >= day ? "reached" : ""}>第{day}天</span>)}</div>
+            <blockquote>{fermentDay <= 10 ? "十日內，每日數度以杷徹底攪之。" : "十日後，每日輒一攪，三十日止。"}</blockquote>
+            <p>{fermentDay <= 10 ? "前十日需每日多次彻底搅拌。" : fermentDay <= 30 ? "十日后每日搅拌一次，至三十日停止。" : "停止搅拌，让时间慢慢酿成滋味。"}</p>
+          </section>
+          <button type="button" className="sauce-ferment-hold" aria-label="长按让发酵时间快速流逝" onPointerDown={startFerment} onPointerUp={stopFerment} onPointerCancel={stopFerment} onLostPointerCapture={stopFerment}>长按发酵时间快速流逝</button>
+        </> : <>
+          <div className="taro-game-scene sauce-ferment-complete-scene">
+            <span className="taro-game-placeholder">成熟大酱画面占位<br />sauce-game-ferment-complete.webp</span>
+            <ArtImage src="/art/sauce-game-ferment-complete.webp" alt="发酵一百天后成熟的一坛大酱" className="taro-game-image" />
+            <div className="taro-unlock-card sauce-unlock-card" aria-live="polite"><img src="/art/sauce-cat.gif" alt="已解锁的做酱喵" /><b>大酱成熟了</b><span>获得一枚「做酱喵」收藏皮肤</span><button type="button" onClick={onClose}>完成游戏</button></div>
+          </div>
         </>}
       </section>
     </div>
