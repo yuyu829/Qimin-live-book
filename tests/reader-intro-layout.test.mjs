@@ -7,6 +7,7 @@ const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8
 
 test("chapter intro is fixed directly below the chapter navigation in both reader modes", () => {
   assert.match(css, /\.chapter-intro\{position:fixed;top:58px;left:50%;transform:translateX\(-50%\);z-index:35;width:min\(100%,430px\);height:170px;min-height:170px/);
+  assert.match(css, /\.chapter-intro\{[^}]*border-bottom:0/);
   assert.match(css, /\.reader-page\{padding-top:0\}/);
   assert.match(page, /reader-page \$\{readerMode === "full" \? "is-full-reader"/);
 });
@@ -14,6 +15,8 @@ test("chapter intro is fixed directly below the chapter navigation in both reade
 test("reader shortcuts sit in a fixed row directly below the chapter intro", () => {
   assert.match(css, /\.reader-shortcuts\{position:fixed;top:228px;left:50%;right:auto;transform:translateX\(-50%\)/);
   assert.match(css, /\.reader-shortcuts\{[^}]*height:54px/);
+  assert.match(css, /\.reader-shortcuts\{[^}]*border-bottom:0/);
+  assert.doesNotMatch(css, /\.reader-shortcuts\{[^}]*border-bottom:1px dashed/);
   assert.match(page, /<\/section>\s*\{readerMode === "deck" && <div className="reader-shortcuts"/);
   assert.match(page, />阅读全文<\/button>/);
   assert.match(page, /"去种芋" : "去作酱"/);
