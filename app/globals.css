@@ -129,3 +129,6 @@ body{background:#d9cdbd}
 .reader-page>.chat-stream{padding-top:224px}
 .reader-page.is-full-reader .chat-stream{padding-top:224px}
 .reader-page .deck-stage{padding-top:72px}
+.chapter-intro>div{padding-left:46px}
+.reader-back-button{position:absolute;top:20px;left:16px;width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1);cursor:pointer}
+.reader-back-button:hover{color:var(--clay-dark);background:#fff1dc}

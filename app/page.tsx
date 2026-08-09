@@ -322,13 +322,16 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
 
   return (
     <main className={`reader-page ${readerMode === "full" ? "is-full-reader" : ""} ${readerMode === "detail" ? "is-detail-reader" : ""}`}>
-      <header className="reader-header">
-        <button className="icon-button" onClick={readerMode === "detail" ? () => setReaderMode(detailReturnMode) : readerMode === "full" ? () => setReaderMode("deck") : onBack} aria-label={readerMode === "detail" ? "返回阅读" : readerMode === "full" ? "返回卡片阅读" : "返回推荐"}><ArrowLeft /></button>
-        <div><span>{chapter.category}篇 · {chapter.volume}</span><h1>{chapter.title}</h1></div>
-        <div className="reader-count">{readerMode === "detail" ? "详解" : readerMode === "full" ? "全文" : `${Math.min(currentIndex + 1, chapter.messages.length)}/${chapter.messages.length}`}</div>
-      </header>
       {readerMode === "detail" && detailMessage ? <MessageDetail chapter={chapter} message={detailMessage} onBack={() => setReaderMode(detailReturnMode)} /> : <>
       <section className="chapter-intro">
+        <button
+          type="button"
+          className="reader-back-button"
+          aria-label={readerMode === "full" ? "返回卡片阅读" : "返回章节列表"}
+          onClick={readerMode === "full" ? () => setReaderMode("deck") : onBack}
+        >
+          <ArrowLeft size={18} />
+        </button>
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
