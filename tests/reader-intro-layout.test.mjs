@@ -21,7 +21,7 @@ test("reader shortcuts sit in a fixed row directly below the chapter intro", () 
   assert.doesNotMatch(css, /\.reader-shortcuts:(?:before|after)\{[^}]*border-top:[^}]*dashed/);
   assert.match(page, /<\/section>\s*\{readerMode === "deck" && <div className="reader-shortcuts"/);
   assert.match(page, />阅读全文<\/button>/);
-  assert.match(page, /"去种芋" : "去作酱"/);
+  assert.match(page, /"去种芋" : "去做酱"/);
 });
 
 test("full text starts closer to the intro without moving the deck", () => {

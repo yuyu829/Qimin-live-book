@@ -660,7 +660,7 @@ function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: ()
   );
 }
 
-function Reader({ chapter, onBack, onComplete, onUnlockCat }: { chapter: Chapter; onBack: () => void; onComplete: () => void; onUnlockCat: (cat: CatUnlock) => void }) {
+function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { chapter: Chapter; onBack: () => void; onComplete: () => void; onUnlockCat: (cat: CatUnlock) => void; unlockedCats: CatUnlock[] }) {
   const [readerMode, setReaderMode] = useState<"deck" | "full" | "detail">("deck");
   const [detailReturnMode, setDetailReturnMode] = useState<"deck" | "full">("deck");
   const [detailMessage, setDetailMessage] = useState<ChapterMessage>();
@@ -763,7 +763,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat }: { chapter: Chapter
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
-          <button type="button" className="game-shortcut-button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : () => setSauceGameOpen(true)}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
+          <button type="button" className={`game-shortcut-button ${unlockedCats.includes(chapter.id === "soybean" ? "taro" : "sauce") ? "is-completed" : ""}`} onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : () => setSauceGameOpen(true)}>{chapter.id === "soybean" ? "去种芋" : "去做酱"}</button>
           <span className="shortcut-cat-animation" aria-label={chapter.id === "soybean" ? "种芋动画猫" : "作酱动画猫"}>
             <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
@@ -962,7 +962,7 @@ export default function HomePage() {
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
       {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
       {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} />}
+      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
       {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
       {showTopBar && screen !== "reader" && <nav className="bottom-nav">

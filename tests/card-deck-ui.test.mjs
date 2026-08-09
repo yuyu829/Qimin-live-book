@@ -66,7 +66,7 @@ test("annotated original terms have a highlighted text style", () => {
 test("chapter shortcuts show their matching animated cat", () => {
   assert.match(page, /className="reader-shortcuts"/);
   assert.match(page, />阅读全文</);
-  assert.match(page, /chapter\.id === "soybean" \? "去种芋" : "去作酱"/);
+  assert.match(page, /chapter\.id === "soybean" \? "去种芋" : "去做酱"/);
   assert.match(page, /className="shortcut-cat-animation"/);
   assert.match(page, /chapter\.id === "soybean" \? "\/art\/taro-cat\.gif" : "\/art\/sauce-cat\.gif"/);
   assert.match(page, /chapter\.id === "soybean" \? "种芋动画猫" : "作酱动画猫"/);
