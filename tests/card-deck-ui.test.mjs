@@ -25,7 +25,7 @@ test("deck cards share the compact height measured from each chapter's first car
   assert.match(page, /card\.style\.maxHeight = "none"/);
   assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
-  assert.match(page, /Math\.max\(120, Math\.min\(360, naturalHeight \+ 68, availableHeight\)\)/);
+  assert.match(page, /Math\.max\(120, Math\.min\(345, naturalHeight \+ 68, availableHeight\)\)/);
   assert.match(page, /ref=\{isTop && currentIndex === 0 \? firstCardRef : undefined\}/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
   assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\) \.deck-card\{overflow:hidden/);
