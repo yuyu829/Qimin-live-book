@@ -119,7 +119,7 @@ body{background:#d9cdbd}
 .deck-card .message-row{margin:0;padding-right:52px}.deck-card .paper-bubble{border:0;background:transparent;box-shadow:none;padding-top:8px}.deck-card .paper-bubble:before{display:none}.deck-card:not(.is-top) .context-rail{opacity:0!important;pointer-events:none}.deck-card:not(.is-top) .message-column{pointer-events:none}
 .original-term{font-weight:800;color:#b85d4e;text-decoration:underline;text-decoration-color:rgba(235,129,121,.58);text-decoration-thickness:2px;text-underline-offset:3px;background:rgba(235,129,121,.12);border-radius:3px;padding:0 2px}
 .deck-position-1{background:#f5e7ca}.deck-position-2{background:#dfe7cb}.deck-position-3{background:#eadbd0}
-.swipe-hint{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:39;display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
+.swipe-hint{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:39;display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
 @media(max-width:380px){.deck-card .message-row{padding-right:46px}}
 
 /* Stable chapter reading layers: intro, actions, then reading content. */
