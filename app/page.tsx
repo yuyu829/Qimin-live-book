@@ -169,9 +169,12 @@ const chapterLoadingCopy: Record<Chapter["id"], string> = {
   sauce: "一缸好酱，要从选豆、蒸豆、拌曲到百日晒制，步步都急不得。"
 };
 
-function ChapterLoading({ chapter }: { chapter: Chapter }) {
+function ChapterLoading({ chapter, onBack }: { chapter: Chapter; onBack: () => void }) {
   return (
     <main className="chapter-loading-page" aria-live="polite" aria-label={`正在打开${chapter.title}`}>
+      <button type="button" className="reader-back-button chapter-loading-back" onClick={onBack} aria-label="返回章节选择">
+        <ArrowLeft size={18} />
+      </button>
       <section className="chapter-loading-content">
         <h1 className="chapter-loading-title">{chapter.title}</h1>
         <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
@@ -538,7 +541,12 @@ export default function HomePage() {
 
   useEffect(() => {
     if (screen !== "chapter-loading") return;
-    const timer = window.setTimeout(() => { setScreen("reader"); window.scrollTo(0, 0); }, 2300);
+    const timer = window.setTimeout(() => {
+      const showReader = () => { flushSync(() => setScreen("reader")); window.scrollTo(0, 0); };
+      const transitionDocument = document as Document & { startViewTransition?: (update: () => void) => unknown };
+      if (transitionDocument.startViewTransition) transitionDocument.startViewTransition(showReader);
+      else showReader();
+    }, 2300);
     return () => window.clearTimeout(timer);
   }, [screen, chapterId]);
 
@@ -556,7 +564,7 @@ export default function HomePage() {
       {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
       {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
-      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} />}
+      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
       {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} />}
       {screen === "map" && <WorldMap onOpen={openChapter} />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}

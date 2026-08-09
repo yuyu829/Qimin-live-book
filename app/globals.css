@@ -180,6 +180,7 @@ body{background:#d9cdbd}
 
 /* Chapter transition keeps its story, animation, and caption centered together. */
 .chapter-loading-page{min-height:100svh;display:grid;place-items:center;padding:32px 22px;background:#ede5d5}
+.chapter-loading-back{position:fixed;top:11px;left:max(16px,calc(50% - 199px));z-index:2}
 .chapter-loading-content{width:min(100%,360px);display:grid;justify-items:center;gap:18px;text-align:center}
 .chapter-loading-content h1{margin:0;color:#5a4939;font:700 24px/1.4 "Noto Serif SC","Songti SC",serif}
 .chapter-loading-content img{display:block;width:150px;height:150px;object-fit:contain}

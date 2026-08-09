@@ -9,7 +9,7 @@ test("book recommendations open a timed chapter loading screen", () => {
   assert.match(page, /type Screen = [^;]*"chapter-loading"/);
   assert.match(page, /function loadChapter\(id: Chapter\["id"\]\) \{ setChapterId\(id\); setScreen\("chapter-loading"\)/);
   assert.match(page, /screen === "recommend" && <Recommendations onOpen=\{loadChapter\}/);
-  assert.match(page, /screen === "chapter-loading" && <ChapterLoading chapter=\{chapter\}/);
+  assert.match(page, /screen === "chapter-loading" && <ChapterLoading chapter=\{chapter\} onBack=\{\(\) => setScreen\("recommend"\)\}/);
   assert.match(page, /window\.setTimeout\(\(\) => \{/);
   assert.match(page, /flushSync\(\(\) => setScreen\("reader"\)\)/);
   assert.match(page, /startViewTransition\?: \(update: \(\) => void\) => unknown/);
@@ -19,6 +19,9 @@ test("book recommendations open a timed chapter loading screen", () => {
 });
 
 test("each chapter loading screen has a title, matching cat, and introduction", () => {
+  assert.match(page, /function ChapterLoading\(\{ chapter, onBack \}: \{ chapter: Chapter; onBack: \(\) => void \}\)/);
+  assert.match(page, /className="reader-back-button chapter-loading-back" onClick=\{onBack\} aria-label="返回章节选择"/);
+  assert.match(css, /\.chapter-loading-back\{position:fixed;top:11px;left:max\(16px,calc\(50% - 199px\)\)/);
   assert.equal((page.match(/className="chapter-loading-title"/g) ?? []).length, 1);
   assert.equal((page.match(/className="reader-chapter-title"/g) ?? []).length, 1);
   assert.equal((page.match(/className="chapter-shared-cat"/g) ?? []).length, 2);
