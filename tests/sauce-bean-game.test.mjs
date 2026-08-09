@@ -114,9 +114,12 @@ test("completed stirring continues to a press-and-hold fermentation timeline", (
   assert.match(page, /\[1, 10, 30, 100\]\.map\(\(day\) => <span key=\{day\}/);
   assert.match(page, /十日內，每日數度以杷徹底攪之。/);
   assert.match(page, /十日後，每日輒一攪，三十日止。/);
-  assert.match(page, /onPointerDown=\{startFerment\}[\s\S]*onPointerUp=\{stopFerment\}[\s\S]*按住晒太阳催熟[\s\S]*让日子快快走/);
+  assert.match(page, /onPointerDown=\{startFerment\}[\s\S]*onPointerUp=\{stopFerment\}[\s\S]*⌛[\s\S]*按住加速发酵[\s\S]*让日子快快走/);
+  assert.doesNotMatch(page, /晒太阳催熟/);
   assert.match(page, /window\.setInterval\([\s\S]*Math\.min\(100, day \+ 1\)[\s\S]*45\)/);
   assert.match(css, /\.sauce-ferment-hold\{[\s\S]*border-radius:22px[\s\S]*linear-gradient/);
+  assert.match(css, /@keyframes fermentHourglass/);
+  assert.doesNotMatch(css, /fermentSun/);
 });
 
 test("day one hundred reveals mature sauce and unlocks the sauce cat", () => {

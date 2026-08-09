@@ -529,7 +529,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             <blockquote>{fermentDay <= 10 ? "十日內，每日數度以杷徹底攪之。" : "十日後，每日輒一攪，三十日止。"}</blockquote>
             <p>{fermentDay <= 10 ? "前十日需每日多次彻底搅拌。" : fermentDay <= 30 ? "十日后每日搅拌一次，至三十日停止。" : "停止搅拌，让时间慢慢酿成滋味。"}</p>
           </section>
-          <button type="button" className="sauce-ferment-hold" aria-label="长按让发酵时间快速流逝" onPointerDown={startFerment} onPointerUp={stopFerment} onPointerCancel={stopFerment} onLostPointerCapture={stopFerment}><span>☀</span><b>按住晒太阳催熟</b><small>让日子快快走</small></button>
+          <button type="button" className="sauce-ferment-hold" aria-label="长按让发酵时间快速流逝" onPointerDown={startFerment} onPointerUp={stopFerment} onPointerCancel={stopFerment} onLostPointerCapture={stopFerment}><span>⌛</span><b>按住加速发酵</b><small>让日子快快走</small></button>
         </> : <>
           <div className="taro-game-scene sauce-ferment-complete-scene">
             <span className="taro-game-placeholder">成熟大酱画面占位<br />sauce-game-ferment-complete.webp</span>
