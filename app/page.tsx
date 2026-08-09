@@ -317,7 +317,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
           <span className="taro-game-placeholder">选地画面占位<br />taro-game-select-land.webp</span>
           <ArtImage src="/art/taro-game-select-land.webp" alt="三块不同条件的土地" className="taro-game-image" />
           {wrongAttempts >= 1 && <div className="taro-land-details" aria-live="polite">{landChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
-          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>肥沃松软、靠近水源的土地更适合种芋。</span></div>}
+          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>肥沃松软、靠近水源的土地更适合种芋。</span><small>《齐民要术》：“宜擇肥緩土近水處，和柔，糞之。”</small></div>}
         </div>
         <div className="taro-land-options" aria-label="选择一块土地">
           {landChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseLand(index)}>{choice.label}</button>)}

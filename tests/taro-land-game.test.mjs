@@ -20,3 +20,8 @@ test("field guidance is progressively revealed after wrong choices", () => {
   assert.match(page, /wrongAttempts >= 1 && <div className="taro-land-details"/);
   assert.match(page, /wrongAttempts >= 2 && <blockquote className="taro-land-source">宜擇肥緩土近水處，和柔，糞之<\/blockquote>/);
 });
+
+test("correct field feedback includes the source text", () => {
+  assert.match(page, /<b>选对了<\/b><span>肥沃松软、靠近水源的土地更适合种芋。<\/span><small>《齐民要术》：“宜擇肥緩土近水處，和柔，糞之。”<\/small>/);
+  assert.match(css, /\.taro-land-success small\{[^}]*border-top:1px solid rgba\(255,253,245,\.35\)[^}]*font:600 11px\/1\.7/);
+});
