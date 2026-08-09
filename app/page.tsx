@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   ArrowLeft,
   ArrowRight,
@@ -172,8 +173,8 @@ function ChapterLoading({ chapter }: { chapter: Chapter }) {
   return (
     <main className="chapter-loading-page" aria-live="polite" aria-label={`正在打开${chapter.title}`}>
       <section className="chapter-loading-content">
-        <h1>{chapter.title}</h1>
-        <img src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
+        <h1 className="chapter-loading-title">{chapter.title}</h1>
+        <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
         <p>{chapterLoadingCopy[chapter.id]}</p>
       </section>
     </main>
@@ -369,7 +370,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
         >
           <ArrowLeft size={18} />
         </button>
-        <h1>{chapter.title}</h1>
+        <h1 className="reader-chapter-title">{chapter.title}</h1>
         <span aria-hidden="true" />
       </header>
       <section className="chapter-intro">
@@ -379,7 +380,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
           <button type="button">{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
           <span className="shortcut-cat-animation" aria-label={chapter.id === "soybean" ? "种芋动画猫" : "作酱动画猫"}>
-            <img src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
+            <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
       </div>}
       <section className="chat-stream">

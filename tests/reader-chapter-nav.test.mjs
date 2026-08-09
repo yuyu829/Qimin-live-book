@@ -6,7 +6,7 @@ const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8")
 const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
 test("deck and full-text modes render the chapter navigation before the intro", () => {
-  assert.match(page, /<header className="reader-chapter-nav">[\s\S]*<h1>\{chapter\.title\}<\/h1>[\s\S]*<\/header>\s*<section className="chapter-intro">/);
+  assert.match(page, /<header className="reader-chapter-nav">[\s\S]*<h1 className="reader-chapter-title">\{chapter\.title\}<\/h1>[\s\S]*<\/header>\s*<section className="chapter-intro">/);
 });
 
 test("chapter navigation stays fixed at the very top with a centered title", () => {
