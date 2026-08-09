@@ -27,7 +27,7 @@ import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, typ
 import { DECK_STACK_RISE, deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 import { highlightTerms } from "@/lib/highlight-terms";
 
-type Screen = "cover" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
+type Screen = "cover" | "prologue-loading" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
 type Note = { id: number; text: string; time: string };
 
@@ -96,6 +96,21 @@ function Cover({ onNext }: { onNext: () => void }) {
         <ArtImage src="/art/cover-world.webp" alt="齐民要术田园绘本封面" className="custom-art cover-art" />
       </div>
       <div className="scroll-cue">向下翻一页 <span>↓</span></div>
+    </main>
+  );
+}
+
+function PrologueLoading({ onBack }: { onBack: () => void }) {
+  return (
+    <main className="prologue-loading-page" aria-live="polite" aria-label="正在开启齐民要术活书世界">
+      <button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面">
+        <ArrowLeft size={18} />
+      </button>
+      <section className="prologue-loading-copy">
+        <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序；</p>
+        <p>今天，我们在新的时代里，萃取属于当下的生活真义。</p>
+        <p>一代人有一代人的《齐民要术》。<br />欢迎来到这里，感知古今共通的生活哲学。</p>
+      </section>
     </main>
   );
 }
@@ -533,6 +548,12 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (screen !== "prologue-loading") return;
+    const timer = window.setTimeout(() => { setScreen("interest"); window.scrollTo(0, 0); }, 6000);
+    return () => window.clearTimeout(timer);
+  }, [screen]);
+
+  useEffect(() => {
     if (screen !== "chapter-loading") return;
     const timer = window.setTimeout(() => {
       const showReader = () => { flushSync(() => setScreen("reader")); window.scrollTo(0, 0); };
@@ -554,7 +575,8 @@ export default function HomePage() {
   return (
     <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
       {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
-      {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
+      {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
+      {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
       {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
       {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
