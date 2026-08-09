@@ -11,5 +11,6 @@ test("blank map areas open a grey coming-soon dialog without hijacking hotspots"
   assert.equal((page.match(/event\.stopPropagation\(\); setVolume\("(?:soybean|sauce)"\)/g) ?? []).length, 2);
   assert.match(page, /comingSoonOpen && <div className="map-coming-soon-backdrop"[\s\S]*<b>敬请期待<\/b>/);
   assert.match(css, /\.map-coming-soon-backdrop\{position:absolute;inset:0;z-index:13;[^}]*background:rgba\(48,48,48,\.38\)/);
-  assert.match(css, /\.map-coming-soon-popover\{[^}]*background:rgba\(105,105,105,\.94\)/);
+  assert.match(css, /\.map-coming-soon-popover\{position:relative;width:min\(190px,72%\);min-height:92px;[^}]*background:rgba\(105,105,105,\.94\)/);
+  assert.match(css, /\.map-coming-soon-popover>b\{font:700 18px\/1\.2/);
 });
