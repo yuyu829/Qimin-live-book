@@ -521,6 +521,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
           {stirred && <blockquote className="taro-land-source">攪令均調，以手痛挼，皆令潤徹。</blockquote>}
         </> : fermentDay < 100 ? <>
           <section className="sauce-ferment-panel" aria-live="polite">
+            <ArtImage src="/art/sauce-game-ferment-background.webp" alt="" className="sauce-ferment-background" />
             <div className="sauce-ferment-day"><small>发酵时间</small><b>第 {fermentDay} 天</b></div>
             <div className="sauce-ferment-progress" role="progressbar" aria-label="大酱发酵进度" aria-valuemin={1} aria-valuemax={100} aria-valuenow={fermentDay}>
               <div className="sauce-ferment-track"><i style={{ width: `${fermentDay}%` }} />{[1, 10, 30, 100].map((day) => <span key={day} className={fermentDay >= day ? "reached" : ""} style={{ left: `${day}%` }} />)}</div>
