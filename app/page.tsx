@@ -353,7 +353,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
           <div className="taro-game-scene taro-dig-scene" onPointerDown={startDig} onPointerMove={moveDig} onPointerUp={finishDig} onPointerCancel={finishDig}>
             <span className="taro-game-placeholder">挖地画面占位<br />{digImage.split("/").at(-1)}</span>
             <ArtImage src={digImage} alt={digCount >= 3 ? "已经挖好的土地" : "正在交替挖地"} className="taro-game-image taro-dig-image" />
-            {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span></div>}
+            {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span><small>《齐民要术》：“種芋，區方深皆三尺。”</small></div>}
           </div>
           <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
           <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>

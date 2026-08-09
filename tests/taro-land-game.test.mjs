@@ -40,5 +40,10 @@ test("correct land choice continues to the three-swipe digging step", () => {
 test("digging artwork placeholders are documented as square assets", () => {
   assert.match(artReadme, /`taro-game-dig-1\.webp` \| 1200 x 1200/);
   assert.match(artReadme, /`taro-game-dig-2\.webp` \| 1200 x 1200/);
+
+test("completed digging feedback includes the source text", () => {
+  assert.match(page, /<b>挖地完成<\/b><span>土地已经松整，可以继续下一步了。<\/span><small>《齐民要术》：“種芋，區方深皆三尺。”<\/small>/);
+  assert.match(css, /\.taro-dig-complete small\{[^}]*border-top:1px solid rgba\(255,253,245,\.35\)[^}]*font:600 10px\/1\.6/);
+});
   assert.match(artReadme, /`taro-game-dig-complete\.webp` \| 1200 x 1200/);
 });
