@@ -17,7 +17,7 @@ test("reader shortcuts sit in a fixed row directly below the chapter intro", () 
   assert.match(css, /\.reader-shortcuts\{[^}]*height:54px/);
   assert.match(css, /\.reader-shortcuts\{[^}]*padding:1px 14px/);
   assert.match(css, /\.reader-shortcuts\{[^}]*border-bottom:0/);
-  assert.match(css, /\.chapter-intro:after\{content:"";position:absolute;left:22px;right:22px;bottom:8px;border-top:1px dashed rgba\(205,189,167,\.32\);pointer-events:none\}/);
+  assert.match(css, /\.chapter-intro:after\{content:"";position:absolute;left:22px;right:22px;bottom:16px;border-top:1px dashed rgba\(205,189,167,\.32\);pointer-events:none\}/);
   assert.doesNotMatch(css, /\.reader-shortcuts:(?:before|after)\{[^}]*border-top:[^}]*dashed/);
   assert.match(page, /<\/section>\s*\{readerMode === "deck" && <div className="reader-shortcuts"/);
   assert.match(page, />阅读全文<\/button>/);
