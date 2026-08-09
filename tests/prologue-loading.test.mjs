@@ -16,8 +16,11 @@ test("prologue reveals the supplied text in three quiet beats", () => {
   assert.match(page, /1500年前，《齐民要术》记录了古人与天地共生的生活秩序；/);
   assert.match(page, /今天，我们在新的时代里，萃取属于当下的生活真义。/);
   assert.match(page, /一代人有一代人的《齐民要术》。<br \/>欢迎来到这里，感知古今共通的生活哲学。/);
+  assert.match(page, /<ArtImage src="\/art\/cover-world\.webp" alt="" className="prologue-loading-art" \/>/);
   assert.match(page, /aria-label="返回封面"/);
   assert.match(css, /\.prologue-loading-copy p\{[^}]*animation:prologueLineIn 1\.4s ease forwards/);
   assert.match(css, /\.prologue-loading-copy p:nth-child\(2\)\{[^}]*animation-delay:1\.45s/);
   assert.match(css, /\.prologue-loading-copy p:nth-child\(3\)\{[^}]*animation-delay:3\.05s/);
+  assert.match(css, /\.prologue-loading-art\{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;[^}]*animation:prologueArtIn 1\.4s ease 3\.05s forwards/);
+  assert.match(css, /\.prologue-loading-copy\{position:relative;z-index:1/);
 });

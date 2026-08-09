@@ -196,8 +196,10 @@ body{background:#d9cdbd}
 /* The opening prologue unfolds in three quiet beats before the first question. */
 .prologue-loading-page{position:relative;min-height:100svh;display:grid;place-items:center;padding:72px 30px;background:#f7eee0}
 .prologue-loading-back{position:fixed;top:11px;left:max(16px,calc(50% - 199px));z-index:2}
-.prologue-loading-copy{width:min(100%,340px);color:#6f503e;text-align:center;font:500 15px/2 "Noto Serif SC","Songti SC",serif}
+.prologue-loading-art{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:0;animation:prologueArtIn 1.4s ease 3.05s forwards}
+.prologue-loading-copy{position:relative;z-index:1;width:min(100%,340px);color:#6f503e;text-align:center;font:500 15px/2 "Noto Serif SC","Songti SC",serif}
 .prologue-loading-copy p{margin:0;opacity:0;transform:translateY(12px);animation:prologueLineIn 1.4s ease forwards}
 .prologue-loading-copy p:nth-child(2){margin-top:18px;animation-delay:1.45s}
 .prologue-loading-copy p:nth-child(3){margin-top:42px;animation-delay:3.05s}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
+@keyframes prologueArtIn{to{opacity:1}}
