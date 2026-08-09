@@ -29,3 +29,8 @@ test("full text starts closer to the intro without moving the deck", () => {
   assert.match(css, /\.reader-page\.is-full-reader \.chat-stream\{padding-top:223px\}/);
   assert.match(css, /\.reader-page \.deck-stage\{padding-top:72px\}/);
 });
+
+test("full reader why action keeps only its icon and text", () => {
+  assert.match(css, /\.reader-page\.is-full-reader \.message-heading>\.why-button\{border:0;border-radius:0;background:transparent\}/);
+  assert.match(css, /\.message-heading>\.why-button\{[^}]*border:1px solid #b9c8ad[^}]*background:#e7ebdd/);
+});

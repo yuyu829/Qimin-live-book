@@ -173,6 +173,7 @@ body{background:#d9cdbd}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{padding-right:0}
 .compact-read-more-row{display:flex;justify-content:flex-end;flex:none;min-height:22px;margin-top:6px;border-top:0}
 .compact-read-more-row .compact-read-more{display:block;position:static;margin:0;padding:2px 0 0;border:0;background:none;color:#c53f32;font-size:11px;font-weight:800;line-height:1.4;white-space:nowrap;cursor:pointer}
+.reader-page.is-full-reader .message-heading>.why-button{border:0;border-radius:0;background:transparent}
 @media(max-width:380px){.message-heading>.why-button{padding:5px 8px}.why-button{width:auto;justify-content:center}}
 
 /* School experience notes remain a two-column wall at every viewport size. */
