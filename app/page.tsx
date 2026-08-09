@@ -119,15 +119,15 @@ function PrologueLoading({ onBack }: { onBack: () => void }) {
 function Interest({ selected, setSelected, onNext }: { selected: string; setSelected: (value: string) => void; onNext: () => void }) {
   const choices = [
     { id: "plant", icon: <Sprout />, title: "种点东西", text: "阳台种菜、养花、育苗" },
-    { id: "food", icon: <FlaskConical />, title: "厨房门道", text: "发酵、保存、做得更香" },
-    { id: "why", icon: <Sparkles />, title: "冷知识溯源", text: "这招到底是哪儿来的" }
+    { id: "food", icon: <FlaskConical />, title: "饮食烹饪", text: "食材保鲜、古法发酵与烹饪" },
+    { id: "why", icon: <Sparkles />, title: "冷知识溯源", text: "生活妙招背后的历史与科学" }
   ];
   return (
     <main className="step-screen narrow-page">
       <div className="step-count">壹 <span /> 贰</div>
-      <p className="overline">先认识一下</p>
-      <h2>你平时容易停在哪类<br />生活妙招前？</h2>
-      <p className="subcopy">随手选一个，看看古书里的人会聊起什么。</p>
+      <p className="overline">偏好设定</p>
+      <h2>选择你的关注，看看古书里的人会怎么解决这些生活问题。</h2>
+      <p className="subcopy">随手选一个，翻开两千年前的生活妙招。</p>
       <div className="choice-list">
         {choices.map((choice) => (
           <button key={choice.id} className={`choice-row ${selected === choice.id ? "selected" : ""}`} onClick={() => setSelected(choice.id)}>
@@ -136,7 +136,7 @@ function Interest({ selected, setSelected, onNext }: { selected: string; setSele
           </button>
         ))}
       </div>
-      <button disabled={!selected} className="primary-button full-button" onClick={onNext}>看看为你翻到哪一页 <ArrowRight size={18} /></button>
+      <button disabled={!selected} className="primary-button full-button" onClick={onNext}>按此启卷 <ArrowRight size={18} /></button>
       <p className="privacy-note">这次选择只用来开启 Demo，不会上传或保存。</p>
     </main>
   );
