@@ -26,7 +26,7 @@ import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, typ
 import { DECK_STACK_RISE, deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 import { highlightTerms } from "@/lib/highlight-terms";
 
-type Screen = "cover" | "interest" | "recommend" | "reader" | "map" | "school";
+type Screen = "cover" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
 type Note = { id: number; text: string; time: string };
 
@@ -159,6 +159,23 @@ function Recommendations({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
       </div>
       <div className="reading-art-placeholder" aria-label="读书页插画占位"><ArtImage src="/art/reading-world.webp" alt="读书页田园插画" className="reading-art-image" /></div>
       <div className="source-note"><BookOpen size={18} /><p><b>书中有据</b><br />所有文言原文均来自《齐民要术》，AI 只负责解释，不改写原文。</p></div>
+    </main>
+  );
+}
+
+const chapterLoadingCopy: Record<Chapter["id"], string> = {
+  soybean: "相传乾隆南巡时尝到芋头后赞不绝口，也让这口软糯滋味传得更远。",
+  sauce: "一缸好酱，要从选豆、蒸豆、拌曲到百日晒制，步步都急不得。"
+};
+
+function ChapterLoading({ chapter }: { chapter: Chapter }) {
+  return (
+    <main className="chapter-loading-page" aria-live="polite" aria-label={`正在打开${chapter.title}`}>
+      <section className="chapter-loading-content">
+        <h1>{chapter.title}</h1>
+        <img src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
+        <p>{chapterLoadingCopy[chapter.id]}</p>
+      </section>
     </main>
   );
 }
@@ -518,7 +535,14 @@ export default function HomePage() {
     } catch { /* ignore malformed demo state */ }
   }, []);
 
+  useEffect(() => {
+    if (screen !== "chapter-loading") return;
+    const timer = window.setTimeout(() => { setScreen("reader"); window.scrollTo(0, 0); }, 1800);
+    return () => window.clearTimeout(timer);
+  }, [screen, chapterId]);
+
   function openChapter(id: Chapter["id"]) { setChapterId(id); setScreen("reader"); window.scrollTo(0, 0); }
+  function loadChapter(id: Chapter["id"]) { setChapterId(id); setScreen("chapter-loading"); window.scrollTo(0, 0); }
   function completeChapter() {
     const next = Array.from(new Set([...readIds, chapterId])); setReadIds(next); localStorage.setItem("qimin-read", JSON.stringify(next)); setScreen("map"); window.scrollTo(0, 0);
   }
@@ -530,7 +554,8 @@ export default function HomePage() {
       {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
       {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
-      {screen === "recommend" && <Recommendations onOpen={openChapter} />}
+      {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
+      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} />}
       {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} />}
       {screen === "map" && <WorldMap onOpen={openChapter} />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
