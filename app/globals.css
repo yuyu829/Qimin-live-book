@@ -133,8 +133,9 @@ body{background:#d9cdbd}
 .reader-page .deck-stage{padding-top:72px}
 .reader-back-button{width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1);cursor:pointer}
 .reader-back-button:hover{color:var(--clay-dark);background:#fff1dc}
-.school-return-nav{height:58px;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;margin:0 -16px;padding:0 10px;border-bottom:1px solid #d9ccb8;background:rgba(247,241,227,.97)}
-.school-return-nav h1{margin:0;color:#5a4939;font:700 17px/1.3 "Noto Serif SC","Songti SC",serif;text-align:center}
-.school-back-button{width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1);cursor:pointer}
-.school-back-button:hover{color:var(--clay-dark);background:#fff1dc}
-.school-page .school-heading{margin-top:26px}
+.school-page{padding-top:12px}
+.school-return-link{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;color:#735f4b;font-size:12px;font-weight:700;cursor:pointer}
+.school-return-icon{width:36px;height:36px;display:grid;place-items:center;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1)}
+.school-return-link:hover{color:var(--clay-dark)}
+.school-return-link:hover .school-return-icon{background:#fff1dc}
+.school-page .school-heading{margin-top:14px}
