@@ -317,7 +317,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [steamed, setSteamed] = useState(false);
   const [peelCount, setPeelCount] = useState(0);
   const [peelY, setPeelY] = useState(0);
-  const steamStart = useRef({ x: 0, active: false });
+  const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
 
   function chooseBean(index: number) {
@@ -330,21 +330,23 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
 
   function startSteam(event: ReactPointerEvent<HTMLButtonElement>) {
     if (steamed) return;
-    steamStart.current = { x: event.clientX - steamDrag, active: true };
+    const track = event.currentTarget.parentElement;
+    const max = track ? track.clientWidth - event.currentTarget.offsetWidth - 8 : 0;
+    steamStart.current = { x: event.clientX - steamDrag, max, active: true };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function moveSteam(event: ReactPointerEvent<HTMLButtonElement>) {
     if (!steamStart.current.active || steamed) return;
-    setSteamDrag(Math.min(196, Math.max(0, event.clientX - steamStart.current.x)));
+    setSteamDrag(Math.min(steamStart.current.max, Math.max(0, event.clientX - steamStart.current.x)));
   }
 
   function finishSteam(event: ReactPointerEvent<HTMLButtonElement>) {
     if (!steamStart.current.active || steamed) return;
-    const distance = Math.min(196, Math.max(0, event.clientX - steamStart.current.x));
+    const distance = Math.min(steamStart.current.max, Math.max(0, event.clientX - steamStart.current.x));
     steamStart.current.active = false;
-    if (distance >= 150) {
-      setSteamDrag(196);
+    if (steamStart.current.max > 0 && distance >= steamStart.current.max * 0.8) {
+      setSteamDrag(steamStart.current.max);
       setSteamed(true);
       return;
     }
@@ -394,7 +396,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             {steamed && <div className="taro-dig-complete" aria-live="polite"><b>蒸熟了</b><span>豆子已经充分蒸熟。</span><button type="button" onClick={() => setStep("peel")}>下一步：去皮</button></div>}
           </div>
           <div className={`sauce-steam-control${steamed ? " done" : ""}`}>
-            <div className="sauce-steam-track"><span>向右拖动蒸汽，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动蒸汽按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>蒸汽</button></div>
+            <div className="sauce-steam-track"><span>向右拖动点火，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动点火按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>点火</button></div>
           </div>
           {steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。</blockquote>}
         </> : <>

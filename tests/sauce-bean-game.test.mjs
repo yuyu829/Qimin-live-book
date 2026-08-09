@@ -32,8 +32,10 @@ test("correct beans continue to a right-drag steaming step", () => {
   assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
   assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
-  assert.match(page, /if \(distance >= 150\)[\s\S]*setSteamDrag\(196\)[\s\S]*setSteamed\(true\)/);
-  assert.match(page, /aria-label="向右拖动蒸汽按钮"[\s\S]*onPointerDown=\{startSteam\}[\s\S]*onPointerMove=\{moveSteam\}[\s\S]*onPointerUp=\{finishSteam\}/);
+  assert.match(page, /const max = track \? track\.clientWidth - event\.currentTarget\.offsetWidth - 8 : 0/);
+  assert.match(page, /if \(steamStart\.current\.max > 0 && distance >= steamStart\.current\.max \* 0\.8\)[\s\S]*setSteamDrag\(steamStart\.current\.max\)[\s\S]*setSteamed\(true\)/);
+  assert.match(page, /向右拖动点火，让豆子充分蒸熟/);
+  assert.match(page, /aria-label="向右拖动点火按钮"[\s\S]*onPointerDown=\{startSteam\}[\s\S]*onPointerMove=\{moveSteam\}[\s\S]*onPointerUp=\{finishSteam\}[\s\S]*>点火<\/button>/);
 });
 
 test("steaming switches between two square art placeholders and reveals the source", () => {
