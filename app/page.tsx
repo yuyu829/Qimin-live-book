@@ -416,8 +416,9 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
               );
             })}
           </div>
+          </>
         )}
-        {readerMode === "deck" && <div className="swipe-hint"><ArrowRight size={15} /> 按住卡片向右滑，听下一位发言</div>}
+        {readerMode === "deck" && currentIndex < chapter.messages.length && <div className="swipe-hint"><ArrowRight size={15} /> 按住卡片向右滑，听下一位发言</div>}
         {conversation.map((item, index) => (
           <div className="qa-exchange" key={`${item.question}-${index}`}>
             <div className="user-question">你问：{item.question}</div>

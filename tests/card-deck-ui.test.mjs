@@ -56,6 +56,7 @@ test("swipe hint has its own space below cards and stays within a fixed reader v
   assert.match(css, /\.swipe-hint\{[^}]*position:fixed[^}]*bottom:24px[^}]*z-index:39[^}]*white-space:nowrap/);
   assert.match(css, />\.chat-stream\{position:fixed;top:282px;bottom:78px/);
   assert.doesNotMatch(css, /\.swipe-hint\{[^}]*border-radius/);
+  assert.match(page, /readerMode === "deck" && currentIndex < chapter\.messages\.length && <div className="swipe-hint">/);
 });
 
 test("annotated original terms have a highlighted text style", () => {
