@@ -873,18 +873,20 @@ const showcaseUnlockedCats = new Set(["chili", "chicken", "cake", "persimmon"]);
 function WorldMap({ onOpen, unlockedCats }: { onOpen: (id: Chapter["id"]) => void; unlockedCats: CatUnlock[] }) {
   const [volume, setVolume] = useState<"soybean" | "sauce">();
   const [pouchOpen, setPouchOpen] = useState(false);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   return (
     <main className="map-page">
-      <div className="world-map" data-map-coordinate-space="853x1844">
+      <div className="world-map" data-map-coordinate-space="853x1844" onClick={() => setComingSoonOpen(true)}>
         <ArtImage src="/art/world-map.webp" alt="齐民村田园绘本地图" className="custom-art world-map-art" />
         <svg className="map-hotspots" viewBox="0 0 853 1844" preserveAspectRatio="xMidYMin slice" aria-label="齐民村地点">
-          <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="打开种植卷目录" onClick={() => setVolume("soybean")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("soybean"); }} />
-          <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="打开酿造卷目录" onClick={() => setVolume("sauce")} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("sauce"); }} />
+          <rect className="map-hotspot" x="306" y="304" width="242" height="242" role="button" tabIndex={0} aria-label="打开种植卷目录" onClick={(event) => { event.stopPropagation(); setVolume("soybean"); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("soybean"); }} />
+          <rect className="map-hotspot" x="20" y="868" width="242" height="242" role="button" tabIndex={0} aria-label="打开酿造卷目录" onClick={(event) => { event.stopPropagation(); setVolume("sauce"); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setVolume("sauce"); }} />
         </svg>
       </div>
       <div className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"><div className="map-profile-avatar"><ArtImage src="/art/map-cat-avatar.webp" alt="小禾喵头像" className="map-profile-image" /></div><div className="map-profile-info"><b>小禾喵</b><span>Lv2&nbsp; 小学徒</span><div className="map-level-track" role="progressbar" aria-label="升级进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={46}><i /></div></div></div>
       <button className="map-pouch-button" type="button" aria-label="打开图鉴" onClick={() => setPouchOpen(true)}><ArtImage src="/art/map-pouch.webp" alt="图鉴" className="map-pouch-image" /><span aria-hidden="true">图鉴</span></button>
       {pouchOpen && <div className="pouch-backdrop" onClick={() => setPouchOpen(false)}><section className="pouch-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setPouchOpen(false)} aria-label="关闭图鉴"><X /></button><p className="overline">齐民村 · 农活喵图鉴</p><h2>我的图鉴</h2><div className="pouch-grid">{pouchCats.map(([name, image, id]) => { const unlocked = showcaseUnlockedCats.has(id) || ((id === "taro" || id === "sauce") && unlockedCats.includes(id)); return <article className={`pouch-cat ${unlocked ? "is-unlocked" : "is-locked"}`} key={name}><div className="pouch-cat-art"><ArtImage src={`/art/${image}`} alt={`${name}插画占位`} className="pouch-cat-image" />{!unlocked && <span className="pouch-lock-badge">待解锁</span>}</div><b>{name}</b></article>; })}</div></section></div>}
+      {comingSoonOpen && <div className="map-coming-soon-backdrop" onClick={() => setComingSoonOpen(false)}><section className="map-coming-soon-popover" role="dialog" aria-modal="true" aria-label="敬请期待" onClick={(event) => event.stopPropagation()}><button type="button" onClick={() => setComingSoonOpen(false)} aria-label="关闭敬请期待弹窗"><X size={17} /></button><b>敬请期待</b></section></div>}
       {volume && <div className="map-volume-backdrop" onClick={() => setVolume(undefined)}><section className="map-volume-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setVolume(undefined)} aria-label="关闭卷目录"><X /></button><p className="overline">齐民要术 · 章节目录</p><h2>{mapVolumes[volume].title}</h2><div className="map-volume-list">{mapVolumes[volume].items.map((item, index) => { const activeIndex = volume === "soybean" ? 12 : 2; return <button key={item} disabled={index !== activeIndex} onClick={() => onOpen(volume)}>{item}{index === activeIndex && <ChevronRight size={15} />}</button>; })}</div></section></div>}
     </main>
   );
