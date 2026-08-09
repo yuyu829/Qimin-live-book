@@ -1,0 +1,29 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+
+const page = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
+const data = readFileSync(new URL("../data/qimin.ts", import.meta.url), "utf8");
+const artReadme = readFileSync(new URL("../public/art/README.md", import.meta.url), "utf8");
+
+test("sauce shortcut opens the square bean-selection game", () => {
+  assert.match(page, /chapter\.id === "soybean" \? \(\) => setTaroGameOpen\(true\) : \(\) => setSauceGameOpen\(true\)/);
+  assert.match(page, /sauceGameOpen && chapter\.id === "sauce" && <SauceBeanGame/);
+  assert.match(page, /src="\/art\/sauce-game-select-beans\.webp"/);
+  assert.match(artReadme, /`sauce-game-select-beans\.webp` \| 1200 x 1200/);
+});
+
+test("bean choices reveal guidance progressively and select spring black beans", () => {
+  assert.match(page, /const sauceBeanChoices = \[[\s\S]*晚播大白豆[\s\S]*秋收获黄豆[\s\S]*春种乌豆/);
+  assert.match(page, /function chooseBean\(index: number\)[\s\S]*if \(index === 2\)[\s\S]*setSolved\(true\)/);
+  assert.match(page, /wrongAttempts >= 1 && <div className="taro-land-details sauce-bean-details"/);
+  assert.match(page, /wrongAttempts >= 2 && <blockquote className="taro-land-source">用春種烏豆，春豆粒小而均，晚豆粒大而雜。<\/blockquote>/);
+  assert.match(page, /秋收获黄豆", detail: "黄豆多在秋季成熟，但此处古法比较的是播种时节与豆粒是否细小均匀，并非单看收获季节"/);
+});
+
+test("correct bean feedback quotes the recorded sauce source", () => {
+  const source = "用春種烏豆，春豆粒小而均，晚豆粒大而雜。";
+  assert.ok(data.includes(source));
+  assert.ok(page.includes(`《齐民要术》：“${source}”`));
+  assert.match(page, /<b>选对了<\/b><span>春豆粒小而均，更适合制酱。<\/span>/);
+});

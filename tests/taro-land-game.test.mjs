@@ -7,7 +7,7 @@ const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8")
 const artReadme = readFileSync(new URL("../public/art/README.md", import.meta.url), "utf8");
 
 test("taro shortcut opens the first square field-selection game", () => {
-  assert.match(page, /onClick=\{chapter\.id === "soybean" \? \(\) => setTaroGameOpen\(true\) : undefined\}/);
+  assert.match(page, /onClick=\{chapter\.id === "soybean" \? \(\) => setTaroGameOpen\(true\) : \(\) => setSauceGameOpen\(true\)\}/);
   assert.match(page, /taroGameOpen && chapter\.id === "soybean" && <TaroLandGame/);
   assert.match(page, /src="\/art\/taro-game-select-land\.webp"/);
   assert.match(css, /\.taro-game-scene\{[^}]*aspect-ratio:1/);

@@ -303,6 +303,45 @@ const taroPlacementPoints = [
   { label: "中央", className: "place-center" }
 ] as const;
 
+const sauceBeanChoices = [
+  { label: "晚播大白豆", detail: "晚豆粒大而杂，不合古法制酱所选" },
+  { label: "秋收获黄豆", detail: "黄豆多在秋季成熟，但此处古法比较的是播种时节与豆粒是否细小均匀，并非单看收获季节" },
+  { label: "春种乌豆", detail: "春豆粒小而均，更适合制酱" }
+] as const;
+
+function SauceBeanGame({ onClose }: { onClose: () => void }) {
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [solved, setSolved] = useState(false);
+
+  function chooseBean(index: number) {
+    if (index === 2) {
+      setSolved(true);
+      return;
+    }
+    setWrongAttempts((attempts) => Math.min(2, attempts + 1));
+  }
+
+  return (
+    <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
+      <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
+        <p className="overline">作大酱 · 第一步</p>
+        <h2 id="sauce-game-title">选择豆子</h2>
+        <div className="taro-game-scene">
+          <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
+          <ArtImage src="/art/sauce-game-select-beans.webp" alt="从左到右摆放的三种豆子" className="taro-game-image" />
+          {wrongAttempts >= 1 && <div className="taro-land-details sauce-bean-details" aria-live="polite">{sauceBeanChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
+          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>春豆粒小而均，更适合制酱。</span><small>《齐民要术》：“用春種烏豆，春豆粒小而均，晚豆粒大而雜。”</small></div>}
+        </div>
+        <div className="taro-land-options sauce-bean-options" aria-label="选择一种制酱豆子">
+          {sauceBeanChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseBean(index)}>{choice.label}</button>)}
+        </div>
+        {wrongAttempts >= 2 && <blockquote className="taro-land-source">用春種烏豆，春豆粒小而均，晚豆粒大而雜。</blockquote>}
+      </section>
+    </div>
+  );
+}
+
 function TaroLandGame({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<"land" | "dig" | "place" | "water">("land");
   const [wrongAttempts, setWrongAttempts] = useState(0);
@@ -430,13 +469,14 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   const [dragging, setDragging] = useState(false);
   const [dismissing, setDismissing] = useState(false);
   const [taroGameOpen, setTaroGameOpen] = useState(false);
+  const [sauceGameOpen, setSauceGameOpen] = useState(false);
   const [deckCardHeight, setDeckCardHeight] = useState<number>();
   const pointerStart = useRef({ x: 0, active: false });
   const firstCardRef = useRef<HTMLDivElement>(null);
   const taroReferenceCardRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setTaroGameOpen(false); setConversation([]); setQuestion(""); }, [chapter.id]);
+  useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setTaroGameOpen(false); setSauceGameOpen(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
 
@@ -520,12 +560,13 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
-          <button type="button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : undefined}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
+          <button type="button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : () => setSauceGameOpen(true)}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
           <span className="shortcut-cat-animation" aria-label={chapter.id === "soybean" ? "种芋动画猫" : "作酱动画猫"}>
             <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
       </div>}
       {taroGameOpen && chapter.id === "soybean" && <TaroLandGame onClose={() => setTaroGameOpen(false)} />}
+      {sauceGameOpen && chapter.id === "sauce" && <SauceBeanGame onClose={() => setSauceGameOpen(false)} />}
       <section className="chat-stream">
         {readerMode === "full" && (
           <div className="full-chat-stream" aria-label="章节全文聊天室">
