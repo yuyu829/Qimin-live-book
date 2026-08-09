@@ -14,7 +14,7 @@ test("cover opens a timed prologue before the interest question", () => {
 });
 
 test("prologue reveals the supplied text in three quiet beats", () => {
-  assert.match(page, /1500年前，《齐民要术》记录了古人与天地共生的生活秩序；/);
+  assert.match(page, /1500年前，《齐民要术》记录了古人与天地共生的生活秩序与生存哲学；/);
   assert.match(page, /今天，我们在新的时代里，萃取属于当下的生活真义。/);
   assert.match(page, /一代人有一代人的《齐民要术》。<br \/>欢迎来到这里，感知古今共通的生活哲学。/);
   assert.match(page, /<ArtImage src="\/art\/prologue-loading\.webp" alt="" className="prologue-loading-art" \/>/);

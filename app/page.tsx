@@ -108,7 +108,7 @@ function PrologueLoading({ onBack }: { onBack: () => void }) {
       </button>
       <ArtImage src="/art/prologue-loading.webp" alt="" className="prologue-loading-art" />
       <section className="prologue-loading-copy">
-        <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序；</p>
+        <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序与生存哲学；</p>
         <p>今天，我们在新的时代里，萃取属于当下的生活真义。</p>
         <p>一代人有一代人的《齐民要术》。<br />欢迎来到这里，感知古今共通的生活哲学。</p>
       </section>
