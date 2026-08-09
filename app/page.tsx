@@ -88,7 +88,7 @@ function Cover({ onNext }: { onNext: () => void }) {
       <div className="cover-copy">
         <div className="eyebrow"><span /> 北魏 · 贾思勰 <span /></div>
         <h1>齐民要术<small>活书世界</small></h1>
-        <p className="cover-kicker">两千年前的生活妙招博主，<br />今天重新开麦。</p>
+        <p className="cover-kicker">顺应四时，因地制宜；<br />用心对待一顿饭、一棵植物、一件器物。</p>
         <button className="primary-button" onClick={onNext}>翻开这本活书 <ArrowRight size={18} /></button>
         <p className="cover-note"><Sparkles size={14} /> 5 分钟，听懂一条老祖宗的门道</p>
       </div>
