@@ -15,8 +15,8 @@ test("back arrow returns full text to deck and deck to chapter list", () => {
   assert.match(page, /onClick=\{readerMode === "full" \? \(\) => setReaderMode\("deck"\) : onBack\}/);
 });
 
-test("back arrow is a simple circular control inside the fixed intro", () => {
-  assert.match(css, /\.reader-back-button\{position:absolute;top:20px;left:16px;width:36px;height:36px/);
+test("back arrow is a simple circular control inside the chapter navigation", () => {
+  assert.match(page, /<header className="reader-chapter-nav">[\s\S]*className="reader-back-button"/);
+  assert.match(css, /\.reader-back-button\{width:36px;height:36px/);
   assert.match(css, /\.reader-back-button\{[^}]*border-radius:50%/);
-  assert.match(css, /\.chapter-intro>div\{padding-left:46px\}/);
 });

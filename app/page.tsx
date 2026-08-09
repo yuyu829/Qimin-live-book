@@ -323,7 +323,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   return (
     <main className={`reader-page ${readerMode === "full" ? "is-full-reader" : ""} ${readerMode === "detail" ? "is-detail-reader" : ""}`}>
       {readerMode === "detail" && detailMessage ? <MessageDetail chapter={chapter} message={detailMessage} onBack={() => setReaderMode(detailReturnMode)} /> : <>
-      <section className="chapter-intro">
+      <header className="reader-chapter-nav">
         <button
           type="button"
           className="reader-back-button"
@@ -332,6 +332,10 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
         >
           <ArrowLeft size={18} />
         </button>
+        <h1>{chapter.title}</h1>
+        <span aria-hidden="true" />
+      </header>
+      <section className="chapter-intro">
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
