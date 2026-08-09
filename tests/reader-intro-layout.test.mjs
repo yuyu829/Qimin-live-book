@@ -16,7 +16,7 @@ test("reader shortcuts sit in a fixed row directly below the chapter intro", () 
   assert.match(css, /\.reader-shortcuts\{[^}]*height:54px/);
   assert.match(page, /<\/section>\s*\{readerMode === "deck" && <div className="reader-shortcuts"/);
   assert.match(page, />阅读全文<\/button>/);
-  assert.match(page, /"去种芋" : "去晒酱"/);
+  assert.match(page, /"去种芋" : "去作酱"/);
 });
 
 test("deck and full-text content reserve the same stable top area", () => {

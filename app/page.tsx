@@ -359,7 +359,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
-          <button type="button">{chapter.id === "soybean" ? "去种芋" : "去晒酱"}</button>
+          <button type="button">{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
           <span className="shortcut-cat-placeholder" aria-label="动画小猫占位"><CatMark small /></span>
       </div>}
       <section className="chat-stream">
