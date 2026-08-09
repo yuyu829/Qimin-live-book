@@ -13,7 +13,7 @@ test("each rear card exposes at least half of the 42px source avatar", () => {
 
 test("truncated compact copy clearly leads into full reading", () => {
   assert.match(page, /message\.translation\.slice\(0, 40\)\}\.{3}/);
-  assert.match(page, /isOriginalTruncated && <button className="compact-read-more"/);
-  assert.match(page, />\.\.\.阅读全文<\/button>/);
+  assert.match(page, /isOriginalTruncated && <div className="compact-read-more-row"><button className="compact-read-more"/);
+  assert.match(page, />阅读全文<\/button>/);
   assert.match(page, /event\.stopPropagation\(\); onDetail\?\.\(\)/);
 });

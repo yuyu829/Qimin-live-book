@@ -146,10 +146,29 @@ body{background:#d9cdbd}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-stage{height:100%;margin:0;padding:0;transform:none;display:grid;align-items:start}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card{overflow:hidden;padding:17px 5px 9px}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-row{height:100%;overflow:hidden}
-.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{min-height:0;overflow:hidden}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{position:relative;min-height:0;overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .paper-bubble{height:calc(100% - 30px);overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{position:relative;padding-bottom:22px}
-.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
 .compact-read-more{display:block;position:absolute;right:0;bottom:0;z-index:3;margin:0;padding:3px 0;border:0;background:#fff9ec;color:var(--clay-dark);font-size:10px;font-weight:800;line-height:1.2;cursor:pointer}
 .reader-page.is-full-reader{height:auto;min-height:100svh;overflow:visible}
+
+/* Compact-card completion cues stay attached to the text they describe. */
+.why-button,.why-button svg{color:var(--sage-dark);stroke:currentColor}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{padding-bottom:0}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{position:relative;padding-right:54px}
+.compact-read-more{display:inline;position:absolute;right:0;bottom:2px;margin:0;padding:0 0 0 4px;border:0;background:linear-gradient(90deg,rgba(255,249,236,0),#fff9ec 18%);color:#c53f32;font-size:10px;font-weight:800;line-height:1.4;white-space:nowrap;cursor:pointer}
+
+/* Final compact-card action layout. */
+.message-column{position:relative}
+.message-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-height:29px}
+.message-heading .speaker-name{min-width:0;margin:0;padding-bottom:7px}
+.message-heading>.why-button{flex:none;width:auto;margin:-2px 0 0;padding:5px 9px;border:1px solid #b9c8ad;border-radius:14px;background:#e7ebdd;color:var(--sage-dark);font-size:10px;line-height:1.2}
+.message-heading>.why-button svg{color:var(--sage-dark);stroke:currentColor}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{padding-right:0}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{padding-bottom:0}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{padding-right:0}
+.compact-read-more-row{display:flex;justify-content:flex-end;flex:none;min-height:22px;margin-top:6px;border-top:0}
+.compact-read-more-row .compact-read-more{display:block;position:static;margin:0;padding:2px 0 0;border:0;background:none;color:#c53f32;font-size:11px;font-weight:800;line-height:1.4;white-space:nowrap;cursor:pointer}
+@media(max-width:380px){.message-heading>.why-button{padding:5px 8px}.why-button{width:auto;justify-content:center}}

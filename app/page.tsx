@@ -194,17 +194,19 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
       <div className="message-column">
-        <button className="speaker-name" onClick={() => onSpeaker(speaker)}>{speaker.name}<small>{speaker.nature}</small></button>
+        <div className="message-heading">
+          <button className="speaker-name" onClick={() => onSpeaker(speaker)}>{speaker.name}<small>{speaker.nature}</small></button>
+          <button className="why-button" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>
+            <Sparkles size={14} /> 这是为什么
+          </button>
+        </div>
         <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`} onClick={onDetail} role={onDetail ? "button" : undefined} tabIndex={onDetail ? 0 : undefined} onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}>
           <p className="translation">{displayTranslation}</p>
           <div className="original-block">
-            <p>{originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}</p>
-            {isOriginalTruncated && <button className="compact-read-more" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>...阅读全文</button>}
-            <div className="term-row">
-              <button className="why-button" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>
-                <Sparkles size={14} /> 这是为什么
-              </button>
-            </div>
+            <p>
+              {originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}
+            </p>
+            {isOriginalTruncated && <div className="compact-read-more-row"><button className="compact-read-more" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>阅读全文</button></div>}
           </div>
         </article>
       </div>
@@ -285,7 +287,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
     card.style.maxHeight = "none";
     const naturalHeight = card.scrollHeight;
     const availableHeight = window.innerHeight - 282 - 78 - DECK_STACK_RISE;
-    setDeckCardHeight(Math.max(120, Math.min(310, naturalHeight, availableHeight)));
+    setDeckCardHeight(Math.max(120, Math.min(350, naturalHeight + 48, availableHeight)));
   }, [chapter.id]);
 
   function openDetail(message: ChapterMessage) {

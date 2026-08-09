@@ -22,6 +22,6 @@ test("compact cards truncate both translation and original while detail keeps fu
   assert.match(page, /message\.translation\.length > 40/);
   assert.match(page, /message\.original\.length > 48/);
   assert.match(css, /\.deck-card \.translation\{[^}]*-webkit-line-clamp:3/);
-  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:2/);
+  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:3/);
   assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);
 });

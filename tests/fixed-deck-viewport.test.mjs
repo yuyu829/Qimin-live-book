@@ -14,6 +14,7 @@ test("all soybean and sauce deck cards share the same fixed dimensions", () => {
   assert.match(page, /chapters\.map/);
   assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
+  assert.match(page, /Math\.max\(120, Math\.min\(350, naturalHeight \+ 48, availableHeight\)\)/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
   assert.doesNotMatch(css, /\.deck-card\{height:360px/);
 });
@@ -23,11 +24,16 @@ test("compact cards ellipsize both translation and original while full reader st
   assert.match(page, /isOriginalTruncated = compact && message\.original\.length > 48/);
   assert.match(page, /message\.translation\.slice\(0, 40\)\}\.{3}/);
   assert.match(page, /<p className="translation">\{displayTranslation\}<\/p>/);
-  assert.match(page, /className="compact-read-more"[\s\S]*>\.\.\.阅读全文<\/button>/);
+  assert.match(page, /className="compact-read-more-row">[\s\S]*className="compact-read-more"[\s\S]*>阅读全文<\/button><\/div>/);
   assert.match(css, /\.deck-card \.translation\{[^}]*-webkit-line-clamp:3/);
   assert.match(css, /\.deck-card \.original-block\{position:relative;padding-bottom:22px\}/);
-  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:2/);
-  assert.match(css, /\.compact-read-more\{[^}]*position:absolute;right:0;bottom:0[^}]*z-index:3/);
+  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:3/);
+  assert.match(css, /\.compact-read-more-row\{display:flex;justify-content:flex-end;flex:none;min-height:22px;margin-top:6px/);
+  assert.match(css, /\.compact-read-more-row \.compact-read-more\{[^}]*position:static[^}]*color:#c53f32/);
+  assert.match(css, /\.message-heading\{display:flex;align-items:flex-start;justify-content:space-between/);
+  assert.match(css, /\.message-heading>\.why-button\{[^}]*background:#e7ebdd[^}]*color:var\(--sage-dark\)/);
+  assert.match(page, /<div className="message-heading">[\s\S]*<button className="speaker-name"[\s\S]*<button className="why-button"[\s\S]*<\/div>[\s\S]*<article className=/);
+  assert.match(css, /\.why-button,\.why-button svg\{[^}]*color:var\(--sage-dark\)/);
   assert.match(page, /readerMode === "full"[\s\S]*chapter\.messages\.map/);
 });
 
