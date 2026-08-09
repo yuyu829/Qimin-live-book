@@ -157,7 +157,7 @@ body{background:#d9cdbd}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{position:relative;padding-bottom:22px}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
 .compact-read-more{display:block;position:absolute;right:0;bottom:0;z-index:3;margin:0;padding:3px 0;border:0;background:#fff9ec;color:var(--clay-dark);font-size:10px;font-weight:800;line-height:1.2;cursor:pointer}
-.reader-page.is-full-reader{height:auto;min-height:100svh;overflow:visible}
+.reader-page.is-full-reader{height:100svh;min-height:0;overflow-x:hidden;overflow-y:scroll;scrollbar-width:thin;scrollbar-color:#aa8c70 rgba(221,210,192,.5)}.reader-page.is-full-reader::-webkit-scrollbar{width:6px}.reader-page.is-full-reader::-webkit-scrollbar-track{background:rgba(221,210,192,.5)}.reader-page.is-full-reader::-webkit-scrollbar-thumb{border-radius:6px;background:#aa8c70}
 
 /* Compact-card completion cues stay attached to the text they describe. */
 .why-button,.why-button svg{color:var(--sage-dark);stroke:currentColor}

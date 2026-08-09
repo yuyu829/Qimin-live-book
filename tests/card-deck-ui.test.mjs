@@ -89,7 +89,7 @@ test("full text shortcut opens the original vertical chat reader", () => {
   assert.match(page, /className="full-chat-stream" aria-label="章节全文聊天室"/);
   assert.match(page, /chapter\.messages\.map\(\(message\) =>/);
   assert.doesNotMatch(page, /<header className="reader-header">/);
-  assert.match(css, /\.reader-page\.is-full-reader\{[^}]*height:auto[^}]*overflow:visible/);
+  assert.match(css, /\.reader-page\.is-full-reader\{[^}]*height:100svh[^}]*overflow-y:scroll/);
   assert.match(css, /\.reader-page\.is-full-reader\{[^}]*padding-bottom:0[^}]*overscroll-behavior-y:contain/);
   assert.match(css, /\.is-full-reader \.chat-stream\{padding-top:26px;padding-bottom:86px\}/);
   assert.doesNotMatch(css, /\.is-full-reader \.question-bar\{display:none\}/);

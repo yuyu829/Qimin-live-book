@@ -43,5 +43,5 @@ test("compact cards ellipsize both translation and original while full reader st
 
 test("full text action keeps the complete scrolling reader available", () => {
   assert.match(page, /onClick=\{\(\) => setReaderMode\("full"\)\}>阅读全文/);
-  assert.match(css, /\.reader-page\.is-full-reader\{height:auto;min-height:100svh;overflow:visible\}/);
+  assert.match(css, /\.reader-page\.is-full-reader\{height:100svh;min-height:0;overflow-x:hidden;overflow-y:scroll/);
 });
