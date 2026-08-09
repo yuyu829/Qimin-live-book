@@ -94,13 +94,6 @@ function Cover({ onNext }: { onNext: () => void }) {
       </div>
       <div className="farm-scene" aria-label="田野里的小猫和古书插画">
         <ArtImage src="/art/cover-world.webp" alt="齐民要术田园绘本封面" className="custom-art cover-art" />
-        <div className="sun"><span /><span /><span /><span /></div>
-        <div className="cloud cloud-a" /><div className="cloud cloud-b" />
-        <div className="mountain mountain-a" /><div className="mountain mountain-b" />
-        <div className="field-lines" />
-        <div className="book-prop"><span>齐<br />民<br />要<br />术</span></div>
-        <CatMark />
-        <div className="sprout s1">♧</div><div className="sprout s2">♧</div><div className="sprout s3">♧</div>
       </div>
       <div className="scroll-cue">向下翻一页 <span>↓</span></div>
     </main>
