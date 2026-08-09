@@ -309,8 +309,17 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   const [solved, setSolved] = useState(false);
   const [digCount, setDigCount] = useState(0);
   const [digX, setDigX] = useState(0);
+  const [digFrame, setDigFrame] = useState<1 | 2>(1);
+  const [digAnimating, setDigAnimating] = useState(false);
   const [placedTaroCount, setPlacedTaroCount] = useState(0);
   const digStart = useRef({ x: 0, active: false });
+  const digReturnTimer = useRef<number | undefined>(undefined);
+  const digCompleteTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => {
+    window.clearTimeout(digReturnTimer.current);
+    window.clearTimeout(digCompleteTimer.current);
+  }, []);
 
   function chooseLand(index: number) {
     if (index === 2) {
@@ -321,25 +330,35 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   }
 
   function startDig(event: ReactPointerEvent<HTMLDivElement>) {
-    if (digCount >= 3) return;
+    if (digCount >= 3 || digAnimating) return;
     digStart.current = { x: event.clientX, active: true };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function moveDig(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!digStart.current.active || digCount >= 3) return;
+    if (!digStart.current.active || digCount >= 3 || digAnimating) return;
     setDigX(Math.max(0, event.clientX - digStart.current.x));
   }
 
   function finishDig(event: ReactPointerEvent<HTMLDivElement>) {
     if (!digStart.current.active) return;
+    const swipeDistance = Math.max(digX, event.clientX - digStart.current.x);
     digStart.current.active = false;
-    if (digX >= 55) setDigCount((count) => Math.min(3, count + 1));
     setDigX(0);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (swipeDistance < 55 || digAnimating) return;
+    setDigAnimating(true);
+    setDigFrame(2);
+    digReturnTimer.current = window.setTimeout(() => {
+      setDigFrame(1);
+      digCompleteTimer.current = window.setTimeout(() => {
+        setDigCount((count) => Math.min(3, count + 1));
+        setDigAnimating(false);
+      }, 180);
+    }, 180);
   }
 
-  const digImage = digCount >= 3 ? "/art/taro-game-dig-complete.webp" : digCount % 2 === 0 ? "/art/taro-game-dig-1.webp" : "/art/taro-game-dig-2.webp";
+  const digImage = digCount >= 3 ? "/art/taro-game-dig-complete.webp" : digFrame === 1 ? "/art/taro-game-dig-1.webp" : "/art/taro-game-dig-2.webp";
   const placementImage = placedTaroCount === 0 ? "/art/taro-game-dig-complete.webp" : `/art/taro-game-place-${placedTaroCount}.webp`;
 
   return (
@@ -366,7 +385,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
             {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span><small>《齐民要术》：“種芋，區方深皆三尺。”</small><button type="button" onClick={() => setStep("place")}>下一步：放置芋头</button></div>}
           </div>
           <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
-          <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>
+          <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : digAnimating ? "挥锄挖地中…" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>
         </> : <>
           <div className="taro-game-scene taro-place-scene">
             <span className="taro-game-placeholder">放置芋头画面占位<br />{placementImage.split("/").at(-1)}</span>

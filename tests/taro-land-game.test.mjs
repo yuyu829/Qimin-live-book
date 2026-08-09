@@ -30,11 +30,17 @@ test("correct field feedback includes the source text", () => {
 test("correct land choice continues to the three-swipe digging step", () => {
   assert.match(page, /<button type="button" onClick=\{\(\) => setStep\("dig"\)\}>下一步：挖地<\/button>/);
   assert.match(page, /function startDig\(event: ReactPointerEvent<HTMLDivElement>\)/);
-  assert.match(page, /if \(digX >= 55\) setDigCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
+  assert.match(page, /if \(swipeDistance < 55 \|\| digAnimating\) return;/);
   assert.match(page, /onPointerDown=\{startDig\} onPointerMove=\{moveDig\} onPointerUp=\{finishDig\} onPointerCancel=\{finishDig\}/);
-  assert.match(page, /digCount >= 3 \? "\/art\/taro-game-dig-complete\.webp" : digCount % 2 === 0 \? "\/art\/taro-game-dig-1\.webp" : "\/art\/taro-game-dig-2\.webp"/);
+  assert.match(page, /digCount >= 3 \? "\/art\/taro-game-dig-complete\.webp" : digFrame === 1 \? "\/art\/taro-game-dig-1\.webp" : "\/art\/taro-game-dig-2\.webp"/);
   assert.match(page, /aria-label=\{`挖地进度 \$\{digCount\}\/3`\}/);
   assert.match(css, /\.taro-dig-scene\{touch-action:none/);
+});
+
+test("each dig swipe plays frame two then frame one before counting progress", () => {
+  assert.match(page, /setDigAnimating\(true\);[\s\S]*setDigFrame\(2\);/);
+  assert.match(page, /window\.setTimeout\(\(\) => \{[\s\S]*setDigFrame\(1\);[\s\S]*window\.setTimeout\(\(\) => \{[\s\S]*setDigCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
+  assert.match(page, /digAnimating \? "挥锄挖地中…"/);
 });
 
 test("digging artwork placeholders are documented as square assets", () => {
