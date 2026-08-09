@@ -537,7 +537,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (screen !== "chapter-loading") return;
-    const timer = window.setTimeout(() => { setScreen("reader"); window.scrollTo(0, 0); }, 1800);
+    const timer = window.setTimeout(() => { setScreen("reader"); window.scrollTo(0, 0); }, 2300);
     return () => window.clearTimeout(timer);
   }, [screen, chapterId]);
 
