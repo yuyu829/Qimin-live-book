@@ -6,7 +6,7 @@ const deck = await readFile(new URL("../lib/card-deck.ts", import.meta.url), "ut
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
 test("each rear card exposes at least half of the 42px source avatar", () => {
-  assert.match(deck, /DECK_STACK_STEP = 30/);
+  assert.match(deck, /DECK_STACK_STEP = 50/);
   assert.match(deck, /DECK_REAR_CARD_COUNT = 4/);
   assert.match(deck, /DECK_STACK_RISE = DECK_STACK_STEP \* DECK_REAR_CARD_COUNT/);
 });
