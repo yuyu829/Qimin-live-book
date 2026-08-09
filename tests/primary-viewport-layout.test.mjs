@@ -53,6 +53,8 @@ test("map hotspots use the original artwork coordinate system", () => {
   assert.match(page, /x="306" y="304" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("soybean"\)\}/);
   assert.match(page, /x="20" y="868" width="242" height="242"[^>]*onClick=\{\(\) => setVolume\("sauce"\)\}/);
   assert.match(css, /\.map-hotspots\{position:absolute;inset:0;z-index:3;width:100%;height:100%\}/);
+  assert.match(css, /\.map-hotspot\{[^}]*-webkit-tap-highlight-color:transparent/);
+  assert.match(css, /\.map-hotspot:focus,\.map-hotspot:focus-visible\{fill:transparent;stroke:transparent;stroke-width:0;outline:none\}/);
 });
 
 test("map hotspots open volume chapter pickers", () => {
