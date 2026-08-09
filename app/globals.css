@@ -130,7 +130,7 @@ body{background:#d9cdbd}
 .chapter-intro:after{content:"";position:absolute;left:22px;right:22px;bottom:16px;border-top:1px dashed rgba(205,189,167,.32);pointer-events:none}
 .reader-shortcuts{position:fixed;top:213px;left:50%;right:auto;transform:translateX(-50%);z-index:38;width:min(100%,430px);height:54px;padding:1px 14px;background:rgba(237,229,213,.97);border-bottom:0;backdrop-filter:blur(10px)}
 .reader-page>.chat-stream{padding-top:267px}
-.reader-page.is-full-reader .chat-stream{padding-top:203px}
+.reader-page.is-full-reader .chat-stream{padding-top:223px}
 .reader-page .deck-stage{padding-top:72px}
 .reader-back-button{width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1);cursor:pointer}
 .reader-back-button:hover{color:var(--clay-dark);background:#fff1dc}

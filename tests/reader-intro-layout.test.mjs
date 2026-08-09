@@ -26,6 +26,6 @@ test("reader shortcuts sit in a fixed row directly below the chapter intro", () 
 
 test("full text starts closer to the intro without moving the deck", () => {
   assert.match(css, /\.reader-page>\.chat-stream\{padding-top:267px\}/);
-  assert.match(css, /\.reader-page\.is-full-reader \.chat-stream\{padding-top:203px\}/);
+  assert.match(css, /\.reader-page\.is-full-reader \.chat-stream\{padding-top:223px\}/);
   assert.match(css, /\.reader-page \.deck-stage\{padding-top:72px\}/);
 });
