@@ -62,6 +62,10 @@ function ArtImage({ src, alt, className, style }: { src: string; alt: string; cl
   return <img src={src} alt={alt} className={className} style={style} onError={(event) => { event.currentTarget.style.display = "none"; }} />;
 }
 
+function GestureGuide({ direction }: { direction: "right" | "down" }) {
+  return <span className={`gesture-guide gesture-guide-${direction}`} aria-hidden="true"><b>☝</b><i>{direction === "right" ? "→" : "↓"}</i></span>;
+}
+
 function ProgressPill({ readCount }: { readCount: number }) {
   return (
     <div className="progress-pill" aria-label={`已读 ${readCount}/2 章节`}>
@@ -323,8 +327,10 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
   const [steamed, setSteamed] = useState(false);
+  const [showSteamGuide, setShowSteamGuide] = useState(false);
   const [peelCount, setPeelCount] = useState(0);
   const [peelY, setPeelY] = useState(0);
+  const [showPeelGuide, setShowPeelGuide] = useState(false);
   const [recipeAmounts, setRecipeAmounts] = useState([0, 0, 0, 0]);
   const [recipeFeedback, setRecipeFeedback] = useState<{ index: number; key: number } | null>(null);
   const [vatComplete, setVatComplete] = useState(false);
@@ -349,6 +355,14 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
     return () => window.clearTimeout(sauceUnlockTimer.current);
   }, [fermentDay]);
 
+  useEffect(() => {
+    if (step !== "steam" && step !== "peel") return;
+    if (step === "steam") setShowSteamGuide(true);
+    else setShowPeelGuide(true);
+    const timer = window.setTimeout(() => step === "steam" ? setShowSteamGuide(false) : setShowPeelGuide(false), 3200);
+    return () => window.clearTimeout(timer);
+  }, [step]);
+
   function chooseBean(index: number) {
     if (index === 2) {
       setSolved(true);
@@ -359,6 +373,7 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
 
   function startSteam(event: ReactPointerEvent<HTMLButtonElement>) {
     if (steamed) return;
+    setShowSteamGuide(false);
     const track = event.currentTarget.parentElement;
     const max = track ? track.clientWidth - event.currentTarget.offsetWidth - 8 : 0;
     steamStart.current = { x: event.clientX - steamDrag, max, active: true };
@@ -384,6 +399,7 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
 
   function startPeel(event: ReactPointerEvent<HTMLDivElement>) {
     if (peelCount >= 3) return;
+    setShowPeelGuide(false);
     peelStart.current = { y: event.clientY, active: true };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
@@ -480,6 +496,7 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
             {steamed && <div className="taro-dig-complete" aria-live="polite"><b>蒸熟了</b><span>豆子已经充分蒸熟。</span><button type="button" onClick={() => setStep("peel")}>下一步：去皮</button></div>}
           </div>
           <div className={`sauce-steam-control${steamed ? " done" : ""}`}>
+            {showSteamGuide && <GestureGuide direction="right" />}
             <div className="sauce-steam-track"><span>向右拖动点火，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动点火按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>点火</button></div>
           </div>
           {steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。</blockquote>}
@@ -487,6 +504,7 @@ function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
           <div className="taro-game-scene sauce-peel-scene" onPointerDown={startPeel} onPointerMove={movePeel} onPointerUp={finishPeel} onPointerCancel={finishPeel}>
             <span className="taro-game-placeholder">去皮画面占位<br />sauce-game-peel-{peelCount + 1}.webp</span>
             <ArtImage src={`/art/sauce-game-peel-${peelCount + 1}.webp`} alt={peelCount >= 3 ? "已经完全去皮的熟豆" : `熟豆去皮进度 ${peelCount}/3`} className="taro-game-image sauce-peel-image" />
+            {showPeelGuide && <GestureGuide direction="down" />}
             {peelCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>去皮完成</b><span>熟豆已经去净豆皮。</span><button type="button" onClick={() => setStep("recipe")}>下一步：配方</button></div>}
           </div>
           <div className="taro-dig-progress sauce-peel-progress" aria-label={`去皮进度 ${peelCount}/3`}>{[0, 1, 2].map((index) => <span key={index} className={index < peelCount ? "done" : ""} />)}</div>
@@ -553,6 +571,7 @@ function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: ()
   const [digX, setDigX] = useState(0);
   const [digFrame, setDigFrame] = useState<1 | 2>(1);
   const [digAnimating, setDigAnimating] = useState(false);
+  const [showDigGuide, setShowDigGuide] = useState(false);
   const [placedTaroCount, setPlacedTaroCount] = useState(0);
   const [waterComplete, setWaterComplete] = useState(false);
   const digStart = useRef({ x: 0, active: false });
@@ -571,6 +590,13 @@ function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: ()
     return () => window.clearTimeout(timer);
   }, [step]);
 
+  useEffect(() => {
+    if (step !== "dig") return;
+    setShowDigGuide(true);
+    const timer = window.setTimeout(() => setShowDigGuide(false), 3200);
+    return () => window.clearTimeout(timer);
+  }, [step]);
+
   function chooseLand(index: number) {
     if (index === 2) {
       setSolved(true);
@@ -581,6 +607,7 @@ function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: ()
 
   function startDig(event: ReactPointerEvent<HTMLDivElement>) {
     if (digCount >= 3 || digAnimating) return;
+    setShowDigGuide(false);
     digStart.current = { x: event.clientX, active: true };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
@@ -632,6 +659,7 @@ function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: ()
           <div className="taro-game-scene taro-dig-scene" onPointerDown={startDig} onPointerMove={moveDig} onPointerUp={finishDig} onPointerCancel={finishDig}>
             <span className="taro-game-placeholder">挖地画面占位<br />{digImage.split("/").at(-1)}</span>
             <ArtImage src={digImage} alt={digCount >= 3 ? "已经挖好的土地" : "正在交替挖地"} className="taro-game-image taro-dig-image" />
+            {showDigGuide && <GestureGuide direction="right" />}
             {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span><small>《齐民要术》：“種芋，區方深皆三尺。”</small><button type="button" onClick={() => setStep("place")}>下一步：放置芋头</button></div>}
           </div>
           <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
@@ -671,6 +699,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [dismissing, setDismissing] = useState(false);
+  const [showDeckGuide, setShowDeckGuide] = useState(true);
   const [taroGameOpen, setTaroGameOpen] = useState(false);
   const [sauceGameOpen, setSauceGameOpen] = useState(false);
   const [deckCardHeight, setDeckCardHeight] = useState<number>();
@@ -680,6 +709,12 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setTaroGameOpen(false); setSauceGameOpen(false); setConversation([]); setQuestion(""); }, [chapter.id]);
+
+  useEffect(() => {
+    setShowDeckGuide(true);
+    const timer = window.setTimeout(() => setShowDeckGuide(false), 3200);
+    return () => window.clearTimeout(timer);
+  }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
 
@@ -703,6 +738,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if ((event.target as HTMLElement).closest("button, input, a")) return;
+    setShowDeckGuide(false);
     pointerStart.current = { x: event.clientX, active: true };
     setDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -788,6 +824,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
             </div>
           )}
           <div className="deck-stage" aria-label="章节发言卡片堆" style={{ paddingTop: `${DECK_STACK_RISE}px` }}>
+            {showDeckGuide && currentIndex === 0 && <GestureGuide direction="right" />}
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
               const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
