@@ -27,3 +27,18 @@ test("correct bean feedback quotes the recorded sauce source", () => {
   assert.ok(page.includes(`《齐民要术》：“${source}”`));
   assert.match(page, /<b>选对了<\/b><span>春豆粒小而均，更适合制酱。<\/span>/);
 });
+
+test("correct beans continue to a right-drag steaming step", () => {
+  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam">\("beans"\)/);
+  assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
+  assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
+  assert.match(page, /if \(distance >= 150\)[\s\S]*setSteamDrag\(196\)[\s\S]*setSteamed\(true\)/);
+  assert.match(page, /aria-label="向右拖动蒸汽按钮"[\s\S]*onPointerDown=\{startSteam\}[\s\S]*onPointerMove=\{moveSteam\}[\s\S]*onPointerUp=\{finishSteam\}/);
+});
+
+test("steaming switches between two square art placeholders and reveals the source", () => {
+  assert.match(page, /sauce-game-steam-\$\{steamed \? "2" : "1"\}\.webp/);
+  assert.match(page, /steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。<\/blockquote>/);
+  assert.match(artReadme, /`sauce-game-steam-1\.webp` \| 1200 x 1200/);
+  assert.match(artReadme, /`sauce-game-steam-2\.webp` \| 1200 x 1200/);
+});

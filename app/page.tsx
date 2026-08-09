@@ -310,8 +310,12 @@ const sauceBeanChoices = [
 ] as const;
 
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState<"beans" | "steam">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
+  const [steamDrag, setSteamDrag] = useState(0);
+  const [steamed, setSteamed] = useState(false);
+  const steamStart = useRef({ x: 0, active: false });
 
   function chooseBean(index: number) {
     if (index === 2) {
@@ -321,22 +325,57 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     setWrongAttempts((attempts) => Math.min(2, attempts + 1));
   }
 
+  function startSteam(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (steamed) return;
+    steamStart.current = { x: event.clientX - steamDrag, active: true };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveSteam(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (!steamStart.current.active || steamed) return;
+    setSteamDrag(Math.min(196, Math.max(0, event.clientX - steamStart.current.x)));
+  }
+
+  function finishSteam(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (!steamStart.current.active || steamed) return;
+    const distance = Math.min(196, Math.max(0, event.clientX - steamStart.current.x));
+    steamStart.current.active = false;
+    if (distance >= 150) {
+      setSteamDrag(196);
+      setSteamed(true);
+      return;
+    }
+    setSteamDrag(0);
+  }
+
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第一步</p>
-        <h2 id="sauce-game-title">选择豆子</h2>
-        <div className="taro-game-scene">
-          <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
-          <ArtImage src="/art/sauce-game-select-beans.webp" alt="从左到右摆放的三种豆子" className="taro-game-image" />
-          {wrongAttempts >= 1 && <div className="taro-land-details sauce-bean-details" aria-live="polite">{sauceBeanChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
-          {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>春豆粒小而均，更适合制酱。</span><small>《齐民要术》：“用春種烏豆，春豆粒小而均，晚豆粒大而雜。”</small></div>}
-        </div>
-        <div className="taro-land-options sauce-bean-options" aria-label="选择一种制酱豆子">
-          {sauceBeanChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseBean(index)}>{choice.label}</button>)}
-        </div>
-        {wrongAttempts >= 2 && <blockquote className="taro-land-source">用春種烏豆，春豆粒小而均，晚豆粒大而雜。</blockquote>}
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : "二"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : "蒸豆"}</h2>
+        {step === "beans" ? <>
+          <div className="taro-game-scene">
+            <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
+            <ArtImage src="/art/sauce-game-select-beans.webp" alt="从左到右摆放的三种豆子" className="taro-game-image" />
+            {wrongAttempts >= 1 && <div className="taro-land-details sauce-bean-details" aria-live="polite">{sauceBeanChoices.map((choice) => <span key={choice.label}><b>{choice.label}</b>{choice.detail}</span>)}</div>}
+            {solved && <div className="taro-land-success" aria-live="polite"><b>选对了</b><span>春豆粒小而均，更适合制酱。</span><small>《齐民要术》：“用春種烏豆，春豆粒小而均，晚豆粒大而雜。”</small><button type="button" onClick={() => setStep("steam")}>下一步：蒸豆</button></div>}
+          </div>
+          <div className="taro-land-options sauce-bean-options" aria-label="选择一种制酱豆子">
+            {sauceBeanChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseBean(index)}>{choice.label}</button>)}
+          </div>
+          {wrongAttempts >= 2 && <blockquote className="taro-land-source">用春種烏豆，春豆粒小而均，晚豆粒大而雜。</blockquote>}
+        </> : <>
+          <div className="taro-game-scene sauce-steam-scene">
+            <span className="taro-game-placeholder">蒸豆画面占位<br />sauce-game-steam-{steamed ? "2" : "1"}.webp</span>
+            <ArtImage src={`/art/sauce-game-steam-${steamed ? "2" : "1"}.webp`} alt={steamed ? "豆子已经充分蒸熟" : "甑中正在蒸制的豆子"} className="taro-game-image" />
+            {steamed && <div className="taro-dig-complete" aria-live="polite"><b>蒸熟了</b><span>豆子已经充分蒸熟。</span></div>}
+          </div>
+          <div className={`sauce-steam-control${steamed ? " done" : ""}`}>
+            <div className="sauce-steam-track"><span>向右拖动蒸汽，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动蒸汽按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>蒸汽</button></div>
+          </div>
+          {steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。</blockquote>}
+        </>}
       </section>
     </div>
   );
