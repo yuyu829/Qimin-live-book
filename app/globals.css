@@ -137,7 +137,7 @@ body{background:#d9cdbd}
 .reader-page .deck-stage{padding-top:72px}
 .reader-back-button{width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1);cursor:pointer}
 .reader-back-button:hover{color:var(--clay-dark);background:#fff1dc}
-.school-page{padding-top:12px}
+.school-page{height:calc(100svh - 68px);overflow-x:hidden;overflow-y:scroll;padding-top:12px;padding-bottom:92px;scrollbar-width:thin;scrollbar-color:#aa8c70 rgba(221,210,192,.5)}.school-page::-webkit-scrollbar{width:6px}.school-page::-webkit-scrollbar-track{background:rgba(221,210,192,.5)}.school-page::-webkit-scrollbar-thumb{border-radius:6px;background:#aa8c70}
 .school-return-link{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;color:#735f4b;font-size:12px;font-weight:700;cursor:pointer}
 .school-return-icon{width:36px;height:36px;display:grid;place-items:center;border:1px solid #d8c6ad;border-radius:50%;background:#fff8eb;color:#805e49;box-shadow:0 3px 10px rgba(91,66,43,.1)}
 .school-return-link:hover{color:var(--clay-dark)}

@@ -16,6 +16,6 @@ test("school return text follows the chapter-style circular arrow", () => {
 });
 
 test("school return area sits closer to the app title", () => {
-  assert.match(css, /\.school-page\{padding-top:12px\}/);
+  assert.match(css, /\.school-page\{[^}]*padding-top:12px/);
   assert.match(css, /\.school-page \.school-heading\{margin-top:14px\}/);
 });
