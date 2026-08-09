@@ -71,7 +71,7 @@ test("chapter shortcuts show their matching animated cat", () => {
   assert.match(page, /chapter\.id === "soybean" \? "种芋动画猫" : "作酱动画猫"/);
   assert.match(css, /\.reader-shortcuts\{position:absolute;top:3px;right:14px/);
   assert.match(css, /\.reader-shortcuts>button\{[^}]*padding:7px 10px[^}]*border-radius:7px[^}]*font-size:12px/);
-  assert.match(css, /\.shortcut-cat-animation\{[^}]*width:58px;height:50px[^}]*overflow:hidden/);
+  assert.match(css, /\.shortcut-cat-animation\{[^}]*width:73px;height:63px[^}]*overflow:hidden/);
   assert.match(css, /\.shortcut-cat-animation img\{[^}]*width:100%;height:100%;object-fit:contain/);
 });
 
