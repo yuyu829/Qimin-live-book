@@ -19,6 +19,7 @@ test("field guidance is progressively revealed after wrong choices", () => {
   assert.match(page, /if \(index === 2\) \{[\s\S]*setSolved\(true\)/);
   assert.match(page, /wrongAttempts >= 1 && <div className="taro-land-details"/);
   assert.match(page, /wrongAttempts >= 2 && <blockquote className="taro-land-source">宜擇肥緩土近水處，和柔，糞之<\/blockquote>/);
+  assert.doesNotMatch(page, /\(solved \|\| wrongAttempts >= 2\) && <blockquote/);
 });
 
 test("correct field feedback includes the source text", () => {
