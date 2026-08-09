@@ -325,6 +325,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [peelCount, setPeelCount] = useState(0);
   const [peelY, setPeelY] = useState(0);
   const [recipeAmounts, setRecipeAmounts] = useState([0, 0, 0, 0]);
+  const [recipeFeedback, setRecipeFeedback] = useState<{ index: number; key: number } | null>(null);
   const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
 
@@ -382,6 +383,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
 
   function addRecipeIngredient(index: number) {
     setRecipeAmounts((amounts) => amounts.map((amount, ingredientIndex) => ingredientIndex === index ? Math.min(sauceRecipeIngredients[index].target, amount + 1) : amount));
+    setRecipeFeedback((feedback) => ({ index, key: (feedback?.key ?? 0) + 1 }));
   }
 
   const recipeMatched = sauceRecipeIngredients.every((ingredient, index) => recipeAmounts[index] === ingredient.target);
@@ -429,7 +431,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span></div>}
           </div>
           <div className="sauce-recipe-options" aria-label="点击材料添加配方用量">
-            {sauceRecipeIngredients.map((ingredient, index) => <button type="button" key={ingredient.label} disabled={recipeAmounts[index] >= ingredient.target} onClick={() => addRecipeIngredient(index)}><b>{ingredient.label}</b><span>{recipeAmounts[index]} / {ingredient.target}{ingredient.unit}</span><small>{recipeAmounts[index] >= ingredient.target ? "已配好" : `+1${ingredient.unit}`}</small></button>)}
+            {sauceRecipeIngredients.map((ingredient, index) => <button type="button" key={ingredient.label} disabled={recipeAmounts[index] >= ingredient.target} onClick={() => addRecipeIngredient(index)}>{recipeFeedback?.index === index && <i key={recipeFeedback.key} className="recipe-add-feedback">+1{ingredient.unit}</i>}<b>{ingredient.label}</b><span>{recipeAmounts[index]} / {ingredient.target}{ingredient.unit}</span><small>{recipeAmounts[index] >= ingredient.target ? "已配好" : `+1${ingredient.unit}`}</small></button>)}
           </div>
         </>}
       </section>

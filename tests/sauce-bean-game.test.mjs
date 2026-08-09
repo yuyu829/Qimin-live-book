@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const page = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
+const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 const data = readFileSync(new URL("../data/qimin.ts", import.meta.url), "utf8");
 const artReadme = readFileSync(new URL("../public/art/README.md", import.meta.url), "utf8");
 
@@ -77,4 +78,11 @@ test("recipe clicks match the recorded quantities and units", () => {
   assert.match(page, /function addRecipeIngredient\(index: number\)[\s\S]*Math\.min\(sauceRecipeIngredients\[index\]\.target, amount \+ 1\)/);
   assert.match(page, /大率豆黃三斗，麴末一斗，黃蒸末一斗，白鹽五升。/);
   assert.match(page, /recipeMatched && <div className="taro-land-success"[\s\S]*<b>配方配对完成<\/b>/);
+});
+
+test("each recipe click shows a local enlarging plus-one feedback", () => {
+  assert.match(page, /setRecipeFeedback\(\(feedback\) => \(\{ index, key: \(feedback\?\.key \?\? 0\) \+ 1 \}\)\)/);
+  assert.match(page, /recipeFeedback\?\.index === index && <i key=\{recipeFeedback\.key\} className="recipe-add-feedback">\+1\{ingredient\.unit\}<\/i>/);
+  assert.match(css, /\.recipe-add-feedback\{[\s\S]*animation:recipeAddFeedback \.65s ease-out both/);
+  assert.match(css, /@keyframes recipeAddFeedback\{[\s\S]*scale\(1\.3\)[\s\S]*opacity:0/);
 });
