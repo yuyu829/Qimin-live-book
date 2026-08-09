@@ -143,7 +143,7 @@ body{background:#d9cdbd}
 /* Fixed deck viewport and uniform compact-card preview. */
 .reader-page:not(.is-full-reader):not(.is-detail-reader){height:100svh;min-height:100svh;overflow:hidden;overscroll-behavior:none}
 .reader-page:not(.is-full-reader):not(.is-detail-reader)>.chat-stream{position:fixed;top:282px;bottom:78px;left:50%;transform:translateX(-50%);width:min(100%,430px);height:auto;margin:0;padding:0 12px;overflow:hidden}
-.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-stage{height:100%;margin:0;padding:0;transform:translateY(-15px);display:grid;align-items:start}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-stage{height:100%;margin:0;padding:0;transform:translateY(-40px);display:grid;align-items:start}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card{overflow:hidden;padding:17px 5px 9px}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-row{height:100%;overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{position:relative;min-height:0;overflow:hidden}
