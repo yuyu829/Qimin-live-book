@@ -865,10 +865,10 @@ const mapVolumes = {
 
 const pouchCats = [
   ["芋头喵", "map-cat-taro.webp", "taro"], ["做酱喵", "map-cat-sauce.webp", "sauce"], ["辣椒喵", "map-cat-chili.webp", "chili"],
-  ["养鸡喵", "map-cat-chicken.webp", "chicken"], ["种树喵", "map-cat-tree.webp", "tree"], ["种饼喵", "map-cat-cake.webp", "cake"],
+  ["养鸡喵", "map-cat-chicken.webp", "chicken"], ["种树喵", "map-cat-tree.webp", "tree"], ["制饼喵", "map-cat-cake.webp", "cake"],
   ["种枣喵", "map-cat-jujube.webp", "jujube"], ["种柿喵", "map-cat-persimmon.webp", "persimmon"], ["养鱼喵", "map-cat-fish.webp", "fish"]
 ] as const;
-const showcaseUnlockedCats = new Set(["chili", "chicken", "tree"]);
+const showcaseUnlockedCats = new Set(["chili", "chicken", "cake", "persimmon"]);
 
 function WorldMap({ onOpen, unlockedCats }: { onOpen: (id: Chapter["id"]) => void; unlockedCats: CatUnlock[] }) {
   const [volume, setVolume] = useState<"soybean" | "sauce">();

@@ -9,7 +9,10 @@ test("collection cats show a centered locked badge until their games are complet
   assert.match(page, /type CatUnlock = "taro" \| "sauce"/);
   assert.match(page, /localStorage\.getItem\("qimin-unlocked-cats"\)/);
   assert.match(page, /localStorage\.setItem\("qimin-unlocked-cats", JSON\.stringify\(next\)\)/);
-  assert.match(page, /const showcaseUnlockedCats = new Set\(\["chili", "chicken", "tree"\]\)/);
+  assert.match(page, /\["制饼喵", "map-cat-cake\.webp", "cake"\]/);
+  assert.doesNotMatch(page, /\["种饼喵", "map-cat-cake\.webp", "cake"\]/);
+  assert.match(page, /const showcaseUnlockedCats = new Set\(\["chili", "chicken", "cake", "persimmon"\]\)/);
+  assert.doesNotMatch(page, /const showcaseUnlockedCats = new Set\([^\n]*"tree"/);
   assert.match(page, /const unlocked = showcaseUnlockedCats\.has\(id\) \|\| \(\(id === "taro" \|\| id === "sauce"\) && unlockedCats\.includes\(id\)\)/);
   assert.match(page, /!unlocked && <span className="pouch-lock-badge">待解锁<\/span>/);
   assert.match(page, /onUnlock=\{\(\) => onUnlockCat\("taro"\)\}/);
