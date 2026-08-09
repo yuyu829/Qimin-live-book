@@ -59,6 +59,8 @@ test("map hotspots open volume chapter pickers", () => {
   assert.match(page, /const mapVolumes = \{/);
   assert.match(page, /className="map-volume-popover"/);
   assert.match(page, /mapVolumes\[volume\]\.items\.map/);
+  assert.match(page, /const activeIndex = volume === "soybean" \? 11 : 2/);
+  assert.match(page, /"种芋第十六"/);
   assert.match(css, /\.map-volume-backdrop\{position:absolute;inset:0/);
   assert.match(css, /\.map-volume-list\{display:flex;flex-wrap:wrap/);
 });
