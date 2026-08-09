@@ -7,12 +7,12 @@ const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8
 
 test("deck reader is locked to one viewport without vertical scrolling", () => {
   assert.match(css, /\.reader-page\{[^}]*height:100svh[^}]*overflow:hidden/);
-  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:282px;bottom:78px/);
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:267px;bottom:78px/);
 });
 
 test("five-card stack begins exactly at the shortcut row lower edge", () => {
-  assert.match(css, /\.reader-shortcuts\{position:fixed;top:228px[^}]*height:54px/);
-  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:282px/);
+  assert.match(css, /\.reader-shortcuts\{position:fixed;top:213px[^}]*height:54px/);
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:267px/);
   assert.match(page, /style=\{\{ paddingTop: `\$\{DECK_STACK_RISE\}px` \}\}/);
   assert.match(page, /DECK_STACK_RISE, deckCardTransform/);
   assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);

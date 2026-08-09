@@ -7,7 +7,7 @@ const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8
 
 test("compact chapter reading locks the vertical viewport", () => {
   assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)\{height:100svh;min-height:100svh;overflow:hidden;overscroll-behavior:none\}/);
-  assert.match(css, />\.chat-stream\{position:fixed;top:282px;bottom:78px/);
+  assert.match(css, />\.chat-stream\{position:fixed;top:267px;bottom:78px/);
 });
 
 test("sauce copies the taro deck height without changing taro measurement", () => {

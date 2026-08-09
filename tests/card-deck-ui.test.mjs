@@ -38,7 +38,7 @@ test("deck card content sits five pixels lower without changing card height", ()
 });
 
 test("fifth card starts at the shortcut bar lower edge", () => {
-  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:282px/);
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:267px/);
   assert.match(page, /style=\{\{ paddingTop: `\$\{DECK_STACK_RISE\}px` \}\}/);
   assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);
 });
@@ -54,7 +54,7 @@ test("swipe hint has its own space below cards and stays within a fixed reader v
   assert.match(css, /\.deck-stage\{[^}]*padding-bottom:46px/);
   assert.match(css, /\.deck-stage\{[^}]*transform:translateY\(-16px\)/);
   assert.match(css, /\.swipe-hint\{[^}]*position:fixed[^}]*bottom:24px[^}]*z-index:39[^}]*white-space:nowrap/);
-  assert.match(css, />\.chat-stream\{position:fixed;top:282px;bottom:78px/);
+  assert.match(css, />\.chat-stream\{position:fixed;top:267px;bottom:78px/);
   assert.doesNotMatch(css, /\.swipe-hint\{[^}]*border-radius/);
   assert.match(page, /readerMode === "deck" && currentIndex < chapter\.messages\.length && <div className="swipe-hint">/);
 });
