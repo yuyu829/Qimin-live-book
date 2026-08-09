@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
 import { NextResponse } from "next/server";
 
 import { chapterById } from "@/data/qimin";
@@ -15,6 +15,11 @@ type QiminRequest = {
 };
 
 const limits = { science: 160, term: 80, question: 240 } as const;
+
+const qiminAI = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1"
+});
 
 export async function POST(request: Request) {
   if (!process.env.OPENAI_API_KEY) {
@@ -52,7 +57,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateText({
-      model: openai(process.env.OPENAI_MODEL ?? "gpt-4o-mini"),
+      model: qiminAI(process.env.OPENAI_MODEL ?? "gpt-4o-mini"),
       system: QIMIN_SYSTEM_PROMPT,
       prompt,
       maxTokens: limits[body.action],

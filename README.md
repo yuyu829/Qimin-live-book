@@ -30,7 +30,8 @@ npm run dev
 
 ```env
 OPENAI_API_KEY=your_key
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_BASE_URL=https://api.openai-next.com/v1
+OPENAI_MODEL=gpt-5
 ```
 
 三类请求统一由 `app/api/qimin/route.ts` 处理。没有 Key 时会显示明确错误，不伪造 AI 结果。

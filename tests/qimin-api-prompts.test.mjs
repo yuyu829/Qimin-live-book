@@ -19,6 +19,13 @@ test("qimin API limits user-controlled prompt fields and documents cloud setting
   assert.match(route, /body\.term\?\.trim\(\)\.slice\(0, 30\)/);
   assert.match(route, /body\.question\?\.trim\(\)\.slice\(0, 300\)/);
   assert.match(envExample, /^OPENAI_API_KEY=your_openai_api_key/m);
-  assert.match(envExample, /^OPENAI_MODEL=gpt-4o-mini/m);
+  assert.match(envExample, /^OPENAI_BASE_URL=https:\/\/api\.openai-next\.com\/v1/m);
+  assert.match(envExample, /^OPENAI_MODEL=gpt-5/m);
   assert.doesNotMatch(envExample, /sk-[A-Za-z0-9]/);
+});
+
+test("qimin API supports an OpenAI-compatible cloud base URL", () => {
+  assert.match(route, /createOpenAI/);
+  assert.match(route, /baseURL: process\.env\.OPENAI_BASE_URL/);
+  assert.match(route, /qiminAI\(process\.env\.OPENAI_MODEL/);
 });
