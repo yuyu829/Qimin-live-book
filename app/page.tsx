@@ -317,7 +317,7 @@ const sauceRecipeIngredients = [
 ] as const;
 
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "stir">("beans");
+  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "vat" | "stir">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
@@ -326,6 +326,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   const [peelY, setPeelY] = useState(0);
   const [recipeAmounts, setRecipeAmounts] = useState([0, 0, 0, 0]);
   const [recipeFeedback, setRecipeFeedback] = useState<{ index: number; key: number } | null>(null);
+  const [vatComplete, setVatComplete] = useState(false);
   const [stirProgress, setStirProgress] = useState(0);
   const [stirred, setStirred] = useState(false);
   const steamStart = useRef({ x: 0, max: 0, active: false });
@@ -426,8 +427,8 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : step === "recipe" ? "四" : "五"}步</p>
-        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : step === "recipe" ? "配方" : "搅拌"}</h2>
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : step === "recipe" ? "四" : step === "vat" ? "五" : "六"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : step === "recipe" ? "配方" : step === "vat" ? "入缸" : "搅拌"}</h2>
         {step === "beans" ? <>
           <div className="taro-game-scene">
             <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
@@ -462,11 +463,18 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
           <div className="taro-game-scene sauce-recipe-scene">
             <span className="taro-game-placeholder">配方画面占位<br />sauce-game-recipe.webp</span>
             <ArtImage src="/art/sauce-game-recipe.webp" alt="从左到右摆放豆黄、麦麴、黄蒸和白盐四盘材料" className="taro-game-image" />
-            {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span><button type="button" onClick={() => setStep("stir")}>下一步：搅拌</button></div>}
+            {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span><button type="button" onClick={() => setStep("vat")}>下一步：入缸</button></div>}
           </div>
           <div className="sauce-recipe-options" aria-label="点击材料添加配方用量">
             {sauceRecipeIngredients.map((ingredient, index) => <button type="button" key={ingredient.label} disabled={recipeAmounts[index] >= ingredient.target} onClick={() => addRecipeIngredient(index)}>{recipeFeedback?.index === index && <i key={recipeFeedback.key} className="recipe-add-feedback">+1{ingredient.unit}</i>}<b>{ingredient.label}</b><span>{recipeAmounts[index]} / {ingredient.target}{ingredient.unit}</span><small>{recipeAmounts[index] >= ingredient.target ? "已配好" : `+1${ingredient.unit}`}</small></button>)}
           </div>
+        </> : step === "vat" ? <>
+          <div className="taro-game-scene sauce-vat-scene">
+            <span className="taro-game-placeholder">入缸视频占位<br />sauce-game-vat.mp4</span>
+            <video className="sauce-vat-video" src="/art/sauce-game-vat.mp4" autoPlay muted playsInline preload="auto" aria-label="将调好的酱料装入缸中" onEnded={() => setVatComplete(true)} />
+            {vatComplete && <div className="taro-dig-complete" aria-live="polite"><b>入缸完成</b><span>调好的酱料已经装入缸中。</span><button type="button" onClick={() => setStep("stir")}>下一步：搅拌</button></div>}
+          </div>
+          <p className="taro-dig-hint">{vatComplete ? "酱料已经入缸" : "正在将调好的酱料装入缸中"}</p>
         </> : <>
           <div className="taro-game-scene sauce-stir-scene">
             <span className="taro-game-placeholder">搅拌视频占位<br />sauce-game-stir.mp4</span>
