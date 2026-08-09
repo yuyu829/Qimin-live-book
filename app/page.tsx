@@ -184,9 +184,10 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     }
   }
 
-  const isOriginalTruncated = compact && message.original.length > 120;
-  const displayTranslation = compact && message.translation.length > 84 ? `${message.translation.slice(0, 84)}...` : message.translation;
-  const displayOriginal = isOriginalTruncated ? message.original.slice(0, 120) : message.original;
+  const isTranslationTruncated = compact && message.translation.length > 40;
+  const isOriginalTruncated = compact && message.original.length > 48;
+  const displayTranslation = isTranslationTruncated ? `${message.translation.slice(0, 40)}...` : message.translation;
+  const displayOriginal = isOriginalTruncated ? message.original.slice(0, 48) : message.original;
   const originalParts = highlightTerms(displayOriginal, message.terms.map((term) => term.word));
 
   return (

@@ -148,7 +148,8 @@ body{background:#d9cdbd}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-row{height:100%;overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{min-height:0;overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .paper-bubble{height:calc(100% - 30px);overflow:hidden}
-.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:4}
-.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:5}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{position:relative;padding-bottom:22px}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.compact-read-more{display:block;position:absolute;right:0;bottom:0;z-index:3;margin:0;padding:3px 0;border:0;background:#fff9ec;color:var(--clay-dark);font-size:10px;font-weight:800;line-height:1.2;cursor:pointer}
 .reader-page.is-full-reader{height:auto;min-height:100svh;overflow:visible}
-.compact-read-more{display:block;margin:2px 0 0 auto;padding:2px 0;border:0;background:transparent;color:var(--clay-dark);font-size:10px;font-weight:800;cursor:pointer}

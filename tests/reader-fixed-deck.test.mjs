@@ -19,9 +19,9 @@ test("five-card stack begins exactly at the shortcut row lower edge", () => {
 });
 
 test("compact cards truncate both translation and original while detail keeps full text", () => {
-  assert.match(page, /message\.translation\.length > 84/);
-  assert.match(page, /message\.original\.length > 120/);
-  assert.match(css, /\.deck-card \.translation\{[^}]*-webkit-line-clamp:4/);
-  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:5/);
+  assert.match(page, /message\.translation\.length > 40/);
+  assert.match(page, /message\.original\.length > 48/);
+  assert.match(css, /\.deck-card \.translation\{[^}]*-webkit-line-clamp:3/);
+  assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:2/);
   assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);
 });

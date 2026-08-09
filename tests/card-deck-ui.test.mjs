@@ -86,8 +86,8 @@ test("full text shortcut opens the original vertical chat reader", () => {
 
 test("deck previews long originals while detail keeps the full source", () => {
   assert.match(page, /compact = false/);
-  assert.match(page, /message\.translation\.length > 84/);
-  assert.match(page, /message\.original\.length > 120/);
+  assert.match(page, /message\.translation\.length > 40/);
+  assert.match(page, /message\.original\.length > 48/);
   assert.match(page, /compact onSpeaker=\{setSpeaker\}/);
   assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);
 });
