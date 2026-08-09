@@ -121,3 +121,11 @@ body{background:#d9cdbd}
 .deck-position-1{background:#f5e7ca}.deck-position-2{background:#dfe7cb}.deck-position-3{background:#eadbd0}
 .swipe-hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
 @media(max-width:380px){.deck-card .message-row{padding-right:46px}}
+
+/* Stable chapter reading layers: intro, actions, then reading content. */
+.reader-page{padding-top:0}
+.chapter-intro{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:35;width:min(100%,430px);height:170px;min-height:170px;box-sizing:border-box;margin:0;padding:22px 16px 20px;overflow:hidden;background:rgba(237,229,213,.97);border-bottom:1px dashed #cdbda7;backdrop-filter:blur(10px)}
+.reader-shortcuts{position:fixed;top:170px;left:50%;right:auto;transform:translateX(-50%);z-index:38;width:min(100%,430px);height:54px;padding:6px 14px;background:rgba(237,229,213,.97);border-bottom:1px dashed #cdbda7;backdrop-filter:blur(10px)}
+.reader-page>.chat-stream{padding-top:224px}
+.reader-page.is-full-reader .chat-stream{padding-top:224px}
+.reader-page .deck-stage{padding-top:72px}

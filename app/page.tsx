@@ -331,12 +331,12 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
       <section className="chapter-intro">
         <div><p>今天他们在聊</p><h2>{chapter.question}</h2><span>{chapter.intro}</span></div>
       </section>
-      <section className="chat-stream">
-        {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
+      {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
           <button type="button">{chapter.id === "soybean" ? "去种芋" : "去晒酱"}</button>
           <span className="shortcut-cat-placeholder" aria-label="动画小猫占位"><CatMark small /></span>
-        </div>}
+      </div>}
+      <section className="chat-stream">
         {readerMode === "full" && (
           <div className="full-chat-stream" aria-label="章节全文聊天室">
             {chapter.messages.map((message) => (
