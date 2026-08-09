@@ -763,7 +763,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat }: { chapter: Chapter
       </section>
       {readerMode === "deck" && <div className="reader-shortcuts" aria-label="章节快捷操作">
           <button type="button" onClick={() => setReaderMode("full")}>阅读全文</button>
-          <button type="button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : () => setSauceGameOpen(true)}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
+          <button type="button" className="game-shortcut-button" onClick={chapter.id === "soybean" ? () => setTaroGameOpen(true) : () => setSauceGameOpen(true)}>{chapter.id === "soybean" ? "去种芋" : "去作酱"}</button>
           <span className="shortcut-cat-animation" aria-label={chapter.id === "soybean" ? "种芋动画猫" : "作酱动画猫"}>
             <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
