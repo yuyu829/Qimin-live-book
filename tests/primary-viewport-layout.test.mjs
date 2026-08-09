@@ -66,9 +66,10 @@ test("map hotspots open volume chapter pickers", () => {
 test("map navigation is transparent and simplified", () => {
   assert.match(page, /screen === "map" \? "map-screen"/);
   assert.match(page, /screen === "recommend" \? "reading-screen"/);
-  assert.match(css, /\.map-screen \.topbar,.reading-screen \.topbar\{background:transparent;border-bottom-color:transparent/);
-  assert.match(css, /\.map-screen \.topbar \.brand b,.reading-screen \.topbar \.brand b\{font-size:21px\}/);
-  assert.match(css, /\.map-screen \.topbar \.brand small,.reading-screen \.topbar \.brand small\{font-size:11px;margin-top:7px/);
+  assert.match(page, /screen === "school" \? "school-screen"/);
+  assert.match(css, /\.map-screen \.topbar,.reading-screen \.topbar,.school-screen \.topbar\{background:transparent;border-bottom-color:transparent/);
+  assert.match(css, /\.map-screen \.topbar \.brand b,.reading-screen \.topbar \.brand b,.school-screen \.topbar \.brand b\{font-size:21px\}/);
+  assert.match(css, /\.map-screen \.topbar \.brand small,.reading-screen \.topbar \.brand small,.school-screen \.topbar \.brand small\{font-size:11px;margin-top:7px/);
   assert.match(css, /\.map-page \.world-map-art\{object-fit:cover;object-position:top/);
   assert.match(css, /\.app-shell\.map-screen\{padding-top:0\}/);
   assert.match(css, /\.map-screen \.map-page\{height:100svh\}/);

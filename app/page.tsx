@@ -481,9 +481,9 @@ export default function HomePage() {
   }
   function setNotes(next: Note[]) { setNotesState(next); localStorage.setItem("qimin-notes", JSON.stringify(next)); }
 
-  const showTopBar = !["cover", "reader"].includes(screen);
+  const showTopBar = ["recommend", "map", "school"].includes(screen);
   return (
-    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""}`}>
+    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
       {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
       {screen === "cover" && <Cover onNext={() => setScreen("interest")} />}
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
