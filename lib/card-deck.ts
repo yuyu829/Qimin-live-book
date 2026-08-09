@@ -1,5 +1,5 @@
 export const SWIPE_DISMISS_DISTANCE = 92;
-export const DECK_STACK_STEP = 22;
+export const DECK_STACK_STEP = 30;
 export const DECK_REAR_CARD_COUNT = 4;
 export const DECK_STACK_RISE = DECK_STACK_STEP * DECK_REAR_CARD_COUNT;
 

@@ -184,8 +184,9 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     }
   }
 
-  const displayTranslation = compact && message.translation.length > 84 ? `${message.translation.slice(0, 84)}…` : message.translation;
-  const displayOriginal = compact && message.original.length > 120 ? `${message.original.slice(0, 120)}…` : message.original;
+  const isOriginalTruncated = compact && message.original.length > 120;
+  const displayTranslation = compact && message.translation.length > 84 ? `${message.translation.slice(0, 84)}...` : message.translation;
+  const displayOriginal = isOriginalTruncated ? message.original.slice(0, 120) : message.original;
   const originalParts = highlightTerms(displayOriginal, message.terms.map((term) => term.word));
 
   return (
@@ -197,6 +198,7 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
           <p className="translation">{displayTranslation}</p>
           <div className="original-block">
             <p>{originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}</p>
+            {isOriginalTruncated && <button className="compact-read-more" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>...阅读全文</button>}
             <div className="term-row">
               <button className="why-button" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>
                 <Sparkles size={14} /> 这是为什么

@@ -20,10 +20,13 @@ test("all soybean and sauce deck cards share the same fixed dimensions", () => {
 
 test("compact cards ellipsize both translation and original while full reader stays complete", () => {
   assert.match(page, /displayTranslation = compact && message\.translation\.length > 84/);
-  assert.match(page, /displayOriginal = compact && message\.original\.length > 120/);
+  assert.match(page, /isOriginalTruncated = compact && message\.original\.length > 120/);
+  assert.match(page, /message\.translation\.slice\(0, 84\)\}\.{3}/);
   assert.match(page, /<p className="translation">\{displayTranslation\}<\/p>/);
+  assert.match(page, /className="compact-read-more"[\s\S]*>\.\.\.阅读全文<\/button>/);
   assert.match(css, /\.deck-card \.translation\{[^}]*-webkit-line-clamp:4/);
   assert.match(css, /\.deck-card \.original-block>p\{[^}]*-webkit-line-clamp:5/);
+  assert.match(css, /\.compact-read-more\{[^}]*color:var\(--clay-dark\)/);
   assert.match(page, /readerMode === "full"[\s\S]*chapter\.messages\.map/);
 });
 
