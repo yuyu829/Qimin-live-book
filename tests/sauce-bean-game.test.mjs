@@ -93,11 +93,13 @@ test("matched recipe continues to a looping stirring video", () => {
   assert.match(artReadme, /`sauce-game-stir\.mp4` \| 1200 x 1200/);
 });
 
-test("stirring completes after a counterclockwise rotation", () => {
+test("stirring completes after two counterclockwise rotations without revealing the count", () => {
   assert.match(page, /function startStir\(event: ReactPointerEvent<HTMLDivElement>\)/);
   assert.match(page, /if \(delta >= 0\) return/);
-  assert.match(page, /stirMotion\.current\.total = Math\.min\(Math\.PI \* 2, stirMotion\.current\.total - delta\)/);
-  assert.match(page, /if \(progress >= 0\.9\)[\s\S]*setStirProgress\(1\)[\s\S]*setStirred\(true\)/);
-  assert.match(page, /onPointerDown=\{startStir\}[\s\S]*onPointerMove=\{moveStir\}[\s\S]*逆时针旋转一圈/);
-  assert.match(page, /三種量訖，於盆中面向「太歲」和之。攪令均調。/);
+  assert.match(page, /stirMotion\.current\.total = Math\.min\(Math\.PI \* 4, stirMotion\.current\.total - delta\)/);
+  assert.match(page, /const progress = stirMotion\.current\.total \/ \(Math\.PI \* 4\)/);
+  assert.match(page, /if \(stirMotion\.current\.total >= Math\.PI \* 4 - 0\.2\)[\s\S]*setStirProgress\(1\)[\s\S]*setStirred\(true\)/);
+  assert.match(page, /onPointerDown=\{startStir\}[\s\S]*onPointerMove=\{moveStir\}[\s\S]*逆时针搅拌/);
+  assert.doesNotMatch(page, /逆时针旋转一圈/);
+  assert.match(page, /攪令均調，以手痛挼，皆令潤徹。/);
 });

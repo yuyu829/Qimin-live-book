@@ -406,10 +406,10 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     if (delta < -Math.PI) delta += Math.PI * 2;
     stirMotion.current.lastAngle = angle;
     if (delta >= 0) return;
-    stirMotion.current.total = Math.min(Math.PI * 2, stirMotion.current.total - delta);
-    const progress = stirMotion.current.total / (Math.PI * 2);
+    stirMotion.current.total = Math.min(Math.PI * 4, stirMotion.current.total - delta);
+    const progress = stirMotion.current.total / (Math.PI * 4);
     setStirProgress(progress);
-    if (progress >= 0.9) {
+    if (stirMotion.current.total >= Math.PI * 4 - 0.2) {
       stirMotion.current.active = false;
       setStirProgress(1);
       setStirred(true);
@@ -472,13 +472,13 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             <span className="taro-game-placeholder">搅拌视频占位<br />sauce-game-stir.mp4</span>
             <video className="sauce-stir-video" src="/art/sauce-game-stir.mp4" autoPlay loop muted playsInline aria-label="盆中配料正在搅拌" />
             <div className="sauce-stir-gesture" role="slider" aria-label="用手指逆时针旋转搅拌" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(stirProgress * 100)} onPointerDown={startStir} onPointerMove={moveStir} onPointerUp={finishStir} onPointerCancel={finishStir}>
-              {!stirred && <span><b>↺</b>逆时针旋转一圈</span>}
+              {!stirred && <span><b>↺</b>逆时针搅拌</span>}
             </div>
             {stirred && <div className="taro-dig-complete" aria-live="polite"><b>搅拌完成</b><span>豆黄、盐与曲料已经拌匀。</span></div>}
           </div>
           <div className="sauce-stir-progress" aria-label={`搅拌进度 ${Math.round(stirProgress * 100)}%`}><span style={{ width: `${stirProgress * 100}%` }} /></div>
           <p className="taro-dig-hint">{stirred ? "已经均匀调和" : "请在视频画面上用手指或鼠标逆时针旋转"}</p>
-          {stirred && <blockquote className="taro-land-source">三種量訖，於盆中面向「太歲」和之。攪令均調。</blockquote>}
+          {stirred && <blockquote className="taro-land-source">攪令均調，以手痛挼，皆令潤徹。</blockquote>}
         </>}
       </section>
     </div>
