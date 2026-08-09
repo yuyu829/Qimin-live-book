@@ -63,6 +63,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:3px so
 
 /* App viewport: intentionally phone-first, including on desktop previews. */
 body{background:#d9cdbd}
+.pouch-cat-art{position:relative}.pouch-lock-badge{position:absolute;left:50%;top:50%;z-index:2;width:54px;height:54px;display:grid;place-items:center;border-radius:50%;background:rgba(104,104,104,.82);color:#fff;font-size:11px;font-weight:800;letter-spacing:1px;transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(58,52,46,.18)}
 .app-shell{width:min(100%,430px);min-height:100svh;margin:0 auto;background-color:var(--cream);box-shadow:0 0 38px rgba(77,57,38,.18);overflow:hidden}
 .topbar{padding:0 16px}
 .cover-screen{position:relative;width:100%;min-height:100svh;display:block;background:#f7eee0}

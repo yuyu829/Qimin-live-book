@@ -91,6 +91,6 @@ test("placing five taros continues to a ten-second watering video", () => {
 
 test("watering completion unlocks the taro cat collection entry", () => {
   assert.match(page, /waterComplete && <div className="taro-unlock-card"[\s\S]*src="\/art\/taro-cat\.gif" alt="已解锁的芋头喵"[\s\S]*<b>图鉴已解锁<\/b><span>芋头喵<\/span>/);
-  assert.match(page, /<button type="button" onClick=\{onClose\}>完成游戏<\/button>/);
+  assert.match(page, /<button type="button" onClick=\{\(\) => \{ onUnlock\(\); onClose\(\); \}\}>完成游戏<\/button>/);
   assert.match(css, /\.taro-unlock-card img\{[^}]*width:128px;height:128px;object-fit:contain/);
 });

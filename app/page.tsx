@@ -30,6 +30,7 @@ import { highlightTerms } from "@/lib/highlight-terms";
 type Screen = "cover" | "prologue-loading" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
 type Note = { id: number; text: string; time: string };
+type CatUnlock = "taro" | "sauce";
 
 const starterNotes: Note[] = [
   { id: 1, text: "淘米水别急着倒，放凉后浇绿萝，算是给厨房剩余找个去处。", time: "今天" },
@@ -316,7 +317,7 @@ const sauceRecipeIngredients = [
   { label: "白盐", target: 5, unit: "升" }
 ] as const;
 
-function SauceBeanGame({ onClose }: { onClose: () => void }) {
+function SauceBeanGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: () => void }) {
   const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe" | "vat" | "stir" | "ferment">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
@@ -536,7 +537,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             <span className="taro-game-placeholder">成熟大酱画面占位<br />sauce-game-ferment-complete.webp</span>
             <ArtImage src="/art/sauce-game-ferment-complete.webp" alt="发酵一百天后成熟的一坛大酱" className="taro-game-image sauce-mature-image" />
             {!sauceCatRevealed && <div className="sauce-mature-caption" aria-live="polite"><b>一百天过去了</b><span>一坛大酱，终于成熟。</span></div>}
-            {sauceCatRevealed && <div className="taro-unlock-card sauce-unlock-card" aria-live="polite"><img src="/art/sauce-cat.gif" alt="已解锁的做酱喵" /><b>图鉴已解锁</b><span>获得一枚「做酱喵」收藏皮肤</span><button type="button" onClick={onClose}>完成游戏</button></div>}
+            {sauceCatRevealed && <div className="taro-unlock-card sauce-unlock-card" aria-live="polite"><img src="/art/sauce-cat.gif" alt="已解锁的做酱喵" /><b>图鉴已解锁</b><span>获得一枚「做酱喵」收藏皮肤</span><button type="button" onClick={() => { onUnlock(); onClose(); }}>完成游戏</button></div>}
           </div>
         </>}
       </section>
@@ -544,7 +545,7 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TaroLandGame({ onClose }: { onClose: () => void }) {
+function TaroLandGame({ onClose, onUnlock }: { onClose: () => void; onUnlock: () => void }) {
   const [step, setStep] = useState<"land" | "dig" | "place" | "water">("land");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
@@ -649,7 +650,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
             <span className="taro-game-placeholder">浇水视频占位<br />taro-game-water.mp4</span>
             <video className="taro-water-video" src="/art/taro-game-water.mp4" autoPlay muted playsInline preload="auto" aria-label="给芋头浇水的十秒动画" />
             {!waterComplete && <div className="taro-water-progress" aria-label="浇水动画播放中"><span /></div>}
-            {waterComplete && <div className="taro-unlock-card" aria-live="polite"><img src="/art/taro-cat.gif" alt="已解锁的芋头喵" /><b>图鉴已解锁</b><span>芋头喵</span><button type="button" onClick={onClose}>完成游戏</button></div>}
+            {waterComplete && <div className="taro-unlock-card" aria-live="polite"><img src="/art/taro-cat.gif" alt="已解锁的芋头喵" /><b>图鉴已解锁</b><span>芋头喵</span><button type="button" onClick={() => { onUnlock(); onClose(); }}>完成游戏</button></div>}
           </div>
           <blockquote className="taro-water-source">旱，數澆之。</blockquote>
           <p className="taro-water-copy">芋头怕旱，干旱时要多浇水。</p>
@@ -659,7 +660,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   );
 }
 
-function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () => void; onComplete: () => void }) {
+function Reader({ chapter, onBack, onComplete, onUnlockCat }: { chapter: Chapter; onBack: () => void; onComplete: () => void; onUnlockCat: (cat: CatUnlock) => void }) {
   const [readerMode, setReaderMode] = useState<"deck" | "full" | "detail">("deck");
   const [detailReturnMode, setDetailReturnMode] = useState<"deck" | "full">("deck");
   const [detailMessage, setDetailMessage] = useState<ChapterMessage>();
@@ -767,8 +768,8 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
             <img className="chapter-shared-cat" src={chapter.id === "soybean" ? "/art/taro-cat.gif" : "/art/sauce-cat.gif"} alt="" />
           </span>
       </div>}
-      {taroGameOpen && chapter.id === "soybean" && <TaroLandGame onClose={() => setTaroGameOpen(false)} />}
-      {sauceGameOpen && chapter.id === "sauce" && <SauceBeanGame onClose={() => setSauceGameOpen(false)} />}
+      {taroGameOpen && chapter.id === "soybean" && <TaroLandGame onClose={() => setTaroGameOpen(false)} onUnlock={() => onUnlockCat("taro")} />}
+      {sauceGameOpen && chapter.id === "sauce" && <SauceBeanGame onClose={() => setSauceGameOpen(false)} onUnlock={() => onUnlockCat("sauce")} />}
       <section className="chat-stream">
         {readerMode === "full" && (
           <div className="full-chat-stream" aria-label="章节全文聊天室">
@@ -863,12 +864,12 @@ const mapVolumes = {
 } as const;
 
 const pouchCats = [
-  ["芋头喵", "map-cat-taro.webp"], ["做酱喵", "map-cat-sauce.webp"], ["辣椒喵", "map-cat-chili.webp"],
-  ["养鸡喵", "map-cat-chicken.webp"], ["种树喵", "map-cat-tree.webp"], ["种饼喵", "map-cat-cake.webp"],
-  ["种枣喵", "map-cat-jujube.webp"], ["种柿喵", "map-cat-persimmon.webp"], ["养鱼喵", "map-cat-fish.webp"]
+  ["芋头喵", "map-cat-taro.webp", "taro"], ["做酱喵", "map-cat-sauce.webp", "sauce"], ["辣椒喵", "map-cat-chili.webp", "chili"],
+  ["养鸡喵", "map-cat-chicken.webp", "chicken"], ["种树喵", "map-cat-tree.webp", "tree"], ["种饼喵", "map-cat-cake.webp", "cake"],
+  ["种枣喵", "map-cat-jujube.webp", "jujube"], ["种柿喵", "map-cat-persimmon.webp", "persimmon"], ["养鱼喵", "map-cat-fish.webp", "fish"]
 ] as const;
 
-function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
+function WorldMap({ onOpen, unlockedCats }: { onOpen: (id: Chapter["id"]) => void; unlockedCats: CatUnlock[] }) {
   const [volume, setVolume] = useState<"soybean" | "sauce">();
   const [pouchOpen, setPouchOpen] = useState(false);
   return (
@@ -882,7 +883,7 @@ function WorldMap({ onOpen }: { onOpen: (id: Chapter["id"]) => void }) {
       </div>
       <div className="map-profile" aria-label="小禾喵等级 Lv2 小学徒"><div className="map-profile-avatar"><ArtImage src="/art/map-cat-avatar.webp" alt="小禾喵头像" className="map-profile-image" /></div><div className="map-profile-info"><b>小禾喵</b><span>Lv2&nbsp; 小学徒</span><div className="map-level-track" role="progressbar" aria-label="升级进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={46}><i /></div></div></div>
       <button className="map-pouch-button" type="button" aria-label="打开图鉴" onClick={() => setPouchOpen(true)}><ArtImage src="/art/map-pouch.webp" alt="图鉴" className="map-pouch-image" /><span aria-hidden="true">图鉴</span></button>
-      {pouchOpen && <div className="pouch-backdrop" onClick={() => setPouchOpen(false)}><section className="pouch-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setPouchOpen(false)} aria-label="关闭图鉴"><X /></button><p className="overline">齐民村 · 农活喵图鉴</p><h2>我的图鉴</h2><div className="pouch-grid">{pouchCats.map(([name, image]) => <article className="pouch-cat" key={name}><div className="pouch-cat-art"><ArtImage src={`/art/${image}`} alt={`${name}插画占位`} className="pouch-cat-image" /></div><b>{name}</b></article>)}</div></section></div>}
+      {pouchOpen && <div className="pouch-backdrop" onClick={() => setPouchOpen(false)}><section className="pouch-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setPouchOpen(false)} aria-label="关闭图鉴"><X /></button><p className="overline">齐民村 · 农活喵图鉴</p><h2>我的图鉴</h2><div className="pouch-grid">{pouchCats.map(([name, image, id]) => { const unlocked = (id === "taro" || id === "sauce") && unlockedCats.includes(id); return <article className={`pouch-cat ${unlocked ? "is-unlocked" : "is-locked"}`} key={name}><div className="pouch-cat-art"><ArtImage src={`/art/${image}`} alt={`${name}插画占位`} className="pouch-cat-image" />{!unlocked && <span className="pouch-lock-badge">待解锁</span>}</div><b>{name}</b></article>; })}</div></section></div>}
       {volume && <div className="map-volume-backdrop" onClick={() => setVolume(undefined)}><section className="map-volume-popover" onClick={(event) => event.stopPropagation()}><button className="map-volume-close" onClick={() => setVolume(undefined)} aria-label="关闭卷目录"><X /></button><p className="overline">齐民要术 · 章节目录</p><h2>{mapVolumes[volume].title}</h2><div className="map-volume-list">{mapVolumes[volume].items.map((item, index) => { const activeIndex = volume === "soybean" ? 12 : 2; return <button key={item} disabled={index !== activeIndex} onClick={() => onOpen(volume)}>{item}{index === activeIndex && <ChevronRight size={15} />}</button>; })}</div></section></div>}
     </main>
   );
@@ -912,12 +913,14 @@ export default function HomePage() {
   const [interest, setInterest] = useState("");
   const [chapterId, setChapterId] = useState<Chapter["id"]>("soybean");
   const [readIds, setReadIds] = useState<string[]>([]);
+  const [unlockedCats, setUnlockedCats] = useState<CatUnlock[]>([]);
   const [notes, setNotesState] = useState<Note[]>(starterNotes);
   const chapter = useMemo(() => chapterById(chapterId)!, [chapterId]);
 
   useEffect(() => {
     try {
       setReadIds(JSON.parse(localStorage.getItem("qimin-read") ?? "[]"));
+      setUnlockedCats(JSON.parse(localStorage.getItem("qimin-unlocked-cats") ?? "[]"));
       setNotesState(JSON.parse(localStorage.getItem("qimin-notes") ?? JSON.stringify(starterNotes)));
     } catch { /* ignore malformed demo state */ }
   }, []);
@@ -945,6 +948,7 @@ export default function HomePage() {
     const next = Array.from(new Set([...readIds, chapterId])); setReadIds(next); localStorage.setItem("qimin-read", JSON.stringify(next)); setScreen("map"); window.scrollTo(0, 0);
   }
   function setNotes(next: Note[]) { setNotesState(next); localStorage.setItem("qimin-notes", JSON.stringify(next)); }
+  function unlockCat(cat: CatUnlock) { setUnlockedCats((current) => { const next = Array.from(new Set([...current, cat])); localStorage.setItem("qimin-unlocked-cats", JSON.stringify(next)); return next; }); }
 
   const showTopBar = ["recommend", "map", "school"].includes(screen);
   return (
@@ -955,8 +959,8 @@ export default function HomePage() {
       {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
       {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
       {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} />}
-      {screen === "map" && <WorldMap onOpen={openChapter} />}
+      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} />}
+      {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
       {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
       {showTopBar && screen !== "reader" && <nav className="bottom-nav">
         <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
