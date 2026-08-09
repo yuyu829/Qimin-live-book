@@ -10,13 +10,16 @@ test("compact chapter reading locks the vertical viewport", () => {
   assert.match(css, />\.chat-stream\{position:fixed;top:282px;bottom:78px/);
 });
 
-test("soybean and sauce deck cards use the same viewport-based dimensions", () => {
+test("sauce copies the taro deck height without changing taro measurement", () => {
   assert.match(page, /chapters\.map/);
+  assert.match(page, /const taroReferenceCardRef = useRef<HTMLDivElement>\(null\)/);
+  assert.match(page, /chapter\.id === "sauce" \? taroReferenceCardRef\.current : firstCardRef\.current/);
+  assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
-  assert.match(page, /Math\.max\(120, Math\.min\(345, availableHeight\)\)/);
-  assert.doesNotMatch(page, /setDeckCardHeight\([^\n]*naturalHeight/);
+  assert.match(page, /Math\.max\(120, Math\.min\(345, naturalHeight \+ 68, availableHeight\)\)/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
-  assert.match(page, /readerMode === "deck"[\s\S]*className="deck-stage"[\s\S]*className="swipe-hint"/);
+  assert.match(page, /chapter\.id === "sauce"[\s\S]*className="deck-card deck-height-reference"[\s\S]*chapter=\{chapters\[0\]\}[\s\S]*message=\{chapters\[0\]\.messages\[0\]\}/);
+  assert.match(css, /\.deck-height-reference\{[^}]*left:-10000px!important[^}]*visibility:hidden!important/);
   assert.doesNotMatch(css, /\.deck-card\{height:360px/);
 });
 

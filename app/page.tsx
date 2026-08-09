@@ -273,6 +273,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   const [deckCardHeight, setDeckCardHeight] = useState<number>();
   const pointerStart = useRef({ x: 0, active: false });
   const firstCardRef = useRef<HTMLDivElement>(null);
+  const taroReferenceCardRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
@@ -280,13 +281,14 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
 
   useLayoutEffect(() => {
-    const card = firstCardRef.current;
+    const card = chapter.id === "sauce" ? taroReferenceCardRef.current : firstCardRef.current;
     if (!card) return;
     card.style.height = "auto";
     card.style.minHeight = "0";
     card.style.maxHeight = "none";
+    const naturalHeight = card.scrollHeight;
     const availableHeight = window.innerHeight - 282 - 78 - DECK_STACK_RISE;
-    setDeckCardHeight(Math.max(120, Math.min(345, availableHeight)));
+    setDeckCardHeight(Math.max(120, Math.min(345, naturalHeight + 68, availableHeight)));
   }, [chapter.id]);
 
   function openDetail(message: ChapterMessage) {
@@ -374,6 +376,12 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
           </div>
         )}
         {readerMode === "deck" && currentIndex < chapter.messages.length && (
+          <>
+          {chapter.id === "sauce" && (
+            <div className="deck-card deck-height-reference" ref={taroReferenceCardRef} aria-hidden="true">
+              <MessageBubble chapter={chapters[0]} message={chapters[0].messages[0]} active compact onSpeaker={() => undefined} />
+            </div>
+          )}
           <div className="deck-stage" aria-label="章节发言卡片堆" style={{ paddingTop: `${DECK_STACK_RISE}px` }}>
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;

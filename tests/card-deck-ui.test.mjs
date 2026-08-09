@@ -17,15 +17,16 @@ test("deck includes depth transitions and swipe exit animation", () => {
   assert.match(css, /perspective:1000px/);
 });
 
-test("deck cards share one viewport-based compact height across chapters", () => {
+test("deck cards share the compact height measured from each chapter's first card", () => {
   assert.match(css, /\.deck-stage\{[^}]*display:grid/);
   assert.match(page, /const \[deckCardHeight, setDeckCardHeight\] = useState<number>\(\)/);
   assert.match(page, /const firstCardRef = useRef<HTMLDivElement>\(null\)/);
+  assert.match(page, /chapter\.id === "sauce" \? taroReferenceCardRef\.current : firstCardRef\.current/);
   assert.match(page, /card\.style\.height = "auto"/);
   assert.match(page, /card\.style\.maxHeight = "none"/);
+  assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
-  assert.match(page, /Math\.max\(120, Math\.min\(345, availableHeight\)\)/);
-  assert.doesNotMatch(page, /setDeckCardHeight\([^\n]*naturalHeight/);
+  assert.match(page, /Math\.max\(120, Math\.min\(345, naturalHeight \+ 68, availableHeight\)\)/);
   assert.match(page, /ref=\{isTop && currentIndex === 0 \? firstCardRef : undefined\}/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
   assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\) \.deck-card\{overflow:hidden/);

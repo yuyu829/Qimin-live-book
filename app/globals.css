@@ -147,6 +147,7 @@ body{background:#d9cdbd}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card{overflow:hidden;padding:17px 5px 9px}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-row{height:100%;overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{position:relative;min-height:0;overflow:hidden}
+.deck-height-reference{position:fixed!important;left:-10000px!important;top:0!important;width:min(calc(100vw - 24px),406px)!important;height:auto!important;min-height:0!important;max-height:none!important;visibility:hidden!important;pointer-events:none!important;transform:none!important}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .paper-bubble{height:calc(100% - 30px);overflow:hidden}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{position:relative;padding-bottom:22px}
