@@ -62,8 +62,8 @@ function ArtImage({ src, alt, className, style }: { src: string; alt: string; cl
   return <img src={src} alt={alt} className={className} style={style} onError={(event) => { event.currentTarget.style.display = "none"; }} />;
 }
 
-function GestureGuide({ direction }: { direction: "right" | "down" }) {
-  return <span className={`gesture-guide gesture-guide-${direction}`} aria-hidden="true"><b>☝</b><i>{direction === "right" ? "→" : "↓"}</i></span>;
+function GestureGuide({ direction, caption }: { direction: "right" | "down"; caption?: string }) {
+  return <span className={`gesture-guide gesture-guide-${direction}${caption ? " has-caption" : ""}`} aria-hidden="true"><b>☝</b><i>{direction === "right" ? "→" : "↓"}</i>{caption && <em>{caption}</em>}</span>;
 }
 
 function ProgressPill({ readCount }: { readCount: number }) {
@@ -824,7 +824,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
             </div>
           )}
           <div className="deck-stage" aria-label="章节发言卡片堆" style={{ paddingTop: `${DECK_STACK_RISE}px` }}>
-            {showDeckGuide && currentIndex === 0 && <GestureGuide direction="right" />}
+            {showDeckGuide && currentIndex === 0 && <GestureGuide direction="right" caption="向右滑动" />}
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
               const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
