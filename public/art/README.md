@@ -29,6 +29,7 @@
 | `sauce-game-peel-2.webp` | 1200 x 1200 | 第一次向下滑动后的去皮画面 |
 | `sauce-game-peel-3.webp` | 1200 x 1200 | 第二次向下滑动后的去皮画面 |
 | `sauce-game-peel-4.webp` | 1200 x 1200 | 第三次向下滑动后的完成画面，熟豆已去皮 |
+| `sauce-game-recipe.webp` | 1200 x 1200 | 作大酱小游戏第四步“配方”；从左到右摆放豆黄、麦麴、黄蒸、白盐四盘材料 |
 | `map-pouch.webp` | 256 x 256 | 地图界面资料条右侧的图鉴按钮插画，建议透明背景 |
 | `map-cat-taro.webp` | 256 x 256 | 图鉴九宫格：芋头喵插画 |
 | `map-cat-sauce.webp` | 256 x 256 | 图鉴九宫格：做酱喵插画 |

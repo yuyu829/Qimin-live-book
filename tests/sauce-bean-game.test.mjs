@@ -29,7 +29,7 @@ test("correct bean feedback quotes the recorded sauce source", () => {
 });
 
 test("correct beans continue to a right-drag steaming step", () => {
-  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel">\("beans"\)/);
+  assert.match(page, /const \[step, setStep\] = useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("steam"\)\}>下一步：蒸豆<\/button>/);
   assert.match(page, /function startSteam\(event: ReactPointerEvent<HTMLButtonElement>\)/);
   assert.match(page, /const max = track \? track\.clientWidth - event\.currentTarget\.offsetWidth - 8 : 0/);
@@ -46,7 +46,7 @@ test("steaming switches between two square art placeholders and reveals the sour
 });
 
 test("steamed beans continue to a three-swipe peeling step", () => {
-  assert.match(page, /useState<"beans" \| "steam" \| "peel">\("beans"\)/);
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
   assert.match(page, /onClick=\{\(\) => setStep\("peel"\)\}>下一步：去皮<\/button>/);
   assert.match(page, /function startPeel\(event: ReactPointerEvent<HTMLDivElement>\)/);
   assert.match(page, /function finishPeel[\s\S]*if \(swipeDistance >= 70\) setPeelCount\(\(count\) => Math\.min\(3, count \+ 1\)\)/);
@@ -63,4 +63,18 @@ test("three downward swipes advance through four peeling frames", () => {
 
 test("peeling detects downward swipes without dragging the artwork", () => {
   assert.doesNotMatch(page, /className="taro-game-image sauce-peel-image" style=/);
+});
+
+test("peeled beans continue to the four-ingredient recipe step", () => {
+  assert.match(page, /useState<"beans" \| "steam" \| "peel" \| "recipe">\("beans"\)/);
+  assert.match(page, /onClick=\{\(\) => setStep\("recipe"\)\}>下一步：配方<\/button>/);
+  assert.match(page, /src="\/art\/sauce-game-recipe\.webp"/);
+  assert.match(artReadme, /`sauce-game-recipe\.webp` \| 1200 x 1200/);
+});
+
+test("recipe clicks match the recorded quantities and units", () => {
+  assert.match(page, /const sauceRecipeIngredients = \[[\s\S]*豆黄", target: 3, unit: "斗"[\s\S]*麦麴", target: 1, unit: "斗"[\s\S]*黄蒸", target: 1, unit: "斗"[\s\S]*白盐", target: 5, unit: "升"/);
+  assert.match(page, /function addRecipeIngredient\(index: number\)[\s\S]*Math\.min\(sauceRecipeIngredients\[index\]\.target, amount \+ 1\)/);
+  assert.match(page, /大率豆黃三斗，麴末一斗，黃蒸末一斗，白鹽五升。/);
+  assert.match(page, /recipeMatched && <div className="taro-land-success"[\s\S]*<b>配方配对完成<\/b>/);
 });

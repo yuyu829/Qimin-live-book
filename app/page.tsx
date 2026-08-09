@@ -309,14 +309,22 @@ const sauceBeanChoices = [
   { label: "春种乌豆", detail: "春豆粒小而均，更适合制酱" }
 ] as const;
 
+const sauceRecipeIngredients = [
+  { label: "豆黄", target: 3, unit: "斗" },
+  { label: "麦麴", target: 1, unit: "斗" },
+  { label: "黄蒸", target: 1, unit: "斗" },
+  { label: "白盐", target: 5, unit: "升" }
+] as const;
+
 function SauceBeanGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"beans" | "steam" | "peel">("beans");
+  const [step, setStep] = useState<"beans" | "steam" | "peel" | "recipe">("beans");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [steamDrag, setSteamDrag] = useState(0);
   const [steamed, setSteamed] = useState(false);
   const [peelCount, setPeelCount] = useState(0);
   const [peelY, setPeelY] = useState(0);
+  const [recipeAmounts, setRecipeAmounts] = useState([0, 0, 0, 0]);
   const steamStart = useRef({ x: 0, max: 0, active: false });
   const peelStart = useRef({ y: 0, active: false });
 
@@ -372,12 +380,18 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
     if (swipeDistance >= 70) setPeelCount((count) => Math.min(3, count + 1));
   }
 
+  function addRecipeIngredient(index: number) {
+    setRecipeAmounts((amounts) => amounts.map((amount, ingredientIndex) => ingredientIndex === index ? Math.min(sauceRecipeIngredients[index].target, amount + 1) : amount));
+  }
+
+  const recipeMatched = sauceRecipeIngredients.every((ingredient, index) => recipeAmounts[index] === ingredient.target);
+
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="sauce-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭作大酱游戏"><X size={18} /></button>
-        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : "三"}步</p>
-        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : "去皮"}</h2>
+        <p className="overline">作大酱 · 第{step === "beans" ? "一" : step === "steam" ? "二" : step === "peel" ? "三" : "四"}步</p>
+        <h2 id="sauce-game-title">{step === "beans" ? "选择豆子" : step === "steam" ? "蒸豆" : step === "peel" ? "去皮" : "配方"}</h2>
         {step === "beans" ? <>
           <div className="taro-game-scene">
             <span className="taro-game-placeholder">选豆画面占位<br />sauce-game-select-beans.webp</span>
@@ -399,14 +413,24 @@ function SauceBeanGame({ onClose }: { onClose: () => void }) {
             <div className="sauce-steam-track"><span>向右拖动点火，让豆子充分蒸熟</span><button type="button" aria-label="向右拖动点火按钮" style={{ transform: `translateX(${steamDrag}px)` }} onPointerDown={startSteam} onPointerMove={moveSteam} onPointerUp={finishSteam} onPointerCancel={finishSteam}>点火</button></div>
           </div>
           {steamed && <blockquote className="taro-land-source">於大甑中燥蒸之。</blockquote>}
-        </> : <>
+        </> : step === "peel" ? <>
           <div className="taro-game-scene sauce-peel-scene" onPointerDown={startPeel} onPointerMove={movePeel} onPointerUp={finishPeel} onPointerCancel={finishPeel}>
             <span className="taro-game-placeholder">去皮画面占位<br />sauce-game-peel-{peelCount + 1}.webp</span>
             <ArtImage src={`/art/sauce-game-peel-${peelCount + 1}.webp`} alt={peelCount >= 3 ? "已经完全去皮的熟豆" : `熟豆去皮进度 ${peelCount}/3`} className="taro-game-image sauce-peel-image" />
-            {peelCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>去皮完成</b><span>熟豆已经去净豆皮。</span></div>}
+            {peelCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>去皮完成</b><span>熟豆已经去净豆皮。</span><button type="button" onClick={() => setStep("recipe")}>下一步：配方</button></div>}
           </div>
           <div className="taro-dig-progress sauce-peel-progress" aria-label={`去皮进度 ${peelCount}/3`}>{[0, 1, 2].map((index) => <span key={index} className={index < peelCount ? "done" : ""} />)}</div>
           <p className="taro-dig-hint">{peelCount >= 3 ? "三次去皮已完成" : `在画面上向下滑动去皮 · ${peelCount}/3`}</p>
+        </> : <>
+          <blockquote className="taro-land-source sauce-recipe-source">大率豆黃三斗，麴末一斗，黃蒸末一斗，白鹽五升。</blockquote>
+          <div className="taro-game-scene sauce-recipe-scene">
+            <span className="taro-game-placeholder">配方画面占位<br />sauce-game-recipe.webp</span>
+            <ArtImage src="/art/sauce-game-recipe.webp" alt="从左到右摆放豆黄、麦麴、黄蒸和白盐四盘材料" className="taro-game-image" />
+            {recipeMatched && <div className="taro-land-success" aria-live="polite"><b>配方配对完成</b><span>四种材料都已按古法比例备齐。</span></div>}
+          </div>
+          <div className="sauce-recipe-options" aria-label="点击材料添加配方用量">
+            {sauceRecipeIngredients.map((ingredient, index) => <button type="button" key={ingredient.label} disabled={recipeAmounts[index] >= ingredient.target} onClick={() => addRecipeIngredient(index)}><b>{ingredient.label}</b><span>{recipeAmounts[index]} / {ingredient.target}{ingredient.unit}</span><small>{recipeAmounts[index] >= ingredient.target ? "已配好" : `+1${ingredient.unit}`}</small></button>)}
+          </div>
         </>}
       </section>
     </div>
