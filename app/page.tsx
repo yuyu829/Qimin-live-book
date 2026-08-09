@@ -304,7 +304,7 @@ const taroPlacementPoints = [
 ] as const;
 
 function TaroLandGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"land" | "dig" | "place">("land");
+  const [step, setStep] = useState<"land" | "dig" | "place" | "water">("land");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [digCount, setDigCount] = useState(0);
@@ -312,6 +312,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   const [digFrame, setDigFrame] = useState<1 | 2>(1);
   const [digAnimating, setDigAnimating] = useState(false);
   const [placedTaroCount, setPlacedTaroCount] = useState(0);
+  const [waterComplete, setWaterComplete] = useState(false);
   const digStart = useRef({ x: 0, active: false });
   const digReturnTimer = useRef<number | undefined>(undefined);
   const digCompleteTimer = useRef<number | undefined>(undefined);
@@ -320,6 +321,13 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
     window.clearTimeout(digReturnTimer.current);
     window.clearTimeout(digCompleteTimer.current);
   }, []);
+
+  useEffect(() => {
+    if (step !== "water") return;
+    setWaterComplete(false);
+    const timer = window.setTimeout(() => setWaterComplete(true), 10000);
+    return () => window.clearTimeout(timer);
+  }, [step]);
 
   function chooseLand(index: number) {
     if (index === 2) {
@@ -365,8 +373,8 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="taro-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭种芋游戏"><X size={18} /></button>
-        <p className="overline">种芋 · {step === "land" ? "第一步" : step === "dig" ? "第二步" : "第三步"}</p>
-        <h2 id="taro-game-title">{step === "land" ? "选地" : step === "dig" ? "挖地" : "放置芋头"}</h2>
+        <p className="overline">种芋 · {step === "land" ? "第一步" : step === "dig" ? "第二步" : step === "place" ? "第三步" : "第四步"}</p>
+        <h2 id="taro-game-title">{step === "land" ? "选地" : step === "dig" ? "挖地" : step === "place" ? "放置芋头" : "浇水"}</h2>
         {step === "land" ? <>
         <div className="taro-game-scene">
           <span className="taro-game-placeholder">选地画面占位<br />taro-game-select-land.webp</span>
@@ -386,15 +394,24 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
           </div>
           <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
           <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : digAnimating ? "挥锄挖地中…" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>
-        </> : <>
+        </> : step === "place" ? <>
           <div className="taro-game-scene taro-place-scene">
             <span className="taro-game-placeholder">放置芋头画面占位<br />{placementImage.split("/").at(-1)}</span>
             <ArtImage src={placementImage} alt={`已经放置 ${placedTaroCount} 个芋头`} className="taro-game-image" />
             {taroPlacementPoints.map((point, index) => <button type="button" key={point.label} className={`taro-place-point ${point.className} ${index < placedTaroCount ? "placed" : ""} ${index === placedTaroCount ? "next" : ""}`} disabled={index !== placedTaroCount || placedTaroCount >= 5} onClick={() => setPlacedTaroCount((count) => Math.min(5, count + 1))} aria-label={`在${point.label}放置芋头`}><span>{index < placedTaroCount ? "✓" : index === placedTaroCount ? point.label : ""}</span></button>)}
-            {placedTaroCount >= 5 && <div className="taro-place-complete" aria-live="polite"><b>五个芋头已放好</b><span>四角与中央各放一个，再用脚踏实。</span><small>《齐民要术》：“取五芋子置四角及中央，足践之。”</small></div>}
+            {placedTaroCount >= 5 && <div className="taro-place-complete" aria-live="polite"><b>五个芋头已放好</b><span>四角与中央各放一个，再用脚踏实。</span><small>《齐民要术》：“取五芋子置四角及中央，足践之。”</small><button type="button" onClick={() => setStep("water")}>下一步：浇水</button></div>}
           </div>
           <div className="taro-place-progress" aria-label={`芋头放置进度 ${placedTaroCount}/5`}>{taroPlacementPoints.map((point, index) => <span key={point.label} className={index < placedTaroCount ? "done" : ""}>{index + 1}</span>)}</div>
           <p className="taro-dig-hint">{placedTaroCount >= 5 ? "五个芋头已全部放置" : `请点击画面${taroPlacementPoints[placedTaroCount].label} · ${placedTaroCount}/5`}</p>
+        </> : <>
+          <div className="taro-game-scene taro-water-scene">
+            <span className="taro-game-placeholder">浇水视频占位<br />taro-game-water.mp4</span>
+            <video className="taro-water-video" src="/art/taro-game-water.mp4" autoPlay muted playsInline preload="auto" aria-label="给芋头浇水的十秒动画" />
+            {!waterComplete && <div className="taro-water-progress" aria-label="浇水动画播放中"><span /></div>}
+            {waterComplete && <div className="taro-unlock-card" aria-live="polite"><img src="/art/taro-cat.gif" alt="已解锁的芋头喵" /><b>图鉴已解锁</b><span>芋头喵</span><button type="button" onClick={onClose}>完成游戏</button></div>}
+          </div>
+          <blockquote className="taro-water-source">旱，數澆之。</blockquote>
+          <p className="taro-water-copy">芋头怕旱，干旱时要多浇水。</p>
         </>}
       </section>
     </div>

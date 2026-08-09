@@ -73,3 +73,19 @@ test("placement step has its own empty-land frame before the five taros", () => 
   assert.match(artReadme, /`taro-game-place-0\.webp` \| 1200 x 1200 \| 第三步刚进入时、尚未放置芋头的空土地画面/);
   assert.match(page, /placedTaroCount\}\.webp/);
 });
+
+test("placing five taros continues to a ten-second watering video", () => {
+  assert.match(page, /onClick=\{\(\) => setStep\("water"\)\}>下一步：浇水<\/button>/);
+  assert.match(page, /if \(step !== "water"\) return;[\s\S]*window\.setTimeout\(\(\) => setWaterComplete\(true\), 10000\)/);
+  assert.match(page, /<video className="taro-water-video" src="\/art\/taro-game-water\.mp4" autoPlay muted playsInline preload="auto"/);
+  assert.match(page, /<blockquote className="taro-water-source">旱，數澆之。<\/blockquote>/);
+  assert.match(page, /<p className="taro-water-copy">芋头怕旱，干旱时要多浇水。<\/p>/);
+  assert.match(css, /animation:taroWaterProgress 10s linear both/);
+  assert.match(artReadme, /`taro-game-water\.mp4` \| 1200 x 1200，10 秒/);
+});
+
+test("watering completion unlocks the taro cat collection entry", () => {
+  assert.match(page, /waterComplete && <div className="taro-unlock-card"[\s\S]*src="\/art\/taro-cat\.gif" alt="已解锁的芋头喵"[\s\S]*<b>图鉴已解锁<\/b><span>芋头喵<\/span>/);
+  assert.match(page, /<button type="button" onClick=\{onClose\}>完成游戏<\/button>/);
+  assert.match(css, /\.taro-unlock-card img\{[^}]*width:128px;height:128px;object-fit:contain/);
+});
