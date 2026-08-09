@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, type Speaker, type Term } from "@/data/qimin";
-import { deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
+import { DECK_STACK_RISE, deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 import { highlightTerms } from "@/lib/highlight-terms";
 
 type Screen = "cover" | "interest" | "recommend" | "reader" | "map" | "school";
@@ -184,6 +184,7 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     }
   }
 
+  const displayTranslation = compact && message.translation.length > 84 ? `${message.translation.slice(0, 84)}…` : message.translation;
   const displayOriginal = compact && message.original.length > 120 ? `${message.original.slice(0, 120)}…` : message.original;
   const originalParts = highlightTerms(displayOriginal, message.terms.map((term) => term.word));
 
@@ -193,7 +194,7 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
       <div className="message-column">
         <button className="speaker-name" onClick={() => onSpeaker(speaker)}>{speaker.name}<small>{speaker.nature}</small></button>
         <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`} onClick={onDetail} role={onDetail ? "button" : undefined} tabIndex={onDetail ? 0 : undefined} onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}>
-          <p className="translation">{message.translation}</p>
+          <p className="translation">{displayTranslation}</p>
           <div className="original-block">
             <p>{originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}</p>
             <div className="term-row">
@@ -264,12 +265,25 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [dismissing, setDismissing] = useState(false);
+  const [deckCardHeight, setDeckCardHeight] = useState<number>();
   const pointerStart = useRef({ x: 0, active: false });
+  const firstCardRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setReaderMode("deck"); setCurrentIndex(0); setDragX(0); setDragging(false); setDismissing(false); setConversation([]); setQuestion(""); }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
+
+  useLayoutEffect(() => {
+    const card = firstCardRef.current;
+    if (!card) return;
+    card.style.height = "auto";
+    card.style.minHeight = "0";
+    card.style.maxHeight = "none";
+    const naturalHeight = card.scrollHeight;
+    const availableHeight = window.innerHeight - 282 - 78 - DECK_STACK_RISE;
+    setDeckCardHeight(Math.max(200, Math.min(310, naturalHeight, availableHeight)));
+  }, [chapter.id]);
 
   function openDetail(message: ChapterMessage) {
     setDetailReturnMode(readerMode === "full" ? "full" : "deck");
@@ -354,13 +368,14 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
           </div>
         )}
         {readerMode === "deck" && currentIndex < chapter.messages.length && (
-          <div className="deck-stage" aria-label="章节发言卡片堆">
+          <div className="deck-stage" aria-label="章节发言卡片堆" style={{ paddingTop: `${DECK_STACK_RISE}px` }}>
             {chapter.messages.slice(currentIndex, currentIndex + 5).map((message, position) => {
               const isTop = position === 0;
               const topTransform = `translate3d(${dragX}px, 0, 0) rotate(${Math.min(dragX / 18, 16)}deg)`;
               return (
                 <div
                   key={message.id}
+                  ref={isTop && currentIndex === 0 ? firstCardRef : undefined}
                   className={`deck-card deck-position-${position} ${isTop ? "is-top" : ""} ${isTop && dismissing ? "is-dismissing" : ""}`}
                   data-deck-position={position}
                   style={{
@@ -368,7 +383,10 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
                     opacity: isTop && dismissing ? 0 : 1 - position * 0.12,
                     filter: position === 0 ? "none" : `saturate(${1 - position * 0.16}) blur(${position * 0.15}px)`,
                     transform: isTop ? topTransform : deckCardTransform(position),
-                    transition: isTop && dragging ? "none" : undefined
+                    transition: isTop && dragging ? "none" : undefined,
+                    height: deckCardHeight ? `${deckCardHeight}px` : undefined,
+                    minHeight: deckCardHeight ? `${deckCardHeight}px` : undefined,
+                    maxHeight: deckCardHeight ? `${deckCardHeight}px` : undefined
                   }}
                   onPointerDown={isTop ? handlePointerDown : undefined}
                   onPointerMove={isTop ? handlePointerMove : undefined}
@@ -383,9 +401,9 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
                 </div>
               );
             })}
-            <div className="swipe-hint"><ArrowRight size={15} /> 按住卡片向右滑，听下一位发言</div>
           </div>
         )}
+        {readerMode === "deck" && <div className="swipe-hint"><ArrowRight size={15} /> 按住卡片向右滑，听下一位发言</div>}
         {conversation.map((item, index) => (
           <div className="qa-exchange" key={`${item.question}-${index}`}>
             <div className="user-question">你问：{item.question}</div>

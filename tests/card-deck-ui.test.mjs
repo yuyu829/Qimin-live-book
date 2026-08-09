@@ -17,19 +17,29 @@ test("deck includes depth transitions and swipe exit animation", () => {
   assert.match(css, /perspective:1000px/);
 });
 
-test("deck card height follows its content", () => {
+test("deck cards share the compact height measured from each chapter's first card", () => {
   assert.match(css, /\.deck-stage\{[^}]*display:grid/);
-  assert.match(css, /\.deck-card\{[^}]*grid-area:1\/1[^}]*min-height:0[^}]*max-height:none/);
-  assert.doesNotMatch(css, /\.deck-card\{[^}]*min-height:430px/);
-  assert.doesNotMatch(css, /\.deck-stage\{[^}]*min-height:590px/);
+  assert.match(page, /const \[deckCardHeight, setDeckCardHeight\] = useState<number>\(\)/);
+  assert.match(page, /const firstCardRef = useRef<HTMLDivElement>\(null\)/);
+  assert.match(page, /card\.style\.height = "auto"/);
+  assert.match(page, /card\.style\.maxHeight = "none"/);
+  assert.match(page, /const naturalHeight = card\.scrollHeight/);
+  assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
+  assert.match(page, /Math\.max\(200, Math\.min\(310, naturalHeight, availableHeight\)\)/);
+  assert.match(page, /ref=\{isTop && currentIndex === 0 \? firstCardRef : undefined\}/);
+  assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\) \.deck-card\{overflow:hidden/);
+  assert.doesNotMatch(css, /\.deck-card\{height:360px;min-height:360px;max-height:360px/);
 });
 
 test("deck card content sits five pixels lower without changing card height", () => {
   assert.match(css, /\.deck-card\{[^}]*padding:17px 5px 9px/);
 });
 
-test("rear cards have visible room above the lowered front card", () => {
-  assert.match(css, /\.deck-stage\{[^}]*padding-top:220px/);
+test("fifth card starts at the shortcut bar lower edge", () => {
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\)>\.chat-stream\{position:fixed;top:282px/);
+  assert.match(page, /style=\{\{ paddingTop: `\$\{DECK_STACK_RISE\}px` \}\}/);
+  assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);
 });
 
 test("deck still keeps five message slots after removing the scene marker", () => {
@@ -42,7 +52,7 @@ test("swipe hint has its own space below cards and stays within a fixed reader v
   assert.match(css, /\.chat-stream\{position:relative;overflow:visible;height:auto\}/);
   assert.match(css, /\.deck-stage\{[^}]*padding-bottom:46px/);
   assert.match(css, /\.deck-stage\{[^}]*transform:translateY\(-16px\)/);
-  assert.match(css, /\.swipe-hint\{[^}]*bottom:10px[^}]*white-space:nowrap/);
+  assert.match(css, /\.swipe-hint\{[^}]*position:fixed[^}]*bottom:78px[^}]*z-index:39[^}]*white-space:nowrap/);
   assert.doesNotMatch(css, /\.swipe-hint\{[^}]*border-radius/);
 });
 
@@ -76,6 +86,7 @@ test("full text shortcut opens the original vertical chat reader", () => {
 
 test("deck previews long originals while detail keeps the full source", () => {
   assert.match(page, /compact = false/);
+  assert.match(page, /message\.translation\.length > 84/);
   assert.match(page, /message\.original\.length > 120/);
   assert.match(page, /compact onSpeaker=\{setSpeaker\}/);
   assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);

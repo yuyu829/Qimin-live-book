@@ -119,7 +119,7 @@ body{background:#d9cdbd}
 .deck-card .message-row{margin:0;padding-right:52px}.deck-card .paper-bubble{border:0;background:transparent;box-shadow:none;padding-top:8px}.deck-card .paper-bubble:before{display:none}.deck-card:not(.is-top) .context-rail{opacity:0!important;pointer-events:none}.deck-card:not(.is-top) .message-column{pointer-events:none}
 .original-term{font-weight:800;color:#b85d4e;text-decoration:underline;text-decoration-color:rgba(235,129,121,.58);text-decoration-thickness:2px;text-underline-offset:3px;background:rgba(235,129,121,.12);border-radius:3px;padding:0 2px}
 .deck-position-1{background:#f5e7ca}.deck-position-2{background:#dfe7cb}.deck-position-3{background:#eadbd0}
-.swipe-hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
+.swipe-hint{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:39;display:flex;align-items:center;gap:6px;width:max-content;max-width:90%;color:#9a745e;font-size:10px;white-space:nowrap;pointer-events:none}
 @media(max-width:380px){.deck-card .message-row{padding-right:46px}}
 
 /* Stable chapter reading layers: intro, actions, then reading content. */
@@ -139,3 +139,15 @@ body{background:#d9cdbd}
 .school-return-link:hover{color:var(--clay-dark)}
 .school-return-link:hover .school-return-icon{background:#fff1dc}
 .school-page .school-heading{margin-top:14px}
+
+/* Fixed deck viewport and uniform compact-card preview. */
+.reader-page:not(.is-full-reader):not(.is-detail-reader){height:100svh;min-height:100svh;overflow:hidden;overscroll-behavior:none}
+.reader-page:not(.is-full-reader):not(.is-detail-reader)>.chat-stream{position:fixed;top:282px;bottom:78px;left:50%;transform:translateX(-50%);width:min(100%,430px);height:auto;margin:0;padding:0 12px;overflow:hidden}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-stage{height:100%;margin:0;padding:0;transform:none;display:grid;align-items:start}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card{overflow:hidden;padding:17px 5px 9px}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-row{height:100%;overflow:hidden}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .message-column{min-height:0;overflow:hidden}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .paper-bubble{height:calc(100% - 30px);overflow:hidden}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:4}
+.reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:5}
+.reader-page.is-full-reader{height:auto;min-height:100svh;overflow:visible}
