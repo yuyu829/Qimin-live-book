@@ -459,7 +459,11 @@ function School({ notes, setNotes, onBack }: { notes: Note[]; setNotes: (notes: 
   }
   return (
     <main className="school-page narrow-page">
-      <button className="back-link" onClick={onBack}><ArrowLeft /> 回齐民村</button>
+      <header className="school-return-nav">
+        <button className="school-back-button" onClick={onBack} aria-label="回齐民村"><ArrowLeft size={18} /></button>
+        <h1>学堂</h1>
+        <span aria-hidden="true" />
+      </header>
       <div className="school-heading"><span><GraduationCap /></span><p className="overline">村口学堂</p><h2>把你的生活门道<br />留在墙上</h2><p>一句就好。这里不比分数，只把亲手试过的经验传下去。</p></div>
       <form className="note-form" onSubmit={publish}><textarea maxLength={80} value={text} onChange={(e) => setText(e.target.value)} placeholder="比如：给塑料瓶扎几个小孔，用来慢慢浇花…" /><div><span>{text.length}/80</span><button disabled={!text.trim()}>贴上墙 <Send size={15} /></button></div></form>
       <div className="note-wall">{notes.map((note, index) => <article key={note.id} className={`wall-note note-${index % 3}`}><span>经验笺 · {note.time}</span><p>{note.text}</p><small>—— 齐民村路过的人</small></article>)}</div>
