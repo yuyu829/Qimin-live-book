@@ -287,7 +287,7 @@ function Reader({ chapter, onBack, onComplete }: { chapter: Chapter; onBack: () 
     card.style.maxHeight = "none";
     const naturalHeight = card.scrollHeight;
     const availableHeight = window.innerHeight - 282 - 78 - DECK_STACK_RISE;
-    setDeckCardHeight(Math.max(120, Math.min(350, naturalHeight + 48, availableHeight)));
+    setDeckCardHeight(Math.max(120, Math.min(390, naturalHeight + 88, availableHeight)));
   }, [chapter.id]);
 
   function openDetail(message: ChapterMessage) {

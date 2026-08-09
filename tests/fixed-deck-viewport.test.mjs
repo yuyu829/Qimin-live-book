@@ -14,7 +14,7 @@ test("all soybean and sauce deck cards share the same fixed dimensions", () => {
   assert.match(page, /chapters\.map/);
   assert.match(page, /const naturalHeight = card\.scrollHeight/);
   assert.match(page, /const availableHeight = window\.innerHeight - 282 - 78 - DECK_STACK_RISE/);
-  assert.match(page, /Math\.max\(120, Math\.min\(350, naturalHeight \+ 48, availableHeight\)\)/);
+  assert.match(page, /Math\.max\(120, Math\.min\(390, naturalHeight \+ 88, availableHeight\)\)/);
   assert.match(page, /height: deckCardHeight \? `\$\{deckCardHeight\}px` : undefined/);
   assert.doesNotMatch(css, /\.deck-card\{height:360px/);
 });
