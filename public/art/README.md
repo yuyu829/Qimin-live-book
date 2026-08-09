@@ -15,6 +15,7 @@
 | `taro-game-dig-1.webp` | 1200 x 1200 | 种芋小游戏第二步“挖地”的第一张动作图，与第二张交替显示 |
 | `taro-game-dig-2.webp` | 1200 x 1200 | 种芋小游戏第二步“挖地”的第二张动作图，与第一张交替显示 |
 | `taro-game-dig-complete.webp` | 1200 x 1200 | 用户完成三次右滑后显示的挖地完成图 |
+| `taro-game-place-0.webp` | 1200 x 1200 | 第三步刚进入时、尚未放置芋头的空土地画面 |
 | `taro-game-place-1.webp` | 1200 x 1200 | 第三步：左上放入第一个芋头后的画面 |
 | `taro-game-place-2.webp` | 1200 x 1200 | 第三步：右上放入第二个芋头后的画面 |
 | `taro-game-place-3.webp` | 1200 x 1200 | 第三步：左下放入第三个芋头后的画面 |

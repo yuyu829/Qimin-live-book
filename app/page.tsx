@@ -359,7 +359,7 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   }
 
   const digImage = digCount >= 3 ? "/art/taro-game-dig-complete.webp" : digFrame === 1 ? "/art/taro-game-dig-1.webp" : "/art/taro-game-dig-2.webp";
-  const placementImage = placedTaroCount === 0 ? "/art/taro-game-dig-complete.webp" : `/art/taro-game-place-${placedTaroCount}.webp`;
+  const placementImage = `/art/taro-game-place-${placedTaroCount}.webp`;
 
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
