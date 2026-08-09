@@ -16,6 +16,8 @@ test("five-card stack begins exactly at the shortcut row lower edge", () => {
   assert.match(page, /style=\{\{ paddingTop: `\$\{DECK_STACK_RISE\}px` \}\}/);
   assert.match(page, /DECK_STACK_RISE, deckCardTransform/);
   assert.match(page, /slice\(currentIndex, currentIndex \+ 5\)/);
+  assert.match(css, /\.reader-page:not\(\.is-full-reader\):not\(\.is-detail-reader\) \.deck-stage\{[^}]*transform:translateY\(-15px\)/);
+  assert.match(css, /\.swipe-hint\{[^}]*bottom:24px/);
 });
 
 test("compact cards truncate both translation and original while detail keeps full text", () => {
