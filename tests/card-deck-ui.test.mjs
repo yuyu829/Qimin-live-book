@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { test } from "node:test";
 
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
@@ -61,15 +61,24 @@ test("annotated original terms have a highlighted text style", () => {
   assert.match(css, /\.original-term\{[^}]*font-weight:800/);
 });
 
-test("chapter shortcuts appear above the deck with a themed action and cat placeholder", () => {
+test("chapter shortcuts show their matching animated cat", () => {
   assert.match(page, /className="reader-shortcuts"/);
   assert.match(page, />阅读全文</);
   assert.match(page, /chapter\.id === "soybean" \? "去种芋" : "去作酱"/);
-  assert.match(page, /className="shortcut-cat-placeholder"/);
+  assert.match(page, /className="shortcut-cat-animation"/);
+  assert.match(page, /chapter\.id === "soybean" \? "\/art\/taro-cat\.gif" : "\/art\/sauce-cat\.gif"/);
+  assert.match(page, /chapter\.id === "soybean" \? "种芋动画猫" : "作酱动画猫"/);
   assert.match(css, /\.reader-shortcuts\{position:absolute;top:3px;right:14px/);
   assert.match(css, /\.reader-shortcuts>button\{[^}]*padding:7px 10px[^}]*border-radius:7px[^}]*font-size:12px/);
-  assert.match(css, /\.shortcut-cat-placeholder\{[^}]*width:46px;height:42px/);
-  assert.match(css, /@keyframes shortcutCatBob/);
+  assert.match(css, /\.shortcut-cat-animation\{[^}]*width:58px;height:50px[^}]*overflow:hidden/);
+  assert.match(css, /\.shortcut-cat-animation img\{[^}]*width:100%;height:100%;object-fit:contain/);
+});
+
+test("chapter shortcut cat GIF assets are present", async () => {
+  const taro = await stat(new URL("../public/art/taro-cat.gif", import.meta.url));
+  const sauce = await stat(new URL("../public/art/sauce-cat.gif", import.meta.url));
+  assert.ok(taro.size > 0);
+  assert.ok(sauce.size > 0);
 });
 
 test("full text shortcut opens the original vertical chat reader", () => {
