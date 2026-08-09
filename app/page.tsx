@@ -295,12 +295,21 @@ const landChoices = [
   { label: "肥地", detail: "肥沃松软，靠近水源" }
 ] as const;
 
+const taroPlacementPoints = [
+  { label: "左上", className: "place-top-left" },
+  { label: "右上", className: "place-top-right" },
+  { label: "左下", className: "place-bottom-left" },
+  { label: "右下", className: "place-bottom-right" },
+  { label: "中央", className: "place-center" }
+] as const;
+
 function TaroLandGame({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState<"land" | "dig">("land");
+  const [step, setStep] = useState<"land" | "dig" | "place">("land");
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [digCount, setDigCount] = useState(0);
   const [digX, setDigX] = useState(0);
+  const [placedTaroCount, setPlacedTaroCount] = useState(0);
   const digStart = useRef({ x: 0, active: false });
 
   function chooseLand(index: number) {
@@ -331,13 +340,14 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
   }
 
   const digImage = digCount >= 3 ? "/art/taro-game-dig-complete.webp" : digCount % 2 === 0 ? "/art/taro-game-dig-1.webp" : "/art/taro-game-dig-2.webp";
+  const placementImage = placedTaroCount === 0 ? "/art/taro-game-dig-complete.webp" : `/art/taro-game-place-${placedTaroCount}.webp`;
 
   return (
     <div className="taro-game-backdrop" role="presentation" onClick={onClose}>
       <section className="taro-game-modal" role="dialog" aria-modal="true" aria-labelledby="taro-game-title" onClick={(event) => event.stopPropagation()}>
         <button type="button" className="taro-game-close" onClick={onClose} aria-label="关闭种芋游戏"><X size={18} /></button>
-        <p className="overline">种芋 · {step === "land" ? "第一步" : "第二步"}</p>
-        <h2 id="taro-game-title">{step === "land" ? "选地" : "挖地"}</h2>
+        <p className="overline">种芋 · {step === "land" ? "第一步" : step === "dig" ? "第二步" : "第三步"}</p>
+        <h2 id="taro-game-title">{step === "land" ? "选地" : step === "dig" ? "挖地" : "放置芋头"}</h2>
         {step === "land" ? <>
         <div className="taro-game-scene">
           <span className="taro-game-placeholder">选地画面占位<br />taro-game-select-land.webp</span>
@@ -349,14 +359,23 @@ function TaroLandGame({ onClose }: { onClose: () => void }) {
           {landChoices.map((choice, index) => <button type="button" key={choice.label} disabled={solved} onClick={() => chooseLand(index)}>{choice.label}</button>)}
         </div>
         {wrongAttempts >= 2 && <blockquote className="taro-land-source">宜擇肥緩土近水處，和柔，糞之</blockquote>}
-        </> : <>
+        </> : step === "dig" ? <>
           <div className="taro-game-scene taro-dig-scene" onPointerDown={startDig} onPointerMove={moveDig} onPointerUp={finishDig} onPointerCancel={finishDig}>
             <span className="taro-game-placeholder">挖地画面占位<br />{digImage.split("/").at(-1)}</span>
             <ArtImage src={digImage} alt={digCount >= 3 ? "已经挖好的土地" : "正在交替挖地"} className="taro-game-image taro-dig-image" />
-            {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span><small>《齐民要术》：“種芋，區方深皆三尺。”</small></div>}
+            {digCount >= 3 && <div className="taro-dig-complete" aria-live="polite"><b>挖地完成</b><span>土地已经松整，可以继续下一步了。</span><small>《齐民要术》：“種芋，區方深皆三尺。”</small><button type="button" onClick={() => setStep("place")}>下一步：放置芋头</button></div>}
           </div>
           <div className="taro-dig-progress" aria-label={`挖地进度 ${digCount}/3`}><span className={digCount >= 1 ? "done" : ""} /><span className={digCount >= 2 ? "done" : ""} /><span className={digCount >= 3 ? "done" : ""} /></div>
           <p className="taro-dig-hint">{digCount >= 3 ? "三次挖地已完成" : `按住画面向右滑动挖地 · ${digCount}/3`}</p>
+        </> : <>
+          <div className="taro-game-scene taro-place-scene">
+            <span className="taro-game-placeholder">放置芋头画面占位<br />{placementImage.split("/").at(-1)}</span>
+            <ArtImage src={placementImage} alt={`已经放置 ${placedTaroCount} 个芋头`} className="taro-game-image" />
+            {taroPlacementPoints.map((point, index) => <button type="button" key={point.label} className={`taro-place-point ${point.className} ${index < placedTaroCount ? "placed" : ""} ${index === placedTaroCount ? "next" : ""}`} disabled={index !== placedTaroCount || placedTaroCount >= 5} onClick={() => setPlacedTaroCount((count) => Math.min(5, count + 1))} aria-label={`在${point.label}放置芋头`}><span>{index < placedTaroCount ? "✓" : index === placedTaroCount ? point.label : ""}</span></button>)}
+            {placedTaroCount >= 5 && <div className="taro-place-complete" aria-live="polite"><b>五个芋头已放好</b><span>四角与中央各放一个，再用脚踏实。</span><small>《齐民要术》：“取五芋子置四角及中央，足践之。”</small></div>}
+          </div>
+          <div className="taro-place-progress" aria-label={`芋头放置进度 ${placedTaroCount}/5`}>{taroPlacementPoints.map((point, index) => <span key={point.label} className={index < placedTaroCount ? "done" : ""}>{index + 1}</span>)}</div>
+          <p className="taro-dig-hint">{placedTaroCount >= 5 ? "五个芋头已全部放置" : `请点击画面${taroPlacementPoints[placedTaroCount].label} · ${placedTaroCount}/5`}</p>
         </>}
       </section>
     </div>

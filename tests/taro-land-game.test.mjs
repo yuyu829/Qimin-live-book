@@ -40,10 +40,25 @@ test("correct land choice continues to the three-swipe digging step", () => {
 test("digging artwork placeholders are documented as square assets", () => {
   assert.match(artReadme, /`taro-game-dig-1\.webp` \| 1200 x 1200/);
   assert.match(artReadme, /`taro-game-dig-2\.webp` \| 1200 x 1200/);
+  assert.match(artReadme, /`taro-game-dig-complete\.webp` \| 1200 x 1200/);
+});
 
 test("completed digging feedback includes the source text", () => {
   assert.match(page, /<b>挖地完成<\/b><span>土地已经松整，可以继续下一步了。<\/span><small>《齐民要术》：“種芋，區方深皆三尺。”<\/small>/);
   assert.match(css, /\.taro-dig-complete small\{[^}]*border-top:1px solid rgba\(255,253,245,\.35\)[^}]*font:600 10px\/1\.6/);
 });
-  assert.match(artReadme, /`taro-game-dig-complete\.webp` \| 1200 x 1200/);
+
+test("digging continues to five ordered taro placement points", () => {
+  assert.match(page, /const taroPlacementPoints = \[[\s\S]*左上[\s\S]*右上[\s\S]*左下[\s\S]*右下[\s\S]*中央/);
+  assert.match(page, /onClick=\{\(\) => setStep\("place"\)\}>下一步：放置芋头<\/button>/);
+  assert.match(page, /placedTaroCount === 0 \? "\/art\/taro-game-dig-complete\.webp" : `\/art\/taro-game-place-\$\{placedTaroCount\}\.webp`/);
+  assert.match(page, /disabled=\{index !== placedTaroCount \|\| placedTaroCount >= 5\}/);
+  assert.match(page, /setPlacedTaroCount\(\(count\) => Math\.min\(5, count \+ 1\)\)/);
+  assert.match(css, /\.place-top-left\{left:29%;top:34%\}[\s\S]*\.place-center\{left:50%;top:53%\}/);
+});
+
+test("placing all five taros shows the source and uses five documented frames", () => {
+  assert.match(page, /<b>五个芋头已放好<\/b><span>四角与中央各放一个，再用脚踏实。<\/span><small>《齐民要术》：“取五芋子置四角及中央，足践之。”<\/small>/);
+  for (let index = 1; index <= 5; index += 1) assert.match(artReadme, new RegExp(`taro-game-place-${index}\\.webp.*1200 x 1200`));
+  assert.match(css, /\.taro-place-progress\{display:grid;grid-template-columns:repeat\(5,28px\)/);
 });
