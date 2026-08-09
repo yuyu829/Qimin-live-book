@@ -24,8 +24,8 @@ test("reader shortcuts sit in a fixed row directly below the chapter intro", () 
   assert.match(page, /"去种芋" : "去作酱"/);
 });
 
-test("deck and full-text content reserve the same stable top area", () => {
+test("full text starts closer to the intro without moving the deck", () => {
   assert.match(css, /\.reader-page>\.chat-stream\{padding-top:267px\}/);
-  assert.match(css, /\.reader-page\.is-full-reader \.chat-stream\{padding-top:267px\}/);
+  assert.match(css, /\.reader-page\.is-full-reader \.chat-stream\{padding-top:203px\}/);
   assert.match(css, /\.reader-page \.deck-stage\{padding-top:72px\}/);
 });
