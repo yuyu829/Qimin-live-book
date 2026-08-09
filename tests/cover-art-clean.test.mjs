@@ -10,5 +10,5 @@ test("cover artwork has no vector fallbacks or colored container", () => {
   assert.match(cover, /src="\/art\/cover-world\.webp"/);
   assert.doesNotMatch(cover, /className="(?:sun|cloud|mountain|field-lines|book-prop|sprout)/);
   assert.doesNotMatch(cover, /<CatMark/);
-  assert.match(css, /\.farm-scene\{order:2;[^}]*background:transparent\}/);
+  assert.match(css, /\.farm-scene\{position:absolute;inset:0;z-index:0;[^}]*background:transparent;pointer-events:none\}/);
 });
