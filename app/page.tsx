@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, type Speaker, type Term } from "@/data/qimin";
+import { termsForMessage } from "@/data/qimin-glossary";
 import { DECK_STACK_RISE, deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 import { highlightTerms } from "@/lib/highlight-terms";
 
@@ -212,10 +213,15 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
   const speaker = speakers[message.speakerId];
   const [termStates, setTermStates] = useState<Record<string, AiState>>({});
   const [openTerm, setOpenTerm] = useState<string>();
+  const messageTerms = termsForMessage(message);
 
   async function explainTerm(term: Term) {
     setOpenTerm(term.word);
     if (termStates[term.word]?.answer || termStates[term.word]?.loading) return;
+    if (term.definition) {
+      setTermStates((state) => ({ ...state, [term.word]: { answer: term.definition } }));
+      return;
+    }
     setTermStates((state) => ({ ...state, [term.word]: { loading: true } }));
     try {
       const answer = await askAi({ action: "term", chapterId: chapter.id, term: term.word, category: term.category });
@@ -229,7 +235,7 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
   const isOriginalTruncated = compact && message.original.length > 48;
   const displayTranslation = isTranslationTruncated ? `${message.translation.slice(0, 40)}...` : message.translation;
   const displayOriginal = isOriginalTruncated ? message.original.slice(0, 48) : message.original;
-  const originalParts = highlightTerms(displayOriginal, message.terms.map((term) => term.word));
+  const originalParts = highlightTerms(displayOriginal, messageTerms.map((term) => term.word));
 
   return (
     <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
@@ -251,9 +257,9 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
           </div>
         </article>
       </div>
-      {message.terms.length > 0 && (
+      {messageTerms.length > 0 && (
         <aside className="context-rail" aria-label="这段原文的上下文工具">
-          {message.terms.slice(0, 3).map((term, index) => (
+          {messageTerms.slice(0, 3).map((term, index) => (
             <div className={`rail-term rail-term-${index}`} key={term.word}>
               <button onClick={() => explainTerm(term)}><span>{term.word}</span><b>?</b></button>
               {openTerm === term.word && (
@@ -275,15 +281,16 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
   const [science, setScience] = useState<AiState>({ loading: true });
   const [scienceSources, setScienceSources] = useState<AiSource[]>([]);
   const [terms, setTerms] = useState<Record<string, AiState>>({});
+  const messageTerms = termsForMessage(message);
 
   useEffect(() => {
     let active = true;
     setScience({ loading: true });
-    setTerms(Object.fromEntries(message.terms.map((term) => [term.word, { loading: true }])));
+    setTerms(Object.fromEntries(messageTerms.map((term) => [term.word, term.definition ? { answer: term.definition } : { loading: true }])));
     askAiDetailed({ action: "science", chapterId: chapter.id, messageId: message.id })
       .then((result) => { if (active) { setScience({ answer: result.answer }); setScienceSources(result.sources); } })
       .catch((error) => active && setScience({ error: (error as Error).message }));
-    message.terms.forEach((term) => {
+    messageTerms.filter((term) => !term.definition).forEach((term) => {
       askAi({ action: "term", chapterId: chapter.id, term: term.word, category: term.category })
         .then((answer) => active && setTerms((state) => ({ ...state, [term.word]: { answer } })))
         .catch((error) => active && setTerms((state) => ({ ...state, [term.word]: { error: (error as Error).message } })));
@@ -296,7 +303,7 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
       <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
       <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
       <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p></div></div>
-      <div className="detail-terms"><p className="overline">词语小辞典</p>{message.terms.length ? message.terms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
+      <div className="detail-terms"><p className="overline">词语小辞典</p>{messageTerms.length ? messageTerms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error ?? term.definition}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
     </section>
   );
 }

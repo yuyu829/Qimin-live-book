@@ -1,4 +1,4 @@
-export type Term = { word: string; category: string };
+export type Term = { word: string; category: string; definition?: string };
 
 export type Speaker = {
   id: string;
