@@ -10,7 +10,22 @@ test("cover opens a timed prologue before the interest question", () => {
   assert.match(page, /type Screen = [^;]*"prologue-loading"/);
   assert.match(page, /<Cover onNext=\{\(\) => setScreen\("prologue-loading"\)\}/);
   assert.match(page, /screen === "prologue-loading" && <PrologueLoading onBack=\{\(\) => setScreen\("cover"\)\}/);
-  assert.match(page, /screen !== "prologue-loading"[\s\S]*setScreen\("interest"\)[\s\S]*6000/);
+  assert.match(page, /screen !== "prologue-loading"[\s\S]*setScreen\("interest"\)[\s\S]*8000/);
+});
+
+test("prologue keeps a centered loading label without moving the back control", () => {
+  assert.match(page, /<nav className="prologue-loading-nav" aria-label="引入页导航">/);
+  assert.match(page, /<span>正在加载中<\/span>/);
+  assert.match(css, /\.prologue-loading-nav\{position:fixed;top:0;left:50%;[^}]*display:grid;place-items:center/);
+  assert.match(css, /\.prologue-loading-back\{position:absolute;top:11px;left:16px;pointer-events:auto\}/);
+});
+
+test("prologue preloads every current art image, gif and video", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const files = (await readdir(new URL("../public/art/", import.meta.url))).filter((file) => /\.(?:webp|gif|mp4)$/i.test(file));
+  for (const file of files) assert.match(page, new RegExp(file.replaceAll(".", "\\.")));
+  assert.match(page, /const image = new Image\(\);\s*image\.src = src;/);
+  assert.match(page, /video\.preload = "auto";\s*video\.src = src;\s*video\.load\(\);/);
 });
 
 test("prologue reveals the supplied text in three quiet beats", () => {

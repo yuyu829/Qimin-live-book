@@ -206,7 +206,7 @@ body{background:#d9cdbd}
 
 /* The opening prologue unfolds in three quiet beats before the first question. */
 .prologue-loading-page{position:relative;min-height:100svh;display:grid;place-items:center;padding:72px 30px;background:#f7eee0}
-.prologue-loading-back{position:fixed;top:11px;left:max(16px,calc(50% - 199px));z-index:2}
+.prologue-loading-nav{position:fixed;top:0;left:50%;z-index:2;width:min(100%,430px);height:58px;transform:translateX(-50%);display:grid;place-items:center;pointer-events:none}.prologue-loading-nav>span{color:#816d5c;font-size:11px;font-weight:700;letter-spacing:1px}.prologue-loading-back{position:absolute;top:11px;left:16px;pointer-events:auto}
 .prologue-loading-art{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:0;animation:prologueArtIn 1.4s ease 3.05s forwards}
 .prologue-loading-copy{position:absolute;top:140px;left:50%;z-index:1;width:min(calc(100% - 32px),390px);color:#6f503e;text-align:center;font:500 15px/2 "Noto Serif SC","Songti SC",serif;transform:translateX(-50%)}
 .prologue-loading-copy p{margin:0;opacity:0;transform:translateY(12px);animation:prologueLineIn 1.4s ease forwards}

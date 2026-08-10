@@ -148,12 +148,31 @@ function Cover({ onNext }: { onNext: () => void }) {
   );
 }
 
+const prologueArtAssets = [
+  "book-guide-avatar.webp", "chapter-sauce.webp", "chapter-soybean.webp", "cover-world.webp", "map-cat-avatar.webp", "map-cat-cake.webp", "map-cat-chicken.webp", "map-cat-chili.webp", "map-cat-fish.webp", "map-cat-jujube.webp", "map-cat-persimmon.webp", "map-cat-sauce.webp", "map-cat-taro.webp", "map-cat-tree.webp", "map-pouch.webp", "prologue-loading.webp", "reading-world.webp", "sauce-cat.gif", "sauce-game-ferment-background.webp", "sauce-game-ferment-complete.webp", "sauce-game-peel-1.webp", "sauce-game-peel-2.webp", "sauce-game-peel-3.webp", "sauce-game-peel-4.webp", "sauce-game-recipe.webp", "sauce-game-select-beans.webp", "sauce-game-steam-1.webp", "sauce-game-steam-2.webp", "sauce-game-stir.mp4", "sauce-game-vat.mp4", "school-cat-avatar.webp", "taro-cat.gif", "taro-game-dig-1.webp", "taro-game-dig-2.webp", "taro-game-dig-complete.webp", "taro-game-place-0.webp", "taro-game-place-1.webp", "taro-game-place-2.webp", "taro-game-place-3.webp", "taro-game-place-4.webp", "taro-game-place-5.webp", "taro-game-select-land.webp", "taro-game-water.mp4", "world-map.webp"
+] as const;
+
 function PrologueLoading({ onBack }: { onBack: () => void }) {
+  useEffect(() => {
+    const preloaders = prologueArtAssets.map((file) => {
+      const src = `/art/${file}`;
+      if (file.endsWith(".mp4")) {
+        const video = document.createElement("video");
+        video.preload = "auto";
+        video.src = src;
+        video.load();
+        return video;
+      }
+      const image = new Image();
+      image.src = src;
+      return image;
+    });
+    return () => preloaders.forEach((asset) => { if (asset instanceof HTMLVideoElement) asset.pause(); });
+  }, []);
+
   return (
     <main className="prologue-loading-page" aria-live="polite" aria-label="正在开启齐民要术活书世界">
-      <button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面">
-        <ArrowLeft size={18} />
-      </button>
+      <nav className="prologue-loading-nav" aria-label="引入页导航"><button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面"><ArrowLeft size={18} /></button><span>正在加载中</span></nav>
       <ArtImage src="/art/prologue-loading.webp" alt="" className="prologue-loading-art" />
       <section className="prologue-loading-copy">
         <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序与生存哲学；</p>
@@ -1052,7 +1071,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (screen !== "prologue-loading") return;
-    const timer = window.setTimeout(() => { setScreen("interest"); window.scrollTo(0, 0); }, 6000);
+    const timer = window.setTimeout(() => { setScreen("interest"); window.scrollTo(0, 0); }, 8000);
     return () => window.clearTimeout(timer);
   }, [screen]);
 
