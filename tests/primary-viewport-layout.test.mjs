@@ -97,7 +97,8 @@ test("map shows the Xia He Miao profile placeholder below navigation", () => {
   assert.match(page, /onClick=\{\(\) => setPouchOpen\(true\)\}/);
   assert.match(page, /className="pouch-grid"/);
   assert.match(page, /<h2>我的图鉴<\/h2>/);
-  assert.equal((page.match(/map-cat-(?:taro|sauce|chili|chicken|tree|cake|jujube|persimmon|fish)\.webp/g) ?? []).length, 9);
+  const pouchConfig = page.match(/const pouchCats = \[[\s\S]*?\] as const;/)?.[0] ?? "";
+  assert.equal((pouchConfig.match(/map-cat-(?:taro|sauce|chili|chicken|tree|cake|jujube|persimmon|fish)\.webp/g) ?? []).length, 9);
   assert.match(css, /\.pouch-grid\{display:grid;grid-template-columns:repeat\(3/);
 });
 
