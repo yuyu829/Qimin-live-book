@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       temperature: 0.55
     });
     const answer = result.text.trim();
-    if (!answer) return NextResponse.json({ error: "向导刚才走神了，请再问一次。" }, { status: 502 });
+    if (!answer) return NextResponse.json({ error: "教书先生刚才走神了，请再问一次。" }, { status: 502 });
     const evidence = body.action === "science" && body.messageId ? scienceEvidenceFor(body.messageId) : undefined;
     return NextResponse.json({ answer, source: "openai", sources: evidence?.sources ?? [] });
   } catch (error) {

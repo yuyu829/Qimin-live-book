@@ -878,7 +878,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
         {conversation.map((item, index) => (
           <div className="qa-exchange" key={`${item.question}-${index}`}>
             <div className="user-question">你问：{item.question}</div>
-            <div className="guide-answer"><img src="/art/book-guide-avatar.webp" alt="书页向导头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} style={{ width: 34, height: 34, display: "block", objectFit: "cover", borderRadius: "50%", border: "2px solid #fffaf0", boxShadow: "0 2px 7px rgba(70,53,38,.15)" }} /><div><b>书页向导</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
+            <div className="guide-answer"><img src="/art/book-guide-avatar.webp" alt="教书先生头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} style={{ width: 34, height: 34, display: "block", objectFit: "cover", borderRadius: "50%", border: "2px solid #fffaf0", boxShadow: "0 2px 7px rgba(70,53,38,.15)" }} /><div><b>教书先生</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
           </div>
         ))}
         {readerMode === "deck" && currentIndex === chapter.messages.length && (
@@ -892,7 +892,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
       </>}
       <form className="question-bar" onSubmit={submitQuestion}>
         <div className="question-inner"><MessageCircleMore /><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="问问书里为什么这样做…" aria-label="向书页提问" /><button disabled={!question.trim()} aria-label="发送"><Send /></button></div>
-        <small>向导会对照本章原文与现代科学资料回答</small>
+        <small>教书先生会对照本章原文与现代科学资料回答</small>
       </form>
       {speaker && (
         <div className="modal-backdrop" onClick={() => setSpeaker(undefined)}>

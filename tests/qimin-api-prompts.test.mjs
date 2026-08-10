@@ -40,12 +40,12 @@ test("qimin API leaves enough output budget for reasoning models", () => {
 
 test("book guide answers with chapter evidence and one gentle follow-up direction", () => {
   assert.match(route, /scienceContextForMessages/);
-  assert.match(prompts, /陪读这本活书的书页向导/);
+  assert.match(prompts, /陪读这本活书的教书先生/);
   assert.match(prompts, /古籍事实只依据本章原文，现代解释只依据科学资料摘要/);
   assert.match(prompts, /只猜一个，关联不明确就不猜/);
   assert.match(prompts, /不要使用空泛的“还有什么想问的吗”/);
-  assert.match(page, /向导会对照本章原文与现代科学资料回答/);
-  assert.match(route, /向导刚才走神了，请再问一次/);
+  assert.match(page, /教书先生会对照本章原文与现代科学资料回答/);
+  assert.match(route, /教书先生刚才走神了，请再问一次/);
 });
 
 test("every current chapter card has curated modern evidence and citations", () => {
