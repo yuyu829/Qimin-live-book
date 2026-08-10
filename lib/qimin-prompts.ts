@@ -1,4 +1,5 @@
 import type { Chapter, ChapterMessage } from "@/data/qimin";
+import type { ScienceEvidence, ScienceSource } from "@/data/science-evidence";
 
 export type QiminAction = "science" | "term" | "question";
 
@@ -17,6 +18,8 @@ export function buildQiminPrompt(args: {
   term?: string;
   category?: string;
   question?: string;
+  evidence?: ScienceEvidence;
+  sources?: ScienceSource[];
 }) {
   const { action, chapter, message } = args;
   if (action === "science") {
@@ -25,7 +28,9 @@ export function buildQiminPrompt(args: {
 章节：${chapter.title}
 原文：<source>${message.original}</source>
 白话语境：<context>${message.translation}</context>
-要求：不超过100个汉字；先讲具体机制，再说明古人观察的价值；不把推测写成定论；不要虚构实验、数据或出处。`;
+现代证据摘要：<evidence>${args.evidence?.summary ?? "暂无经过整理的现代资料"}</evidence>
+资料目录：<references>${args.sources?.map((source) => `${source.title}（${source.publisher}, ${source.year}）`).join("；") ?? "暂无"}</references>
+要求：不超过100个汉字；现代机制只能依据证据摘要；先讲具体机制，再说明古人观察的价值；不把推测写成定论；不要虚构实验、数据或出处；出处链接由应用另行展示，不在正文中编造链接。`;
   }
 
   if (action === "term") {

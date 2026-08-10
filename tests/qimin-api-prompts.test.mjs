@@ -5,6 +5,8 @@ import { test } from "node:test";
 const route = await readFile(new URL("../app/api/qimin/route.ts", import.meta.url), "utf8");
 const prompts = await readFile(new URL("../lib/qimin-prompts.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../.env.example", import.meta.url), "utf8");
+const evidence = await readFile(new URL("../data/science-evidence.ts", import.meta.url), "utf8");
+const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
 test("qimin cloud API uses a dedicated grounded system prompt", () => {
   assert.match(route, /system: QIMIN_SYSTEM_PROMPT/);
@@ -31,7 +33,21 @@ test("qimin API supports an OpenAI-compatible cloud base URL", () => {
 });
 
 test("qimin API leaves enough output budget for reasoning models", () => {
-  assert.match(route, /science: 1024/);
+  assert.match(route, /science: 2048/);
   assert.match(route, /term: 768/);
   assert.match(route, /question: 768/);
+});
+
+test("every current chapter card has curated modern evidence and citations", () => {
+  for (const prefix of ["soy", "sauce"]) {
+    for (let index = 1; index <= 8; index += 1) {
+      assert.match(evidence, new RegExp(`"${prefix}-${index}"\\s*:`));
+    }
+  }
+  assert.match(evidence, /scienceSources/);
+  assert.match(evidence, /https:\/\/doi\.org\//);
+  assert.match(route, /scienceEvidenceFor\(message\.id\)/);
+  assert.match(prompts, /现代机制只能依据证据摘要/);
+  assert.match(page, /资料来源：/);
+  assert.match(page, /target="_blank" rel="noreferrer"/);
 });

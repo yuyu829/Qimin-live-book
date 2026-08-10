@@ -29,6 +29,8 @@ import { highlightTerms } from "@/lib/highlight-terms";
 
 type Screen = "cover" | "prologue-loading" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
+type AiSource = { id: string; title: string; publisher: string; year: number; url: string };
+type AiResponse = { answer: string; sources: AiSource[] };
 type Note = { id: number; text: string; time: string };
 type CatUnlock = "taro" | "sauce";
 
@@ -37,15 +39,19 @@ const starterNotes: Note[] = [
   { id: 2, text: "晒酱不是只靠太阳，雨后那一次搅拌也很要紧。", time: "昨天" }
 ];
 
-async function askAi(payload: Record<string, string>) {
+async function askAiDetailed(payload: Record<string, string>): Promise<AiResponse> {
   const response = await fetch("/api/qimin", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
-  const data = (await response.json()) as { answer?: string; error?: string };
+  const data = (await response.json()) as { answer?: string; error?: string; sources?: AiSource[] };
   if (!response.ok || !data.answer) throw new Error(data.error ?? "没有收到回答。");
-  return data.answer;
+  return { answer: data.answer, sources: data.sources ?? [] };
+}
+
+async function askAi(payload: Record<string, string>) {
+  return (await askAiDetailed(payload)).answer;
 }
 
 function CatMark({ small = false }: { small?: boolean }) {
@@ -267,14 +273,15 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
 
 function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message: ChapterMessage; onBack: () => void }) {
   const [science, setScience] = useState<AiState>({ loading: true });
+  const [scienceSources, setScienceSources] = useState<AiSource[]>([]);
   const [terms, setTerms] = useState<Record<string, AiState>>({});
 
   useEffect(() => {
     let active = true;
     setScience({ loading: true });
     setTerms(Object.fromEntries(message.terms.map((term) => [term.word, { loading: true }])));
-    askAi({ action: "science", chapterId: chapter.id, messageId: message.id })
-      .then((answer) => active && setScience({ answer }))
+    askAiDetailed({ action: "science", chapterId: chapter.id, messageId: message.id })
+      .then((result) => { if (active) { setScience({ answer: result.answer }); setScienceSources(result.sources); } })
       .catch((error) => active && setScience({ error: (error as Error).message }));
     message.terms.forEach((term) => {
       askAi({ action: "term", chapterId: chapter.id, term: term.word, category: term.category })
@@ -288,7 +295,7 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
     <section className="message-detail" aria-label="单条发言详情">
       <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
       <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
-      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}</p></div></div>
+      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p></div></div>
       <div className="detail-terms"><p className="overline">词语小辞典</p>{message.terms.length ? message.terms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
     </section>
   );

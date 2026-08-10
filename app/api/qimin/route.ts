@@ -3,6 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { NextResponse } from "next/server";
 
 import { chapterById } from "@/data/qimin";
+import { scienceEvidenceFor } from "@/data/science-evidence";
 import { buildQiminPrompt, QIMIN_SYSTEM_PROMPT, type QiminAction } from "@/lib/qimin-prompts";
 
 type QiminRequest = {
@@ -16,7 +17,7 @@ type QiminRequest = {
 
 // Reasoning models may spend part of this budget before producing visible text.
 // The prompts still enforce the much shorter user-facing answer lengths.
-const limits = { science: 1024, term: 768, question: 768 } as const;
+const limits = { science: 2048, term: 768, question: 768 } as const;
 
 const qiminAI = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
   if (body.action === "science") {
     const message = chapter.messages.find((item) => item.id === body.messageId);
     if (!message) return NextResponse.json({ error: "找不到这条原文。" }, { status: 400 });
-    prompt = buildQiminPrompt({ action: body.action, chapter, message });
+    const evidence = scienceEvidenceFor(message.id);
+    prompt = buildQiminPrompt({ action: body.action, chapter, message, evidence, sources: evidence?.sources });
   }
 
   if (body.action === "term") {
@@ -65,7 +67,8 @@ export async function POST(request: Request) {
       maxTokens: limits[body.action],
       temperature: 0.55
     });
-    return NextResponse.json({ answer: result.text.trim(), source: "openai" });
+    const evidence = body.action === "science" && body.messageId ? scienceEvidenceFor(body.messageId) : undefined;
+    return NextResponse.json({ answer: result.text.trim(), source: "openai", sources: evidence?.sources ?? [] });
   } catch (error) {
     console.error("Qimin AI request failed", error);
     return NextResponse.json({ error: "模型暂时没有回话，请稍后再试。" }, { status: 502 });
