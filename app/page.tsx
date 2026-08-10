@@ -878,7 +878,7 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
         {conversation.map((item, index) => (
           <div className="qa-exchange" key={`${item.question}-${index}`}>
             <div className="user-question">你问：{item.question}</div>
-            <div className="guide-answer"><CatMark small /><div><b>书页向导</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
+            <div className="guide-answer"><img src="/art/book-guide-avatar.webp" alt="书页向导头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} style={{ width: 34, height: 34, display: "block", objectFit: "cover", borderRadius: "50%", border: "2px solid #fffaf0", boxShadow: "0 2px 7px rgba(70,53,38,.15)" }} /><div><b>书页向导</b><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 正在对照本章原文…</>}</p></div></div>
           </div>
         ))}
         {readerMode === "deck" && currentIndex === chapter.messages.length && (
