@@ -47,49 +47,12 @@
   line-height: 1.75 !important;
 }
 
-.followupBar {
-  position: fixed;
+.detailQuestionBar {
+  display: block !important;
   left: 50%;
-  bottom: 0;
+  right: auto;
   z-index: 70;
   width: min(100%, 430px);
-  min-height: 68px;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 30px 1fr 38px;
-  align-items: center;
-  gap: 5px;
-  padding: 10px 14px max(10px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
-  border-top: 1px solid rgba(132, 108, 78, 0.25);
-  background: rgba(247, 241, 227, 0.97);
-  color: #897763;
-  backdrop-filter: blur(10px);
 }
-
-.followupBar input {
-  min-width: 0;
-  height: 42px;
-  box-sizing: border-box;
-  padding: 0 12px;
-  border: 1px solid #cdbda5;
-  border-radius: 8px;
-  outline: 0;
-  background: #fffaf0;
-  color: #51483e;
-  font-size: 13px;
-}
-
-.followupBar button {
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 7px;
-  background: #bd6848;
-  color: white;
-  cursor: pointer;
-}
-
-.followupBar button:disabled { opacity: 0.35; }

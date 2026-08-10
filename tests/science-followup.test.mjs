@@ -7,12 +7,15 @@ const route = await readFile(new URL("../app/api/qimin/route.ts", import.meta.ur
 const prompts = await readFile(new URL("../lib/qimin-prompts.ts", import.meta.url), "utf8");
 const styles = await readFile(new URL("../app/detail-question.module.css", import.meta.url), "utf8");
 
-test("detail reader has a fixed science follow-up bar", () => {
+test("detail reader reuses the card reader question bar", () => {
+  assert.match(page, /className=\{`question-bar \$\{detailStyles\.detailQuestionBar\}`\}/);
+  assert.match(page, /<div className="question-inner"><MessageCircleMore \/>/);
   assert.match(page, /placeholder="还有疑问？追问试试！"/);
   assert.match(page, /aria-label="追问现代科学解释"/);
-  assert.match(styles, /position: fixed/);
-  assert.match(styles, /bottom: 0/);
+  assert.match(page, /教书先生会结合当前原文与现代科学资料回答/);
+  assert.match(styles, /\.detailQuestionBar \{\s*display: block !important;/);
   assert.match(styles, /width: min\(100%, 430px\)/);
+  assert.doesNotMatch(styles, /\.followupBar/);
 });
 
 test("science follow-ups stay below sources and push the glossary down", () => {
