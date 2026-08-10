@@ -193,7 +193,7 @@ function Interest({ selected, setSelected, onNext }: { selected: string; setSele
     <main className="step-screen narrow-page">
       <div className="step-count">壹 <span /> 贰</div>
       <p className="overline">偏好设定</p>
-      <h2>选择你的关注，看看古书里的人会怎么解决这些生活问题。</h2>
+      <h2>选择你的关注</h2>
       <p className="subcopy">随手选一个，翻开两千年前的生活妙招。</p>
       <div className="choice-list">
         {choices.map((choice) => (
