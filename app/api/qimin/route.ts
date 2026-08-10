@@ -3,7 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { NextResponse } from "next/server";
 
 import { chapterById } from "@/data/qimin";
-import { scienceEvidenceFor } from "@/data/science-evidence";
+import { scienceContextForMessages, scienceEvidenceFor } from "@/data/science-evidence";
 import { buildQiminPrompt, QIMIN_SYSTEM_PROMPT, type QiminAction } from "@/lib/qimin-prompts";
 
 type QiminRequest = {
@@ -17,7 +17,7 @@ type QiminRequest = {
 
 // Reasoning models may spend part of this budget before producing visible text.
 // The prompts still enforce the much shorter user-facing answer lengths.
-const limits = { science: 2048, term: 768, question: 768 } as const;
+const limits = { science: 2048, term: 768, question: 2048 } as const;
 
 const qiminAI = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -56,7 +56,12 @@ export async function POST(request: Request) {
   if (body.action === "question") {
     const question = body.question?.trim().slice(0, 300);
     if (!question) return NextResponse.json({ error: "问题不能为空。" }, { status: 400 });
-    prompt = buildQiminPrompt({ action: body.action, chapter, question });
+    prompt = buildQiminPrompt({
+      action: body.action,
+      chapter,
+      question,
+      chapterScienceContext: scienceContextForMessages(chapter.messages.map((message) => message.id))
+    });
   }
 
   try {
@@ -67,8 +72,10 @@ export async function POST(request: Request) {
       maxTokens: limits[body.action],
       temperature: 0.55
     });
+    const answer = result.text.trim();
+    if (!answer) return NextResponse.json({ error: "向导刚才走神了，请再问一次。" }, { status: 502 });
     const evidence = body.action === "science" && body.messageId ? scienceEvidenceFor(body.messageId) : undefined;
-    return NextResponse.json({ answer: result.text.trim(), source: "openai", sources: evidence?.sources ?? [] });
+    return NextResponse.json({ answer, source: "openai", sources: evidence?.sources ?? [] });
   } catch (error) {
     console.error("Qimin AI request failed", error);
     return NextResponse.json({ error: "模型暂时没有回话，请稍后再试。" }, { status: 502 });

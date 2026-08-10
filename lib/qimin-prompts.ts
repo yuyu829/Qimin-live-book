@@ -20,6 +20,7 @@ export function buildQiminPrompt(args: {
   question?: string;
   evidence?: ScienceEvidence;
   sources?: ScienceSource[];
+  chapterScienceContext?: string;
 }) {
   const { action, chapter, message } = args;
   if (action === "science") {
@@ -45,6 +46,8 @@ export function buildQiminPrompt(args: {
   return `任务：回答读者关于本章的问题。
 章节：${chapter.title}
 本章完整原文：<source>${chapter.messages.map((item) => item.original).join("\n")}</source>
+本章现代科学资料摘要：<evidence>${args.chapterScienceContext ?? "暂无"}</evidence>
 读者问题：<question>${args.question}</question>
-要求：不超过120个汉字；只能依据上面的本章原文回答。若原文没有答案，先明确说“这一章没讲到”，再指出原文能够确认的最近信息。`;
+要求：正文不超过160个汉字。你是陪读这本活书的书页向导，不是检索框：先直接回答，像一个读过书、懂生活、愿意陪人往下想的朋友，说话自然、有温度，避免百科腔和客服腔。古籍事实只依据本章原文，现代解释只依据科学资料摘要，并用“书里说”“从现代角度看”等自然措辞区分。若原文没有答案，先明确说“这一章没讲到”，再给出最接近的信息。
+回答末尾可以根据问题猜测用户真正关心的一个具体方向，用“你是不是还想知道……”或同样自然的问法轻轻带一句；只猜一个，关联不明确就不猜，不能假装知道用户意图，也不要使用空泛的“还有什么想问的吗”。`;
 }

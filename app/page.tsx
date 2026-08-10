@@ -891,8 +891,8 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
       </section>
       </>}
       <form className="question-bar" onSubmit={submitQuestion}>
-        <div className="question-inner"><MessageCircleMore /><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="问问这章里的事…" aria-label="向书页提问" /><button disabled={!question.trim()} aria-label="发送"><Send /></button></div>
-        <small>向导只根据当前章节原文回答</small>
+        <div className="question-inner"><MessageCircleMore /><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="问问书里为什么这样做…" aria-label="向书页提问" /><button disabled={!question.trim()} aria-label="发送"><Send /></button></div>
+        <small>向导会对照本章原文与现代科学资料回答</small>
       </form>
       {speaker && (
         <div className="modal-backdrop" onClick={() => setSpeaker(undefined)}>

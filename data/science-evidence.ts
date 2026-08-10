@@ -97,3 +97,10 @@ export function scienceEvidenceFor(messageId: string) {
     sources: evidence.sourceIds.map((id) => scienceSources[id]).filter(Boolean)
   };
 }
+
+export function scienceContextForMessages(messageIds: string[]) {
+  return messageIds
+    .map((messageId) => scienceEvidenceByMessage[messageId] ? `${messageId}：${scienceEvidenceByMessage[messageId].summary}` : undefined)
+    .filter(Boolean)
+    .join("\n");
+}
