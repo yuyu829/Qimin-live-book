@@ -2,6 +2,10 @@
 
 .scienceConversation { min-width: 0; }
 
+.scienceAnswer p { margin: 0 0 12px !important; }
+
+.scienceAnswer p:last-of-type { margin-bottom: 0 !important; }
+
 .scienceHeading {
   display: flex;
   align-items: center;
