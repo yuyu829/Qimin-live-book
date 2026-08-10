@@ -51,3 +51,10 @@ test("every current chapter card has curated modern evidence and citations", () 
   assert.match(page, /资料来源：/);
   assert.match(page, /target="_blank" rel="noreferrer"/);
 });
+
+test("science explanations use a warm conversational voice without encyclopedia labels", () => {
+  assert.match(prompts, /懂行又亲切的朋友/);
+  assert.match(prompts, /一点轻巧的比喻和生活感/);
+  assert.match(prompts, /不要使用“可能机制：”“价值：”“结论：”等标签/);
+  assert.match(prompts, /不写百科词条或论文摘要腔/);
+});
