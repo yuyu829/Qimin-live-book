@@ -1,78 +1,85 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
 
-const server = new Server(
-  {
+function createMcpServer() {
+  const server = new McpServer({
     name: "qimin-live-book-mcp",
     version: "1.0.0",
-  },
-  {
-    capabilities: {
-      tools: {},
+  });
+
+  // 工具 1：节气农事建议
+  server.registerTool(
+    "seasonal_farming_advice",
+    {
+      title: "Seasonal Farming Advice",
+      description: "Provide farming advice inspired by Qimin Yaoshu",
+      inputSchema: {
+        season: z.enum(["spring", "summer", "autumn", "winter"]),
+        question: z.string(),
+      },
     },
-  }
-);
+    async ({ season, question }) => {
+      const adviceMap = {
+        spring:
+          "Spring is suitable for plowing, seed preparation, and sowing.",
+        summer:
+          "Summer requires irrigation management and crop protection.",
+        autumn:
+          "Autumn is the main harvest season and suitable for grain storage.",
+        winter:
+          "Winter is suitable for tool maintenance and planning for the next farming cycle.",
+      };
 
-// 工具：节气与农事建议
-server.tool(
-  "seasonal_farming_advice",
-  {
-    season: z
-      .enum(["spring", "summer", "autumn", "winter"])
-      .describe("Current season"),
-    question: z.string().describe("User question about farming or seasonal activities"),
-  },
-  async ({ season, question }) => {
-    const adviceMap = {
-      spring: "Spring is suitable for plowing, seed preparation, and early sowing.",
-      summer: "Summer requires irrigation management, weeding, and crop protection.",
-      autumn: "Autumn is the main harvest season and a good time for grain storage.",
-      winter: "Winter is suitable for tool maintenance, storage inspection, and planning for the next farming cycle.",
-    };
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Season: ${season}
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: `【Qimin Yaoshu Seasonal Advisor】
-
-Season: ${season}
 Question: ${question}
 
-Advice:
-${adviceMap[season]}
+Advice: ${adviceMap[season]}`,
+          },
+        ],
+      };
+    }
+  );
 
-According to the principles emphasized in Qimin Yaoshu, successful farming depends on observing seasonal timing, adapting to local soil and climate, and balancing cultivation with storage and resource management.`,
-        },
-      ],
-    };
-  }
-);
+  // 工具 2：书籍世界信息
+  server.registerTool(
+    "book_world_info",
+    {
+      title: "Book World Information",
+      description:
+        "Return information about the Qimin Live Book interactive world",
+      inputSchema: {
+        topic: z.string(),
+      },
+    },
+    async ({ topic }) => {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Qimin Live Book focuses on ancient Chinese agricultural culture, seasonal knowledge, food preparation, and immersive educational storytelling. Topic: ${topic}.`,
+          },
+        ],
+      };
+    }
+  );
 
-// 可选：健康检查工具
-server.tool(
-  "book_world_info",
-  {
-    topic: z.string().describe("Topic related to the interactive book world"),
-  },
-  async ({ topic }) => {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `The interactive world of Qimin Live Book focuses on ancient Chinese agricultural culture, seasonal knowledge, food preparation, and immersive educational storytelling. Related topic: ${topic}.`,
-        },
-      ],
-    };
-  }
-);
+  return server;
+}
 
 export async function POST(req: Request) {
-  const transport = new StreamableHTTPServerTransport({
+  const server = createMcpServer();
+
+  const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
   });
 
   await server.connect(transport);
-  return transport.handleRequest(req);
+
+  return await transport.handleRequest(req);
 }
