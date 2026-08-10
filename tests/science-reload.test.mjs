@@ -10,7 +10,8 @@ test("science explanation provides an accessible reload control", () => {
   assert.match(page, /onClick=\{reloadScience\}/);
   assert.match(page, /<RefreshCw className=\{science\.loading \? "spin" : undefined\}/);
   assert.match(styles, /\.scienceHeading button/);
-  assert.match(styles, /\.scienceHeading \{\s*position: relative;/);
+  assert.match(styles, /\.scienceHeading \{\s*display: block !important;\s*position: relative;/);
+  assert.match(styles, /\.scienceHeading > p \{ white-space: nowrap; \}/);
   assert.match(styles, /\.scienceHeading button \{\s*position: absolute;\s*top: 50%;\s*right: 0;/);
   assert.doesNotMatch(styles, /\.scienceHeading \{[^}]*display: flex/s);
 });
