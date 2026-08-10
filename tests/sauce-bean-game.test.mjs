@@ -121,7 +121,7 @@ test("completed stirring continues to a press-and-hold fermentation timeline", (
   assert.match(css, /\.sauce-ferment-hold\{[\s\S]*border-radius:22px[\s\S]*linear-gradient/);
   assert.match(css, /\.sauce-ferment-background\{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover\}/);
   assert.match(css, /\.sauce-ferment-panel:after\{[^}]*background:rgba\(244,234,213,\.72\)/);
-  assert.match(artReadme, /`sauce-game-ferment-background\.webp` \| 1200 x 1200 \| 作大酱小游戏第七步“等待发酵”的进度界面背景图/);
+  assert.match(artReadme, /`sauce-game-ferment-background\.webp` \| 1200 x 1200 \| 做酱小游戏第七步“等待发酵”的进度界面背景图/);
   assert.match(css, /@keyframes fermentHourglass/);
   assert.doesNotMatch(css, /fermentSun/);
 });
