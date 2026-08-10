@@ -38,6 +38,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:3px so
 .school-page{padding-top:38px}.back-link{border:0;background:none;display:flex;gap:7px;align-items:center;color:#735f4b;font-size:11px;cursor:pointer}.back-link svg{width:16px}.school-heading{text-align:center;margin:40px 0 24px}.school-heading>span{display:grid;place-items:center;margin:auto;width:56px;height:56px;border-radius:50%;background:#dce4cf;color:var(--sage-dark);overflow:hidden}.school-avatar-image{display:block;width:100%;height:100%;object-fit:cover}.school-heading>p:last-child{color:#7a6956;line-height:1.7;font-size:12px}.note-form{border:1px solid #d6c5ac;background:#fffaf0;padding:14px;box-shadow:5px 6px 0 rgba(112,89,61,.08)}.note-form textarea{border:0;background:transparent;outline:0;resize:none;width:100%;height:80px;line-height:1.7;font-size:13px}.note-form>div{border-top:1px solid #e3d6c3;padding-top:9px;display:flex;justify-content:space-between;align-items:center}.note-form span{font-size:9px;color:#93816b}.note-form button{border:0;background:var(--clay);color:white;border-radius:4px;padding:8px 12px;display:flex;gap:7px;align-items:center;font-size:10px;cursor:pointer}.note-form button:disabled{opacity:.4}.note-wall{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}.wall-note{min-height:145px;padding:18px;background:#efe0b8;transform:rotate(-1deg);box-shadow:3px 5px 0 rgba(105,81,54,.1)}.wall-note:nth-child(even){transform:rotate(1deg);background:#dfe4cc}.wall-note:nth-child(3n){background:#edd1be}.wall-note span,.wall-note small{font-size:9px;color:#8a7459}.wall-note p{font:500 15px/1.8 serif;margin:16px 0}.wall-note small{display:block;text-align:right}.bottom-nav{position:fixed;z-index:35;left:50%;bottom:14px;transform:translateX(-50%);width:min(320px,calc(100% - 32px));height:58px;border:1px solid #d1c1a9;border-radius:7px;background:rgba(255,250,240,.96);box-shadow:0 10px 30px rgba(75,58,38,.18);display:grid;grid-template-columns:repeat(3,1fr);padding:5px;backdrop-filter:blur(10px)}.bottom-nav button{border:0;background:none;display:grid;place-items:center;align-content:center;gap:2px;color:#907d66;cursor:pointer}.bottom-nav button.active{background:#e7eadb;color:var(--sage-dark);border-radius:4px}.bottom-nav svg{width:19px;height:19px}.bottom-nav span{font-size:9px}
 @media(max-width:700px){.cover-screen{display:block}.cover-copy{min-height:54svh;margin:0;padding:70px 24px 35px;text-align:center}.eyebrow{justify-content:center}.cover-copy h1{font-size:58px;letter-spacing:2px}.cover-copy h1 small{letter-spacing:7px}.cover-kicker{font-size:16px}.farm-scene{min-height:46svh;border:0}.farm-scene .sun{width:55px;height:55px;top:9%}.farm-scene .cat-mark{transform:translateX(-50%) scale(.72);transform-origin:bottom center;bottom:26px}.book-prop{width:82px;height:118px;bottom:18%;left:11%;border-width:4px}.book-prop span{font-size:17px;inset:12px}.mountain{bottom:25%}.scroll-cue{display:none}.step-screen{padding-top:45px}.step-screen h2,.map-heading h2,.school-heading h2{font-size:29px}.chapter-grid{grid-template-columns:1fr}.tile-art{height:160px}.chapter-intro h2{font-size:19px}.paper-bubble{padding:15px}.translation{font-size:14px}.chapter-finish{grid-template-columns:32px 1fr}.chapter-finish button{grid-column:1/-1;justify-content:center}.world-map{height:540px}.place{width:95px}.place-art{width:68px;height:58px}.place b{font-size:15px}.place-farm{left:3%;top:12%}.place-brew{right:2%;top:28%}.place-school{left:9%;bottom:12%}.locked-0{left:40%;top:5%}.locked-1{right:22%;bottom:14%}.locked-2{right:-5%;bottom:1%}.map-river{left:48%;width:70px}.note-wall{grid-template-columns:1fr}.term-popover{position:fixed;left:18px;right:18px;bottom:92px;width:auto}.term-popover:after{display:none}}
 @media(max-width:380px){.cover-copy h1{font-size:50px}.step-screen{padding-left:16px;padding-right:16px}.message-row{grid-template-columns:37px 1fr;gap:8px}.speaker-avatar{width:36px;height:36px}.chat-stream{padding-left:12px;padding-right:12px}.translation{font-size:13px}.why-button{width:100%;justify-content:flex-end}.reader-header h1{font-size:15px}.progress-pill span{display:none}}
+
+/* Chapter reading keeps the app title bar, while the intro and swipe cue stay independent of the card stack. */
+.chapter-intro{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:35;width:min(100%,430px);min-height:116px;box-sizing:border-box;margin:0;padding:22px 16px 20px;background:rgba(237,229,213,.97);border-bottom:1px dashed #cdbda7;backdrop-filter:blur(10px)}
+.reader-page>.chat-stream{padding-top:140px}
+.swipe-hint{bottom:93px}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 
 /* Soft illustrated theme. Raster assets in /public/art replace these fallbacks automatically. */
@@ -94,7 +99,7 @@ body{background:#d9cdbd}
 
 /* Chapter title bar stays visible while the reading document scrolls. */
 .reader-page{padding-top:72px;height:100svh;overflow:hidden}
-.reader-header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,430px);height:72px;z-index:40}
+.reader-header{position:fixed;top:68px;left:50%;transform:translateX(-50%);width:min(100%,430px);height:72px;z-index:40}
 
 /* Primary screens share a fixed app-level navigation bar. */
 .app-shell.has-topbar{padding-top:68px}
@@ -173,12 +178,12 @@ body{background:#d9cdbd}
 .message-heading .speaker-name{min-width:0;margin:0;padding-bottom:7px}
 .message-heading>.why-button{flex:none;width:auto;margin:3px 0 0;padding:5px 9px;border:1px solid #b9c8ad;border-radius:14px;background:#e7ebdd;color:var(--sage-dark);font-size:10px;line-height:1.2}
 .message-heading>.why-button svg{color:var(--sage-dark);stroke:currentColor}
+.reader-page.is-full-reader .message-heading>.why-button{border:0;border-radius:0;background:transparent}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{padding-right:0}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{padding-bottom:0}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{padding-right:0}
 .compact-read-more-row{display:flex;justify-content:flex-end;flex:none;min-height:22px;margin-top:6px;border-top:0}
 .compact-read-more-row .compact-read-more{display:block;position:static;margin:0;padding:2px 0 0;border:0;background:none;color:#c53f32;font-size:11px;font-weight:800;line-height:1.4;white-space:nowrap;cursor:pointer}
-.reader-page.is-full-reader .message-heading>.why-button{border:0;border-radius:0;background:transparent}
 @media(max-width:380px){.message-heading>.why-button{padding:5px 8px}.why-button{width:auto;justify-content:center}}
 
 /* School experience notes remain a two-column wall at every viewport size. */
