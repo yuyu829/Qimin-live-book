@@ -7,18 +7,18 @@
 .scienceAnswer p:last-of-type { margin-bottom: 0 !important; }
 
 .scienceHeading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  position: relative;
 }
 
 .scienceHeading button {
+  position: absolute;
+  top: 50%;
+  right: 0;
   width: 30px;
   height: 30px;
   display: grid;
-  flex: 0 0 auto;
   place-items: center;
+  transform: translateY(-50%);
   border: 1px solid rgba(103, 122, 78, 0.28);
   border-radius: 50%;
   background: rgba(235, 241, 222, 0.72);
