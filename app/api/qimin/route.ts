@@ -17,7 +17,7 @@ type QiminRequest = {
 
 // Reasoning models may spend part of this budget before producing visible text.
 // The prompts still enforce the much shorter user-facing answer lengths.
-const limits = { science: 2048, term: 768, question: 2048 } as const;
+const limits = { science: 2048, "science-followup": 2048, term: 768, question: 2048 } as const;
 
 const qiminAI = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
   const body = (await request.json()) as QiminRequest;
   const chapter = chapterById(body.chapterId);
-  if (!chapter || !["science", "term", "question"].includes(body.action)) {
+  if (!chapter || !["science", "science-followup", "term", "question"].includes(body.action)) {
     return NextResponse.json({ error: "请求内容无效。" }, { status: 400 });
   }
 
@@ -45,6 +45,15 @@ export async function POST(request: Request) {
     if (!message) return NextResponse.json({ error: "找不到这条原文。" }, { status: 400 });
     const evidence = scienceEvidenceFor(message.id);
     prompt = buildQiminPrompt({ action: body.action, chapter, message, evidence, sources: evidence?.sources });
+  }
+
+  if (body.action === "science-followup") {
+    const message = chapter.messages.find((item) => item.id === body.messageId);
+    const question = body.question?.trim().slice(0, 300);
+    if (!message) return NextResponse.json({ error: "找不到这条原文。" }, { status: 400 });
+    if (!question) return NextResponse.json({ error: "问题不能为空。" }, { status: 400 });
+    const evidence = scienceEvidenceFor(message.id);
+    prompt = buildQiminPrompt({ action: body.action, chapter, message, question, evidence, sources: evidence?.sources });
   }
 
   if (body.action === "term") {

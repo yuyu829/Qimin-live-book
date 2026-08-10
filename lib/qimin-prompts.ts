@@ -1,7 +1,7 @@
 import type { Chapter, ChapterMessage } from "@/data/qimin";
 import type { ScienceEvidence, ScienceSource } from "@/data/science-evidence";
 
-export type QiminAction = "science" | "term" | "question";
+export type QiminAction = "science" | "science-followup" | "term" | "question";
 
 export const QIMIN_SYSTEM_PROMPT = `你是《齐民要术·活书世界》的专用导读助手。
 回答原则：
@@ -32,6 +32,17 @@ export function buildQiminPrompt(args: {
 现代科学知识底稿：<evidence>${args.evidence?.explanation ?? args.evidence?.summary ?? "暂无经过整理的现代资料"}</evidence>
 资料目录：<references>${args.sources?.map((source) => `${source.title}（${source.publisher}, ${source.year}）`).join("；") ?? "暂无"}</references>
 要求：内容充足时可写到约300个汉字，不必为了凑字数拉长；现代机制只能依据知识底稿；不要逐句照抄底稿，要结合这条原文重新组织。像一个懂行又亲切的朋友，顺着原文里的动作讲明白，可以有一点轻巧的比喻和生活感；句子长短有变化，让人感觉是在聊天。不要使用“可能机制：”“价值：”“结论：”等标签，不写百科词条或论文摘要腔。先讲具体机制，再自然带出古人观察得巧在哪里；不把推测写成定论；不要虚构实验、数据或出处；出处链接由应用另行展示，不在正文中编造链接。`;
+  }
+
+  if (action === "science-followup") {
+    if (!message) throw new Error("找不到这条原文。");
+    return `任务：回答读者对当前这条古代经验的现代科学追问。
+章节：${chapter.title}
+原文：<source>${message.original}</source>
+白话语境：<context>${message.translation}</context>
+现代科学知识底稿：<evidence>${args.evidence?.explanation ?? args.evidence?.summary ?? "暂无经过整理的现代资料"}</evidence>
+读者追问：<question>${args.question}</question>
+要求：内容充足时可写到约300个汉字，不必凑字数。直接回答追问，像懂行又亲切的朋友接着上一段聊；现代机制只能依据知识底稿，古籍事实只能依据原文。可以作合理推测，但必须用“不一定”“更可能”等方式标出边界。不要复述整段基础解释，不要虚构数据、实验或出处。`;
   }
 
   if (action === "term") {

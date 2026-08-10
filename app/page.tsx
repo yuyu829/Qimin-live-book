@@ -27,6 +27,7 @@ import { chapterById, chapters, speakers, type Chapter, type ChapterMessage, typ
 import { termsForMessage } from "@/data/qimin-glossary";
 import { DECK_STACK_RISE, deckCardTransform, shouldDismissCard } from "@/lib/card-deck";
 import { highlightTerms } from "@/lib/highlight-terms";
+import detailStyles from "./detail-question.module.css";
 
 type Screen = "cover" | "prologue-loading" | "interest" | "recommend" | "chapter-loading" | "reader" | "map" | "school";
 type AiState = { loading?: boolean; answer?: string; error?: string };
@@ -281,7 +282,23 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
   const [science, setScience] = useState<AiState>({ loading: true });
   const [scienceSources, setScienceSources] = useState<AiSource[]>([]);
   const [terms, setTerms] = useState<Record<string, AiState>>({});
+  const [followup, setFollowup] = useState("");
+  const [followups, setFollowups] = useState<{ question: string; answer?: string; error?: string }[]>([]);
   const messageTerms = termsForMessage(message);
+
+  async function submitFollowup(event: FormEvent) {
+    event.preventDefault();
+    const text = followup.trim();
+    if (!text) return;
+    setFollowup("");
+    setFollowups((items) => [...items, { question: text }]);
+    try {
+      const answer = await askAi({ action: "science-followup", chapterId: chapter.id, messageId: message.id, question: text });
+      setFollowups((items) => items.map((item, index) => index === items.length - 1 ? { ...item, answer } : item));
+    } catch (error) {
+      setFollowups((items) => items.map((item, index) => index === items.length - 1 ? { ...item, error: (error as Error).message } : item));
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -299,11 +316,12 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
   }, [chapter.id, message]);
 
   return (
-    <section className="message-detail" aria-label="单条发言详情">
+    <section className={`message-detail ${detailStyles.detailWithQuestion}`} aria-label="单条发言详情">
       <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
       <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
-      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p></div></div>
+      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><div className={detailStyles.scienceConversation}><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p>{followups.map((item, index) => <div className={detailStyles.followupExchange} key={`${item.question}-${index}`}><p className={detailStyles.followupQuestion}>你问：{item.question}</p><div className={detailStyles.followupAnswer}><img src="/art/book-guide-avatar.webp" alt="教书先生头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} /><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 教书先生正在翻资料…</>}</p></div></div>)}</div></div></div>
       <div className="detail-terms"><p className="overline">词语小辞典</p>{messageTerms.length ? messageTerms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error ?? term.definition}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
+      <form className={detailStyles.followupBar} onSubmit={submitFollowup}><MessageCircleMore size={18} /><input value={followup} onChange={(event) => setFollowup(event.target.value)} placeholder="还有疑问？追问试试！" aria-label="追问现代科学解释" /><button type="submit" disabled={!followup.trim()} aria-label="发送追问"><Send size={16} /></button></form>
     </section>
   );
 }

@@ -1,0 +1,95 @@
+.detailWithQuestion { padding-bottom: 112px; }
+
+.scienceConversation { min-width: 0; }
+
+.followupExchange {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(143, 119, 89, 0.28);
+}
+
+.followupQuestion {
+  width: fit-content;
+  max-width: 86%;
+  margin: 0 0 10px auto !important;
+  padding: 9px 12px;
+  border-radius: 12px 4px 12px 12px;
+  color: #fffaf0 !important;
+  background: #bd7458;
+  font-size: 12px !important;
+}
+
+.followupAnswer {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  align-items: start;
+  gap: 8px;
+}
+
+.followupAnswer img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  object-fit: cover;
+  border: 2px solid #fffaf0;
+  border-radius: 50%;
+  box-shadow: 0 2px 7px rgba(70, 53, 38, 0.14);
+}
+
+.followupAnswer p {
+  margin: 0 !important;
+  padding: 10px 12px;
+  border: 1px solid #d8c8b0;
+  border-radius: 4px 12px 12px;
+  background: #fffaf0;
+  color: #51493f !important;
+  font-size: 12px !important;
+  line-height: 1.75 !important;
+}
+
+.followupBar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 70;
+  width: min(100%, 430px);
+  min-height: 68px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 30px 1fr 38px;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px max(10px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  border-top: 1px solid rgba(132, 108, 78, 0.25);
+  background: rgba(247, 241, 227, 0.97);
+  color: #897763;
+  backdrop-filter: blur(10px);
+}
+
+.followupBar input {
+  min-width: 0;
+  height: 42px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid #cdbda5;
+  border-radius: 8px;
+  outline: 0;
+  background: #fffaf0;
+  color: #51483e;
+  font-size: 13px;
+}
+
+.followupBar button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #bd6848;
+  color: white;
+  cursor: pointer;
+}
+
+.followupBar button:disabled { opacity: 0.35; }
