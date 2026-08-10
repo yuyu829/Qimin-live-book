@@ -57,7 +57,7 @@ test("every current chapter card has curated modern evidence and citations", () 
   assert.match(evidence, /scienceSources/);
   assert.match(evidence, /https:\/\/doi\.org\//);
   assert.match(route, /scienceEvidenceFor\(message\.id\)/);
-  assert.match(prompts, /现代机制只能依据证据摘要/);
+  assert.match(prompts, /现代机制只能依据知识底稿/);
   assert.match(page, /资料来源：/);
   assert.match(page, /target="_blank" rel="noreferrer"/);
 });
@@ -70,13 +70,16 @@ test("science explanations use a warm conversational voice without encyclopedia 
   assert.match(prompts, /内容充足时可写到约300个汉字/);
 });
 
-test("all sixteen science cards return curated explanations without waiting for the model", () => {
+test("all sixteen science cards provide curated knowledge to a real model call", () => {
   for (const prefix of ["soy", "sauce"]) {
     for (let index = 1; index <= 8; index += 1) {
       const entry = evidence.match(new RegExp(`"${prefix}-${index}": \\{(.*?)sourceIds:`, "s"))?.[1] ?? "";
       assert.match(entry, /explanation: "/, `${prefix}-${index} should have a curated explanation`);
     }
   }
-  assert.match(route, /if \(evidence\?\.explanation\)/);
-  assert.match(route, /source: "curated"/);
+  assert.match(prompts, /现代科学知识底稿/);
+  assert.match(prompts, /args\.evidence\?\.explanation/);
+  assert.match(prompts, /不要逐句照抄底稿/);
+  assert.doesNotMatch(route, /source: "curated"/);
+  assert.match(route, /generateText\(/);
 });
