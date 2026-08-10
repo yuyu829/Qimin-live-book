@@ -78,3 +78,5 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 - 主交互页面：`app/page.tsx`
 
 更完整的产品范围和验收标准见 [PRD.md](PRD.md)。
+
+面向展示和普通用户的产品简介、完整操作说明见 [APP_GUIDE.md](APP_GUIDE.md)。
