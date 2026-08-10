@@ -52,6 +52,21 @@ async function askAiDetailed(payload: Record<string, string>): Promise<AiRespons
   return { answer: data.answer, sources: data.sources ?? [] };
 }
 
+const scienceResponseCache = new Map<string, Promise<AiResponse>>();
+
+function loadScienceExplanation(payload: { action: "science"; chapterId: string; messageId: string }) {
+  const cacheKey = `${payload.chapterId}:${payload.messageId}`;
+  const cached = scienceResponseCache.get(cacheKey);
+  if (cached) return cached;
+  const request = askAiDetailed(payload)
+    .catch((error) => {
+      scienceResponseCache.delete(cacheKey);
+      throw error;
+    });
+  scienceResponseCache.set(cacheKey, request);
+  return request;
+}
+
 async function askAi(payload: Record<string, string>) {
   return (await askAiDetailed(payload)).answer;
 }
@@ -304,7 +319,7 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
     let active = true;
     setScience({ loading: true });
     setTerms(Object.fromEntries(messageTerms.map((term) => [term.word, term.definition ? { answer: term.definition } : { loading: true }])));
-    askAiDetailed({ action: "science", chapterId: chapter.id, messageId: message.id })
+    loadScienceExplanation({ action: "science", chapterId: chapter.id, messageId: message.id })
       .then((result) => { if (active) { setScience({ answer: result.answer }); setScienceSources(result.sources); } })
       .catch((error) => active && setScience({ error: (error as Error).message }));
     messageTerms.filter((term) => !term.definition).forEach((term) => {
@@ -749,6 +764,12 @@ function Reader({ chapter, onBack, onComplete, onUnlockCat, unlockedCats }: { ch
   }, [chapter.id]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [conversation]);
+
+  useEffect(() => {
+    if (readerMode !== "deck") return;
+    const message = chapter.messages[currentIndex];
+    if (message) void loadScienceExplanation({ action: "science", chapterId: chapter.id, messageId: message.id });
+  }, [chapter.id, chapter.messages, currentIndex, readerMode]);
 
   useLayoutEffect(() => {
     const card = chapter.id === "sauce" ? taroReferenceCardRef.current : firstCardRef.current;
