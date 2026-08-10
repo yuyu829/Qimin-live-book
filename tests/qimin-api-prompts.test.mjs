@@ -67,4 +67,16 @@ test("science explanations use a warm conversational voice without encyclopedia 
   assert.match(prompts, /一点轻巧的比喻和生活感/);
   assert.match(prompts, /不要使用“可能机制：”“价值：”“结论：”等标签/);
   assert.match(prompts, /不写百科词条或论文摘要腔/);
+  assert.match(prompts, /内容充足时可写到约300个汉字/);
+});
+
+test("all sixteen science cards return curated explanations without waiting for the model", () => {
+  for (const prefix of ["soy", "sauce"]) {
+    for (let index = 1; index <= 8; index += 1) {
+      const entry = evidence.match(new RegExp(`"${prefix}-${index}": \\{(.*?)sourceIds:`, "s"))?.[1] ?? "";
+      assert.match(entry, /explanation: "/, `${prefix}-${index} should have a curated explanation`);
+    }
+  }
+  assert.match(route, /if \(evidence\?\.explanation\)/);
+  assert.match(route, /source: "curated"/);
 });

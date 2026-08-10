@@ -44,6 +44,9 @@ export async function POST(request: Request) {
     const message = chapter.messages.find((item) => item.id === body.messageId);
     if (!message) return NextResponse.json({ error: "找不到这条原文。" }, { status: 400 });
     const evidence = scienceEvidenceFor(message.id);
+    if (evidence?.explanation) {
+      return NextResponse.json({ answer: evidence.explanation, source: "curated", sources: evidence.sources });
+    }
     prompt = buildQiminPrompt({ action: body.action, chapter, message, evidence, sources: evidence?.sources });
   }
 
