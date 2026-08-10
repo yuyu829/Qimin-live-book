@@ -2,6 +2,28 @@
 
 .scienceConversation { min-width: 0; }
 
+.scienceHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.scienceHeading button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(103, 122, 78, 0.28);
+  border-radius: 50%;
+  background: rgba(235, 241, 222, 0.72);
+  color: #6f8056;
+  cursor: pointer;
+}
+
+.scienceHeading button:disabled { opacity: 0.55; }
+
 .followupExchange {
   margin-top: 16px;
   padding-top: 14px;

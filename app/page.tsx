@@ -15,6 +15,7 @@ import {
   LoaderCircle,
   Map as MapIcon,
   MessageCircleMore,
+  RefreshCw,
   Send,
   Sparkles,
   Sprout,
@@ -54,8 +55,9 @@ async function askAiDetailed(payload: Record<string, string>): Promise<AiRespons
 
 const scienceResponseCache = new Map<string, Promise<AiResponse>>();
 
-function loadScienceExplanation(payload: { action: "science"; chapterId: string; messageId: string }) {
+function loadScienceExplanation(payload: { action: "science"; chapterId: string; messageId: string }, refresh = false) {
   const cacheKey = `${payload.chapterId}:${payload.messageId}`;
+  if (refresh) scienceResponseCache.delete(cacheKey);
   const cached = scienceResponseCache.get(cacheKey);
   if (cached) return cached;
   const request = askAiDetailed(payload)
@@ -315,6 +317,18 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
     }
   }
 
+  async function reloadScience() {
+    setScience({ loading: true });
+    setScienceSources([]);
+    try {
+      const result = await loadScienceExplanation({ action: "science", chapterId: chapter.id, messageId: message.id }, true);
+      setScience({ answer: result.answer });
+      setScienceSources(result.sources);
+    } catch (error) {
+      setScience({ error: (error as Error).message });
+    }
+  }
+
   useEffect(() => {
     let active = true;
     setScience({ loading: true });
@@ -334,7 +348,7 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
     <section className={`message-detail ${detailStyles.detailWithQuestion}`} aria-label="单条发言详情">
       <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
       <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
-      <div className="detail-science"><p className="overline">现代科学怎么解释</p><div><Sparkles size={19} /><div className={detailStyles.scienceConversation}><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p>{followups.map((item, index) => <div className={detailStyles.followupExchange} key={`${item.question}-${index}`}><p className={detailStyles.followupQuestion}>你问：{item.question}</p><div className={detailStyles.followupAnswer}><img src="/art/book-guide-avatar.webp" alt="教书先生头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} /><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 教书先生正在翻资料…</>}</p></div></div>)}</div></div></div>
+      <div className="detail-science"><div className={detailStyles.scienceHeading}><p className="overline">现代科学怎么解释</p><button type="button" onClick={reloadScience} disabled={science.loading} aria-label="重新加载现代科学解释" title="重新加载"><RefreshCw className={science.loading ? "spin" : undefined} size={16} /></button></div><div><Sparkles size={19} /><div className={detailStyles.scienceConversation}><p>{science.loading ? "正在请教现代科学…" : science.answer ?? science.error}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</p>{followups.map((item, index) => <div className={detailStyles.followupExchange} key={`${item.question}-${index}`}><p className={detailStyles.followupQuestion}>你问：{item.question}</p><div className={detailStyles.followupAnswer}><img src="/art/book-guide-avatar.webp" alt="教书先生头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} /><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 教书先生正在翻资料…</>}</p></div></div>)}</div></div></div>
       <div className="detail-terms"><p className="overline">词语小辞典</p>{messageTerms.length ? messageTerms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error ?? term.definition}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
       <form className={`question-bar ${detailStyles.detailQuestionBar}`} onSubmit={submitFollowup}><div className="question-inner"><MessageCircleMore /><input value={followup} onChange={(event) => setFollowup(event.target.value)} placeholder="还有疑问？追问试试！" aria-label="追问现代科学解释" /><button type="submit" disabled={!followup.trim()} aria-label="发送追问"><Send /></button></div><small>教书先生会结合当前原文与现代科学资料回答</small></form>
     </section>
