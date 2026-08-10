@@ -29,3 +29,9 @@ test("qimin API supports an OpenAI-compatible cloud base URL", () => {
   assert.match(route, /baseURL: process\.env\.OPENAI_BASE_URL/);
   assert.match(route, /qiminAI\(process\.env\.OPENAI_MODEL/);
 });
+
+test("qimin API leaves enough output budget for reasoning models", () => {
+  assert.match(route, /science: 512/);
+  assert.match(route, /term: 512/);
+  assert.match(route, /question: 768/);
+});

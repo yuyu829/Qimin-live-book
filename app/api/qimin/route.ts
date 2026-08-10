@@ -14,7 +14,9 @@ type QiminRequest = {
   question?: string;
 };
 
-const limits = { science: 160, term: 80, question: 240 } as const;
+// Reasoning models may spend part of this budget before producing visible text.
+// The prompts still enforce the much shorter user-facing answer lengths.
+const limits = { science: 512, term: 512, question: 768 } as const;
 
 const qiminAI = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
