@@ -1258,30 +1258,22 @@ export default function HomePage() {
 
   const showTopBar = ["recommend", "map", "school"].includes(screen);
 
-  return (
-    <div className="web-app-wrapper">
-      <div
-        className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}
-        style={{
-          transform: scale < 1 ? `scale(${scale})` : undefined,
-          transformOrigin: "top center"
-        }}
-      >
-        {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
-        {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
-        {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
-        {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
-        {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
-        {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-        {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
-        {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
-        {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
-        {showTopBar && screen !== "reader" && <nav className="bottom-nav">
-          <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
-          <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
-          <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
-        </nav>}
-      </div>
+    return (
+    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
+      {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
+      {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
+      {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
+      {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
+      {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
+      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
+      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
+      {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
+      {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
+      {showTopBar && screen !== "reader" && <nav className="bottom-nav">
+        <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
+        <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
+        <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
+      </nav>}
     </div>
   );
 }
