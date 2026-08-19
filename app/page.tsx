@@ -153,7 +153,11 @@ const prologueArtAssets = [
 ] as const;
 
 function PrologueLoading({ onBack }: { onBack: () => void }) {
+  // 阶段状态：'show1' -> 'fade1' -> 'show2'
+  const [stage, setStage] = useState<"show1" | "fade1" | "show2">("show1");
+
   useEffect(() => {
+    // 资源预加载
     const preloaders = prologueArtAssets.map((file) => {
       const src = `/art/${file}`;
       if (file.endsWith(".mp4")) {
@@ -167,17 +171,61 @@ function PrologueLoading({ onBack }: { onBack: () => void }) {
       image.src = src;
       return image;
     });
-    return () => preloaders.forEach((asset) => { if (asset instanceof HTMLVideoElement) asset.pause(); });
+
+    // 1. 2.8秒后开始让前两句淡出
+    const timer1 = setTimeout(() => setStage("fade1"), 2800);
+    // 2. 3.4秒时前两句完全消失，切换为第三句（自动淡入）
+    const timer2 = setTimeout(() => setStage("show2"), 3400);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      preloaders.forEach((asset) => { if (asset instanceof HTMLVideoElement) asset.pause(); });
+    };
   }, []);
 
   return (
     <main className="prologue-loading-page" aria-live="polite" aria-label="正在开启齐民要术活书世界">
-      <nav className="prologue-loading-nav" aria-label="引入页导航"><button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面"><ArrowLeft size={18} /></button><span>正在加载中</span></nav>
+      <nav className="prologue-loading-nav" aria-label="引入页导航">
+        <button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面">
+          <ArrowLeft size={18} />
+        </button>
+        <span>正在加载中</span>
+      </nav>
       <ArtImage src="/art/prologue-loading.webp" alt="" className="prologue-loading-art" />
+      
+      {/* 保持原始 DOM 结构与原版 class 名，绝不破坏原有 CSS 居中样式 */}
       <section className="prologue-loading-copy">
-        <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序与生存哲学；</p>
-        <p>今天，我们在新的时代里，萃取属于当下的生活真义。</p>
-        <p>一代人有一代人的《齐民要术》。<br />欢迎来到这里，感知古今共通的生活哲学。</p>
+        {stage !== "show2" ? (
+          <div
+            style={{
+              transition: "opacity 0.6s ease, transform 0.6s ease",
+              opacity: stage === "show1" ? 1 : 0,
+              transform: stage === "show1" ? "translateY(0)" : "translateY(-8px)"
+            }}
+          >
+            <p>1500年前，《齐民要术》记录了古人与天地共生的生活秩序与生存哲学；</p>
+            <p>今天，我们在新的时代里，萃取属于当下的生活真义。</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              animation: "prologueFadeIn 0.8s ease forwards"
+            }}
+          >
+            <p>
+              一代人有一代人的《齐民要术》。
+              <br />
+              欢迎来到这里，感知古今共通的生活哲学。
+            </p>
+          </div>
+        )}
+        <style>{`
+          @keyframes prologueFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
       </section>
     </main>
   );
@@ -1059,6 +1107,29 @@ export default function HomePage() {
   const [readIds, setReadIds] = useState<string[]>([]);
   const [unlockedCats, setUnlockedCats] = useState<CatUnlock[]>([]);
   const [notes, setNotesState] = useState<Note[]>(starterNotes);
+
+  // 动态缩放比例状态
+  const [scale, setScale] = useState(1);
+
+  // 根据当前窗口高度自动计算缩放比例
+  useEffect(() => {
+    function handleResize() {
+      const targetHeight = 750; // 设计稿基准高度
+      const currentHeight = window.innerHeight;
+
+      if (currentHeight < targetHeight) {
+        // 小屏/矮屏自动等比例缩小，保底 0.78 避免过小
+        setScale(Math.max(0.78, currentHeight / targetHeight));
+      } else {
+        setScale(1);
+      }
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const chapter = useMemo(() => chapterById(chapterId)!, [chapterId]);
 
   useEffect(() => {
@@ -1095,22 +1166,31 @@ export default function HomePage() {
   function unlockCat(cat: CatUnlock) { setUnlockedCats((current) => { const next = Array.from(new Set([...current, cat])); localStorage.setItem("qimin-unlocked-cats", JSON.stringify(next)); return next; }); }
 
   const showTopBar = ["recommend", "map", "school"].includes(screen);
+
   return (
-    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
-      {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
-      {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
-      {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
-      {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
-      {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
-      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
-      {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
-      {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
-      {showTopBar && screen !== "reader" && <nav className="bottom-nav">
-        <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
-        <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
-        <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
-      </nav>}
+    <div className="web-app-wrapper">
+      <div
+        className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}
+        style={{
+          transform: scale < 1 ? `scale(${scale})` : undefined,
+          transformOrigin: "top center"
+        }}
+      >
+        {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
+        {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
+        {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
+        {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
+        {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
+        {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
+        {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
+        {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
+        {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
+        {showTopBar && screen !== "reader" && <nav className="bottom-nav">
+          <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
+          <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
+          <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
+        </nav>}
+      </div>
     </div>
   );
 }
