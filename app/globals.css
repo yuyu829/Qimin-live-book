@@ -214,25 +214,41 @@ body{background:#d9cdbd}
 .prologue-loading-copy p:nth-child(3){margin-top:28px;animation-delay:3.05s}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
-
-.web-app-wrapper {
-  width: 100vw;
-  height: 100dvh;
-  background-color: #f4efe6; /* 页面外边框的衬底色 */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow: hidden;
+/* 1. 允许卡片内部内容完整展开，移除省略号截断 */
+.paper-bubble .translation,
+.paper-bubble .original-block p {
+  display: block !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  -webkit-line-clamp: unset !important;
 }
 
-.app-shell {
-  width: 100%;
-  max-width: 430px;
-  height: 100dvh;
-  max-height: 850px;
-  background-color: #fcf9f2;
-  position: relative;
-  box-shadow: 0 0 25px rgba(60, 45, 30, 0.08);
+/* 2. 设置卡片固定高度与左侧滚动条 */
+.paper-bubble {
+  max-height: 220px;          /* 卡片最大高度，超出则显示滚动条 */
+  overflow-y: auto !important;/* 开启纵向滚动 */
+  direction: rtl;             /* 将滚动条移至左侧 */
+  padding-left: 14px;         /* 留出左侧空间，防止滚动条遮挡文字 */
+}
+
+/* 3. 恢复卡片内文字为正常的从左往右排版 */
+.paper-bubble > * {
+  direction: ltr;
+  text-align: left;
+}
+
+/* 4. 自定义左侧滚动条外观（细条不挡视线） */
+.paper-bubble::-webkit-scrollbar {
+  width: 4px;
+}
+
+.paper-bubble::-webkit-scrollbar-thumb {
+  background: rgba(160, 130, 100, 0.4);
+  border-radius: 4px;
+}
+
+.paper-bubble::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* 第一二句：先停留，然后在 2.5s~3.5s 缓慢淡出 */
@@ -272,33 +288,6 @@ body{background:#d9cdbd}
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.paper-bubble {
-  max-height: 220px;       /* 设置一个合适的最大高度 */
-  overflow-y: auto;        /* 允许垂直方向滚动 */
-  direction: rtl;          /* 让滚动条显示在左侧 */
-  padding-left: 12px;      /* 留出左侧空间给滚动条，防止遮挡文字 */
-}
-
-/* 保证内部文字保持从左到右排版，不受 rtl 影响 */
-.paper-bubble > * {
-  direction: ltr;
-  text-align: left;
-}
-
-/* （可选）美化左侧滚动条，避免原生滚动条显得太宽太突兀 */
-.paper-bubble::-webkit-scrollbar {
-  width: 4px;
-}
-
-.paper-bubble::-webkit-scrollbar-thumb {
-  background: rgba(160, 130, 100, 0.4);
-  border-radius: 4px;
-}
-
-.paper-bubble::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 /* Taro field-selection mini game. Replace the square scene asset without changing the interaction layer. */
