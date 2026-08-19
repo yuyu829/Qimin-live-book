@@ -215,24 +215,28 @@ body{background:#d9cdbd}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
 
+/* 外层容器：视口过小时允许上下滑动 */
 .web-app-wrapper {
   width: 100vw;
   height: 100dvh;
-  background-color: #f4efe6; /* 页面外边框的衬底色 */
+  background-color: #f4efe6;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow: hidden;
+  overflow-y: auto; /* 修改：从 hidden 改为 auto，允许页面上下滑动 */
+  -webkit-overflow-scrolling: touch; /* 提升 iOS 滚动顺滑度 */
 }
 
+/* 核心 App 容器：内容超出时允许内部滑动 */
 .app-shell {
   width: 100%;
   max-width: 430px;
-  height: 100dvh;
-  max-height: 850px;
+  min-height: 100dvh; /* 修改：将 height 改为 min-height，让内容可以自由撑开 */
   background-color: #fcf9f2;
   position: relative;
   box-shadow: 0 0 25px rgba(60, 45, 30, 0.08);
+  overflow-y: auto; /* 修改：允许卡片或长内容超出时上划查看 */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 第一二句：先停留，然后在 2.5s~3.5s 缓慢淡出 */
