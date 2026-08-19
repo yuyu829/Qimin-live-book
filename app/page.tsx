@@ -430,105 +430,14 @@ function MessageDetail({ chapter, message, onBack }: { chapter: Chapter; message
   }, [chapter.id, message]);
 
   return (
-  <section 
-    className={`message-detail ${detailStyles.detailWithQuestion}`} 
-    aria-label="单条发言详情"
-    style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}
-  >
-    <button className="detail-back" onClick={onBack}>
-      <ArrowLeft size={16} /> 返回阅读
-    </button>
-
-    {/* 1. 顶部固定区域：译文原文 + 科学解释 */}
-    <div style={{ flexShrink: 0, overflow: "hidden" }}>
-      <div className="detail-text">
-        <p className="overline">译文与原文</p>
-        <h2>{message.translation}</h2>
-        <blockquote>{message.original}</blockquote>
-      </div>
-
-      <div className="detail-science">
-        <div className={detailStyles.scienceHeading}>
-          <p className="overline">现代科学怎么解释</p>
-          <button type="button" onClick={reloadScience} disabled={science.loading} aria-label="重新加载现代科学解释" title="重新加载">
-            <RefreshCw className={science.loading ? "spin" : undefined} size={16} />
-          </button>
-        </div>
-        <div>
-          <Sparkles size={19} />
-          <div className={detailStyles.scienceConversation}>
-            <div className={detailStyles.scienceAnswer}>
-              {scienceParagraphs(science.loading ? "正在请教现代科学…" : science.answer ?? science.error ?? "").map((paragraph, index) => (
-                <p key={`${paragraph}-${index}`}>{paragraph}</p>
-              ))}
-              {scienceSources.length > 0 && (
-                <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>
-                  资料来源：
-                  {scienceSources.map((source, index) => (
-                    <span key={source.id}>
-                      {index > 0 && "；"}
-                      <a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>
-                        {source.title}
-                      </a>
-                      （{source.publisher}，{source.year}）
-                    </span>
-                  ))}
-                </small>
-              )}
-            </div>
-            {followups.map((item, index) => (
-              <div className={detailStyles.followupExchange} key={`${item.question}-${index}`}>
-                <p className={detailStyles.followupQuestion}>你问：{item.question}</p>
-                <div className={detailStyles.followupAnswer}>
-                  <img
-                    src="/art/book-guide-avatar.webp"
-                    alt="教书先生头像"
-                    onError={(event) => {
-                      if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp"))
-                        event.currentTarget.src = "/art/school-cat-avatar.webp";
-                    }}
-                  />
-                  <p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 教书先生正在翻资料…</>}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* 2. 独立滑动区域：词语小辞典（占据中间剩余空间） */}
-    <div 
-      className="detail-terms" 
-      style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingRight: 4, margin: "12px 0" }}
-    >
-      <p className="overline">词语小辞典</p>
-      {messageTerms.length ? (
-        messageTerms.map((term) => (
-          <article key={term.word}>
-            <b>{term.word}</b>
-            <small>{term.category}</small>
-            <p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error ?? term.definition}</p>
-          </article>
-        ))
-      ) : (
-        <p className="detail-empty">这条原文没有需要额外解释的词语。</p>
-      )}
-    </div>
-
-    {/* 3. 底部固定区域：追问输入框 */}
-    <form className={`question-bar ${detailStyles.detailQuestionBar}`} onSubmit={submitFollowup} style={{ flexShrink: 0 }}>
-      <div className="question-inner">
-        <MessageCircleMore />
-        <input value={followup} onChange={(event) => setFollowup(event.target.value)} placeholder="还有疑问？追问试试！" aria-label="追问现代科学解释" />
-        <button type="submit" disabled={!followup.trim()} aria-label="发送追问">
-          <Send />
-        </button>
-      </div>
-      <small>教书先生会结合当前原文与现代科学资料回答</small>
-    </form>
-  </section>
-);
+    <section className={`message-detail ${detailStyles.detailWithQuestion}`} aria-label="单条发言详情">
+      <button className="detail-back" onClick={onBack}><ArrowLeft size={16} /> 返回阅读</button>
+      <div className="detail-text"><p className="overline">译文与原文</p><h2>{message.translation}</h2><blockquote>{message.original}</blockquote></div>
+      <div className="detail-science"><div className={detailStyles.scienceHeading}><p className="overline">现代科学怎么解释</p><button type="button" onClick={reloadScience} disabled={science.loading} aria-label="重新加载现代科学解释" title="重新加载"><RefreshCw className={science.loading ? "spin" : undefined} size={16} /></button></div><div><Sparkles size={19} /><div className={detailStyles.scienceConversation}><div className={detailStyles.scienceAnswer}>{scienceParagraphs(science.loading ? "正在请教现代科学…" : science.answer ?? science.error ?? "").map((paragraph, index) => <p key={`${paragraph}-${index}`}>{paragraph}</p>)}{scienceSources.length > 0 && <small style={{ display: "block", marginTop: 10, color: "#776b5c", lineHeight: 1.6 }}>资料来源：{scienceSources.map((source, index) => <span key={source.id}>{index > 0 && "；"}<a href={source.url} target="_blank" rel="noreferrer" style={{ color: "#667653", textDecoration: "underline" }}>{source.title}</a>（{source.publisher}，{source.year}）</span>)}</small>}</div>{followups.map((item, index) => <div className={detailStyles.followupExchange} key={`${item.question}-${index}`}><p className={detailStyles.followupQuestion}>你问：{item.question}</p><div className={detailStyles.followupAnswer}><img src="/art/book-guide-avatar.webp" alt="教书先生头像" onError={(event) => { if (!event.currentTarget.src.endsWith("/school-cat-avatar.webp")) event.currentTarget.src = "/art/school-cat-avatar.webp"; }} /><p>{item.answer ?? item.error ?? <><LoaderCircle className="spin" size={15} /> 教书先生正在翻资料…</>}</p></div></div>)}</div></div></div>
+      <div className="detail-terms"><p className="overline">词语小辞典</p>{messageTerms.length ? messageTerms.map((term) => <article key={term.word}><b>{term.word}</b><small>{term.category}</small><p>{terms[term.word]?.loading ? "正在查古今词典…" : terms[term.word]?.answer ?? terms[term.word]?.error ?? term.definition}</p></article>) : <p className="detail-empty">这条原文没有需要额外解释的词语。</p>}</div>
+      <form className={`question-bar ${detailStyles.detailQuestionBar}`} onSubmit={submitFollowup}><div className="question-inner"><MessageCircleMore /><input value={followup} onChange={(event) => setFollowup(event.target.value)} placeholder="还有疑问？追问试试！" aria-label="追问现代科学解释" /><button type="submit" disabled={!followup.trim()} aria-label="发送追问"><Send /></button></div><small>教书先生会结合当前原文与现代科学资料回答</small></form>
+    </section>
+  );
 }
 
 const landChoices = [
@@ -1258,22 +1167,30 @@ export default function HomePage() {
 
   const showTopBar = ["recommend", "map", "school"].includes(screen);
 
-    return (
-    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
-      {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
-      {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
-      {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
-      {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
-      {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
-      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
-      {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
-      {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
-      {showTopBar && screen !== "reader" && <nav className="bottom-nav">
-        <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
-        <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
-        <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
-      </nav>}
+  return (
+    <div className="web-app-wrapper">
+      <div
+        className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}
+        style={{
+          transform: scale < 1 ? `scale(${scale})` : undefined,
+          transformOrigin: "top center"
+        }}
+      >
+        {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
+        {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
+        {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
+        {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
+        {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
+        {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
+        {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
+        {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
+        {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
+        {showTopBar && screen !== "reader" && <nav className="bottom-nav">
+          <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
+          <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
+          <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
+        </nav>}
+      </div>
     </div>
   );
 }
