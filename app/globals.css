@@ -215,28 +215,26 @@ body{background:#d9cdbd}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
 
-/* 外层容器：缩小上下边距，给 App 留出更多垂直空间 */
+/* 1. 外层：直接固定为全屏并开启 Flex，用 padding 控制上下留白 */
 .web-app-wrapper {
   width: 100vw;
   height: 100dvh;
   background-color: #f4efe6;
   display: flex;
   justify-content: center;
-  align-items: center; /* 改为居中，让 App 垂直居中显示 */
-  padding: 12px 0;    /* 原本上下 padding 较大，缩减到 12px */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  padding: 12px 0; /* 这里的 12px 直接控制上下留白，想更长就调成 6px */
   box-sizing: border-box;
 }
 
-/* 核心 App 容器：保持 430px 宽度不变，只微调高度 */
+/* 2. 核心 App：不要用 calc，直接让 flex 自己去填满外层去掉 padding 后的剩余高度 */
 .app-shell {
   width: 100%;
-  max-width: 440px; /* 保持原宽度限制，PC 端不会拉宽 */
+  max-width: 440px;
   
-  /* 【核心修改】将原本的 100dvh 改为百分比计算或指定稍高数值 */
-  height: calc(100dvh - 12px); /* 上下各留 12px 边距，高度自然拉长 */
-  max-height: 1400px;            /* 给大屏/PC 设定合理的高度上限 */
+  /* 关键点：用 flex: 1 替代 height，强制拉满外层容器的高度 */
+  flex: 1; 
+  height: 100%; 
   
   background-color: #fcf9f2;
   position: relative;
