@@ -353,7 +353,7 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     <div 
       data-message-id={message.id} 
       className={`message-row ${active ? "active-message" : ""}`}
-      style={{ position: "relative", marginBottom: "8px" }}
+      style={{ position: "relative", marginBottom: "4px" }}
     >
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
       <div className="message-column">
@@ -371,10 +371,10 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
           tabIndex={onDetail ? 0 : undefined} 
           onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}
           style={{
-            maxHeight: "360px",
+            maxHeight: "460px",
             overflowY: "auto",
             direction: "rtl",
-            paddingLeft: "12px",
+            paddingLeft: "8px",
             marginBottom: "0px"
           }}
         >
