@@ -215,33 +215,46 @@ body{background:#d9cdbd}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
 
-/* 1. 外层：直接固定为全屏并开启 Flex，用 padding 控制上下留白 */
+/* 1. 外层容器：手机端直接铺满 */
 .web-app-wrapper {
   width: 100vw;
   height: 100dvh;
-  background-color: #f4efe6;
+  background-color: #fcf9f2; /* 统一背景色为 App 背景色 */
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 12px 0; /* 这里的 12px 直接控制上下留白，想更长就调成 6px */
+  align-items: stretch;
+  padding: 0; /* 手机端无任何留白 */
+  margin: 0;
   box-sizing: border-box;
 }
 
-/* 2. 核心 App：不要用 calc，直接让 flex 自己去填满外层去掉 padding 后的剩余高度 */
+/* 2. 核心 App 容器：手机端 100% 全屏 */
 .app-shell {
-  width: 100%;
-  max-width: 440px;
-  
-  /* 关键点：用 flex: 1 替代 height，强制拉满外层容器的高度 */
-  flex: 1; 
-  height: 100%; 
-  
+  width: 100vw;
+  height: 100dvh;
   background-color: #fcf9f2;
   position: relative;
-  box-shadow: 0 0 25px rgba(60, 45, 30, 0.08);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
+}
+
+/* 3. 电脑端/大屏设备：保持手机壳/卡片居中效果 */
+@media (min-width: 600px) {
+  .web-app-wrapper {
+    background-color: #f4efe6; /* 电脑端才显示外层米色背景 */
+    padding: 20px 0;          /* 电脑端上下留白 */
+    align-items: center;
+  }
+
+  .app-shell {
+    width: 100%;
+    max-width: 440px;
+    height: calc(100dvh - 40px);
+    max-height: 900px;
+    border-radius: 24px;       /* 电脑端圆角 */
+    box-shadow: 0 0 25px rgba(60, 45, 30, 0.08); /* 电脑端阴影 */
+  }
 }
 
 /* 第一二句：先停留，然后在 2.5s~3.5s 缓慢淡出 */
