@@ -232,11 +232,11 @@ body{background:#d9cdbd}
 /* 核心 App 容器：保持 430px 宽度不变，只微调高度 */
 .app-shell {
   width: 100%;
-  max-width: 430px; /* 保持原宽度限制，PC 端不会拉宽 */
+  max-width: 440px; /* 保持原宽度限制，PC 端不会拉宽 */
   
   /* 【核心修改】将原本的 100dvh 改为百分比计算或指定稍高数值 */
-  height: calc(100dvh - 24px); /* 上下各留 12px 边距，高度自然拉长 */
-  max-height: 920px;            /* 给大屏/PC 设定合理的高度上限 */
+  height: calc(100dvh - 12px); /* 上下各留 12px 边距，高度自然拉长 */
+  max-height: 1100px;            /* 给大屏/PC 设定合理的高度上限 */
   
   background-color: #fcf9f2;
   position: relative;
