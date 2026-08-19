@@ -215,28 +215,35 @@ body{background:#d9cdbd}
 @keyframes prologueLineIn{to{opacity:1;transform:translateY(0)}}
 @keyframes prologueArtIn{to{opacity:1}}
 
-/* 外层容器：视口过小时允许上下滑动 */
+/* 外层容器：缩小上下边距，给 App 留出更多垂直空间 */
 .web-app-wrapper {
   width: 100vw;
   height: 100dvh;
   background-color: #f4efe6;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  overflow-y: auto; /* 修改：从 hidden 改为 auto，允许页面上下滑动 */
-  -webkit-overflow-scrolling: touch; /* 提升 iOS 滚动顺滑度 */
+  align-items: center; /* 改为居中，让 App 垂直居中显示 */
+  padding: 12px 0;    /* 原本上下 padding 较大，缩减到 12px */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
-/* 核心 App 容器：内容超出时允许内部滑动 */
+/* 核心 App 容器：保持 430px 宽度不变，只微调高度 */
 .app-shell {
   width: 100%;
-  max-width: 430px;
-  min-height: 100dvh; /* 修改：将 height 改为 min-height，让内容可以自由撑开 */
+  max-width: 430px; /* 保持原宽度限制，PC 端不会拉宽 */
+  
+  /* 【核心修改】将原本的 100dvh 改为百分比计算或指定稍高数值 */
+  height: calc(100dvh - 24px); /* 上下各留 12px 边距，高度自然拉长 */
+  max-height: 920px;            /* 给大屏/PC 设定合理的高度上限 */
+  
   background-color: #fcf9f2;
   position: relative;
   box-shadow: 0 0 25px rgba(60, 45, 30, 0.08);
-  overflow-y: auto; /* 修改：允许卡片或长内容超出时上划查看 */
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 /* 第一二句：先停留，然后在 2.5s~3.5s 缓慢淡出 */
