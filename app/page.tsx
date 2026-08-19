@@ -190,7 +190,7 @@ function PrologueLoading({ onBack }: { onBack: () => void }) {
         <button type="button" className="reader-back-button prologue-loading-back" onClick={onBack} aria-label="返回封面">
           <ArrowLeft size={18} />
         </button>
-        <span>正在加载中</span>
+        <span>正在加载中...</span>
       </nav>
       <ArtImage src="/art/prologue-loading.webp" alt="" className="prologue-loading-art" />
       
@@ -308,10 +308,21 @@ function ChapterLoading({ chapter, onBack }: { chapter: Chapter; onBack: () => v
   );
 }
 
+// 1. 确保 SpeakerAvatar 定义在 MessageBubble 的上面
 function SpeakerAvatar({ speaker, onClick }: { speaker: Speaker; onClick: () => void }) {
-  return <button onClick={onClick} className={`speaker-avatar avatar-${speaker.color}`} aria-label={`查看${speaker.name}资料`}><ArtImage src={`/art/avatar-${speaker.id}.webp`} alt="" className="avatar-art" /><span>{speaker.shortName}</span></button>;
+  return (
+    <button 
+      onClick={onClick} 
+      className={`speaker-avatar avatar-${speaker.color}`} 
+      aria-label={`查看${speaker.name}资料`}
+    >
+      <ArtImage src={`/art/avatar-${speaker.id}.webp`} alt="" className="avatar-art" />
+      <span>{speaker.shortName}</span>
+    </button>
+  );
 }
 
+// 2. 然后再定义 MessageBubble
 function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact = false }: { chapter: Chapter; message: ChapterMessage; onSpeaker: (speaker: Speaker) => void; onDetail?: () => void; active: boolean; compact?: boolean }) {
   const speaker = speakers[message.speakerId];
   const [termStates, setTermStates] = useState<Record<string, AiState>>({});
@@ -334,14 +345,16 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
     }
   }
 
-  const isTranslationTruncated = compact && message.translation.length > 40;
-  const isOriginalTruncated = compact && message.original.length > 48;
-  const displayTranslation = isTranslationTruncated ? `${message.translation.slice(0, 40)}...` : message.translation;
-  const displayOriginal = isOriginalTruncated ? message.original.slice(0, 48) : message.original;
+  const displayTranslation = message.translation;
+  const displayOriginal = message.original;
   const originalParts = highlightTerms(displayOriginal, messageTerms.map((term) => term.word));
 
   return (
-    <div data-message-id={message.id} className={`message-row ${active ? "active-message" : ""}`}>
+    <div 
+      data-message-id={message.id} 
+      className={`message-row ${active ? "active-message" : ""}`}
+      style={{ position: "relative", marginBottom: "8px" }}
+    >
       <SpeakerAvatar speaker={speaker} onClick={() => onSpeaker(speaker)} />
       <div className="message-column">
         <div className="message-heading">
@@ -350,18 +363,38 @@ function MessageBubble({ chapter, message, onSpeaker, onDetail, active, compact 
             <Sparkles size={14} /> 这是为什么
           </button>
         </div>
-        <article className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`} onClick={onDetail} role={onDetail ? "button" : undefined} tabIndex={onDetail ? 0 : undefined} onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}>
-          <p className="translation">{displayTranslation}</p>
-          <div className="original-block">
-            <p>
-              {originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}
-            </p>
-            {isOriginalTruncated && <div className="compact-read-more-row"><button className="compact-read-more" onClick={(event) => { event.stopPropagation(); onDetail?.(); }}>阅读全文</button></div>}
+
+        <article 
+          className={`paper-bubble ${speaker.id === "proverb" ? "proverb-bubble" : ""}`} 
+          onClick={onDetail} 
+          role={onDetail ? "button" : undefined} 
+          tabIndex={onDetail ? 0 : undefined} 
+          onKeyDown={(event) => { if (onDetail && (event.key === "Enter" || event.key === " ")) onDetail(); }}
+          style={{
+            maxHeight: "360px",
+            overflowY: "auto",
+            direction: "rtl",
+            paddingLeft: "12px",
+            marginBottom: "0px"
+          }}
+        >
+          <div style={{ direction: "ltr", textAlign: "left" }}>
+            <p className="translation">{displayTranslation}</p>
+            <div className="original-block">
+              <p>
+                {originalParts.map((part, index) => part.highlighted ? <strong className="original-term" key={`${part.text}-${index}`}>{part.text}</strong> : <span key={`${part.text}-${index}`}>{part.text}</span>)}
+              </p>
+            </div>
           </div>
         </article>
       </div>
+
       {messageTerms.length > 0 && (
-        <aside className="context-rail" aria-label="这段原文的上下文工具">
+        <aside 
+          className="context-rail" 
+          aria-label="这段原文的上下文工具"
+          style={{ position: "absolute", right: "0px", top: "36px", zIndex: 10 }}
+        >
           {messageTerms.slice(0, 3).map((term, index) => (
             <div className={`rail-term rail-term-${index}`} key={term.word}>
               <button onClick={() => explainTerm(term)}><span>{term.word}</span><b>?</b></button>
@@ -1107,29 +1140,6 @@ export default function HomePage() {
   const [readIds, setReadIds] = useState<string[]>([]);
   const [unlockedCats, setUnlockedCats] = useState<CatUnlock[]>([]);
   const [notes, setNotesState] = useState<Note[]>(starterNotes);
-
-  // 动态缩放比例状态
-  const [scale, setScale] = useState(1);
-
-  // 根据当前窗口高度自动计算缩放比例
-  useEffect(() => {
-    function handleResize() {
-      const targetHeight = 750; // 设计稿基准高度
-      const currentHeight = window.innerHeight;
-
-      if (currentHeight < targetHeight) {
-        // 小屏/矮屏自动等比例缩小，保底 0.78 避免过小
-        setScale(Math.max(0.78, currentHeight / targetHeight));
-      } else {
-        setScale(1);
-      }
-    }
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const chapter = useMemo(() => chapterById(chapterId)!, [chapterId]);
 
   useEffect(() => {
@@ -1166,31 +1176,22 @@ export default function HomePage() {
   function unlockCat(cat: CatUnlock) { setUnlockedCats((current) => { const next = Array.from(new Set([...current, cat])); localStorage.setItem("qimin-unlocked-cats", JSON.stringify(next)); return next; }); }
 
   const showTopBar = ["recommend", "map", "school"].includes(screen);
-
   return (
-    <div className="web-app-wrapper">
-      <div
-        className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}
-        style={{
-          transform: scale < 1 ? `scale(${scale})` : undefined,
-          transformOrigin: "top center"
-        }}
-      >
-        {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
-        {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
-        {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
-        {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
-        {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
-        {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
-        {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
-        {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
-        {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
-        {showTopBar && screen !== "reader" && <nav className="bottom-nav">
-          <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
-          <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
-          <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
-        </nav>}
-      </div>
+    <div className={`app-shell ${showTopBar ? "has-topbar" : ""} ${screen === "map" ? "map-screen" : ""} ${screen === "recommend" ? "reading-screen" : ""} ${screen === "school" ? "school-screen" : ""}`}>
+      {showTopBar && <TopBar readCount={readIds.length} onHome={() => setScreen("cover")} />}
+      {screen === "cover" && <Cover onNext={() => setScreen("prologue-loading")} />}
+      {screen === "prologue-loading" && <PrologueLoading onBack={() => setScreen("cover")} />}
+      {screen === "interest" && <Interest selected={interest} setSelected={setInterest} onNext={() => setScreen("recommend")} />}
+      {screen === "recommend" && <Recommendations onOpen={loadChapter} />}
+      {screen === "chapter-loading" && <ChapterLoading chapter={chapter} onBack={() => setScreen("recommend")} />}
+      {screen === "reader" && <Reader chapter={chapter} onBack={() => setScreen("recommend")} onComplete={completeChapter} onUnlockCat={unlockCat} unlockedCats={unlockedCats} />}
+      {screen === "map" && <WorldMap onOpen={openChapter} unlockedCats={unlockedCats} />}
+      {screen === "school" && <School notes={notes} setNotes={setNotes} onBack={() => setScreen("map")} />}
+      {showTopBar && screen !== "reader" && <nav className="bottom-nav">
+        <button className={screen === "recommend" ? "active" : ""} onClick={() => setScreen("recommend")}><BookOpen /><span>读书</span></button>
+        <button className={screen === "map" ? "active" : ""} onClick={() => setScreen("map")}><MapIcon /><span>地图</span></button>
+        <button className={screen === "school" ? "active" : ""} onClick={() => setScreen("school")}><GraduationCap /><span>学堂</span></button>
+      </nav>}
     </div>
   );
 }
