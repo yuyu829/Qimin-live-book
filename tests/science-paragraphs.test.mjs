@@ -9,7 +9,7 @@ test("long science explanations are grouped into readable sentence paragraphs", 
   assert.match(page, /function scienceParagraphs\(text: string\)/);
   assert.match(page, /text\.length <= 140/);
   assert.match(page, /paragraph\.length \+ sentence\.length > 110/);
-  assert.match(page, /scienceParagraphs\(science\.loading \? "正在请教现代科学AI小助手…"/);
+  assert.match(page, /scienceParagraphs\(science\.loading \? "请再稍等一下哦，正在请教现代科学 AI 小助手呢～"/);
 });
 
 test("science paragraphs keep visual breathing room", () => {
