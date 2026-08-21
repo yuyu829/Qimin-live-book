@@ -186,6 +186,10 @@ body{background:#d9cdbd}
 .message-heading>.why-button{flex:none;width:auto;margin:3px 0 0;padding:5px 9px;border:1px solid #b9c8ad;border-radius:14px;background:#e7ebdd;color:var(--sage-dark);font-size:10px;line-height:1.2}
 .message-heading>.why-button svg{color:var(--sage-dark);stroke:currentColor}
 .reader-page.is-full-reader .message-heading>.why-button{border:0;border-radius:0;background:transparent}
+.reader-page.is-full-reader .full-chat-stream .message-row{padding-right:10px}
+.reader-page.is-full-reader .message-scroll{padding-right:76px}
+.reader-page.is-full-reader .message-scroll .context-rail{right:0}
+.reader-page.is-full-reader .context-rail .term-popover{right:0;left:auto;width:148px}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .translation{padding-right:0}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block{padding-bottom:0}
 .reader-page:not(.is-full-reader):not(.is-detail-reader) .deck-card .original-block>p{padding-right:0}

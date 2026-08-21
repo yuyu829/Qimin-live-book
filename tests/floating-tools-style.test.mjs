@@ -28,3 +28,9 @@ test("keyword rail scrolls with card text on short viewports", () => {
   assert.match(css, /\.context-rail \.term-popover\{right:8px;width:196px\}/);
   assert.match(css, /\.message-scroll:has\(\.context-rail\) \.paper-bubble\{min-height:max\(calc\(100% - 4px\),150px\)\}/);
 });
+
+test("full reader keeps keyword tools in the right gutter", () => {
+  assert.match(css, /\.is-full-reader \.message-scroll\{padding-right:76px\}/);
+  assert.match(css, /\.is-full-reader \.message-scroll \.context-rail\{right:0\}/);
+  assert.match(css, /\.is-full-reader \.context-rail \.term-popover\{right:0;left:auto;width:148px\}/);
+});
