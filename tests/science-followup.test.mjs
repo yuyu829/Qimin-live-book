@@ -22,7 +22,10 @@ test("science follow-ups stay below sources and push the glossary down", () => {
   assert.match(page, /资料来源：.*followups\.map.*detail-terms/s);
   assert.match(page, /followupQuestion/);
   assert.match(page, /followupAnswer/);
-  assert.match(styles, /\.detailWithQuestion \{ padding-bottom: 112px; \}/);
+  assert.match(page, /detailStyles\.detailScroll/);
+  assert.match(styles, /\.detailScroll \{/);
+  assert.match(styles, /padding-bottom: 112px;/);
+  assert.doesNotMatch(styles, /max-height: 45vh/);
 });
 
 test("science follow-up calls the model with only the current card context", () => {

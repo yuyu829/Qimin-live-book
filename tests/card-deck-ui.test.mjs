@@ -98,10 +98,11 @@ test("full text shortcut opens the original vertical chat reader", () => {
 
 test("deck previews long originals while detail keeps the full source", () => {
   assert.match(page, /compact = false/);
-  assert.match(page, /message\.translation\.length > 40/);
-  assert.match(page, /message\.original\.length > 48/);
+  assert.match(css, /-webkit-line-clamp:3/);
   assert.match(page, /compact onSpeaker=\{setSpeaker\}/);
   assert.match(page, /<blockquote>\{message\.original\}<\/blockquote>/);
+  assert.match(page, /displayTranslation = message\.translation/);
+  assert.match(page, /displayOriginal = message\.original/);
 });
 
 test("card and why action open a structured AI detail page", () => {
@@ -117,5 +118,5 @@ test("card and why action open a structured AI detail page", () => {
   assert.match(page, /现代科学怎么解释/);
   assert.match(page, /词语小辞典/);
   assert.doesNotMatch(page, /science\.answer \|\| science\.error/);
-  assert.match(css, /\.message-detail\{padding:22px 16px 40px\}/);
+  assert.match(css, /\.message-detail\{flex:1;min-height:0;overflow:hidden;padding:22px 16px 0\}/);
 });

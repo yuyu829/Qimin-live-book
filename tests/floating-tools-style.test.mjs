@@ -18,3 +18,13 @@ test("term explanation card is readable rather than overly transparent", () => {
 test("context rail has no more-options dot marker", () => {
   assert.doesNotMatch(page, /className="rail-dots"/);
 });
+
+test("keyword rail scrolls with card text on short viewports", () => {
+  assert.match(page, /className="message-scroll"/);
+  assert.match(page, /className="message-scroll"[\s\S]*className="context-rail"/);
+  assert.match(css, /\.deck-card \.message-scroll\{[^}]*overflow-y:auto/);
+  assert.match(css, /\.deck-card \.message-scroll\{[^}]*padding-right:62px/);
+  assert.match(css, /\.message-scroll \.context-rail\{top:8px;right:2px\}/);
+  assert.match(css, /\.context-rail \.term-popover\{right:8px;width:196px\}/);
+  assert.match(css, /\.message-scroll:has\(\.context-rail\) \.paper-bubble\{min-height:max\(calc\(100% - 4px\),150px\)\}/);
+});
