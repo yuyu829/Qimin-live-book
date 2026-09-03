@@ -49,8 +49,9 @@ test("book guide answers with chapter evidence and one gentle follow-up directio
 });
 
 test("every current chapter card has curated modern evidence and citations", () => {
+  const limits = { soy: 8, sauce: 9 };
   for (const prefix of ["soy", "sauce"]) {
-    for (let index = 1; index <= 8; index += 1) {
+    for (let index = 1; index <= limits[prefix]; index += 1) {
       assert.match(evidence, new RegExp(`"${prefix}-${index}"\\s*:`));
     }
   }
@@ -70,9 +71,10 @@ test("science explanations use a warm conversational voice without encyclopedia 
   assert.match(prompts, /内容充足时可写到约300个汉字/);
 });
 
-test("all sixteen science cards provide curated knowledge to a real model call", () => {
+test("all current science cards provide curated knowledge to a real model call", () => {
+  const limits = { soy: 8, sauce: 9 };
   for (const prefix of ["soy", "sauce"]) {
-    for (let index = 1; index <= 8; index += 1) {
+    for (let index = 1; index <= limits[prefix]; index += 1) {
       const entry = evidence.match(new RegExp(`"${prefix}-${index}": \\{(.*?)sourceIds:`, "s"))?.[1] ?? "";
       assert.match(entry, /explanation: "/, `${prefix}-${index} should have a curated explanation`);
     }

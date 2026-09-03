@@ -5,9 +5,9 @@ import { test } from "node:test";
 const data = await readFile(new URL("../data/qimin.ts", import.meta.url), "utf8");
 const sauce = data.slice(data.indexOf('id: "sauce"'));
 
-test("sauce chapter uses the supplied chapter identity and eight-step reading sequence", () => {
+test("sauce chapter uses the supplied chapter identity and reading sequence", () => {
   assert.match(sauce, /title: "《作酱等法第七十》"/);
-  assert.equal((sauce.match(/id: "sauce-\d+"/g) ?? []).length, 8);
+  assert.equal((sauce.match(/id: "sauce-\d+"/g) ?? []).length, 9);
   assert.doesNotMatch(sauce, /title: "《作酱法》"/);
 });
 
@@ -24,6 +24,12 @@ test("sauce chapter preserves the source's main soybean sauce process", () => {
   ]) {
     assert.ok(sauce.includes(sourcePhrase), `missing source phrase: ${sourcePhrase}`);
   }
+});
+
+test("sauce chapter keeps the historical section on pregnancy lore and restoring spoiled sauce", () => {
+  assert.match(sauce, /若為妊娠婦人壞醬者，取白葉棘子著甕中，則還好/);
+  assert.match(sauce, /乞人醬時，以新汲水一盞，和而與之，令醬不壞/);
+  assert.match(sauce, /id: "sauce-8"/);
 });
 
 test("sauce chapter includes the related sauce methods supplied in the source", () => {
